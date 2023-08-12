@@ -182,11 +182,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Matt Timmermans\\source\\repos\\TextAdventureLibrary\\TextAdventureLibrary\\TextAdventureLibrary.csproj",
+      "projectUniqueName": "C:\\Users\\Matt Timmermans\\source\\repos\\TextAdventureResources\\TextAdventureLibrary\\TextAdventureLibrary.csproj",
       "projectName": "TextAdventureLibrary",
-      "projectPath": "C:\\Users\\Matt Timmermans\\source\\repos\\TextAdventureLibrary\\TextAdventureLibrary\\TextAdventureLibrary.csproj",
+      "projectPath": "C:\\Users\\Matt Timmermans\\source\\repos\\TextAdventureResources\\TextAdventureLibrary\\TextAdventureLibrary.csproj",
       "packagesPath": "C:\\Users\\Matt Timmermans\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Matt Timmermans\\source\\repos\\TextAdventureLibrary\\TextAdventureLibrary\\obj\\",
+      "outputPath": "C:\\Users\\Matt Timmermans\\source\\repos\\TextAdventureResources\\TextAdventureLibrary\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

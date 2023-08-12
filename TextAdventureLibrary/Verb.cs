@@ -4,7 +4,7 @@ namespace TextAdventureLibrary
 {
     public class Verb
     {
-        Action action;
+        /*Action action;
 
         public Verb(Action action)
         {
@@ -14,6 +14,7 @@ namespace TextAdventureLibrary
         public void Execute()
         {
             action();
-        }
+        }*/
+        //string Label { get; }
     }
 }

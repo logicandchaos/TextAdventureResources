@@ -138,44 +138,42 @@ namespace TextAdventureLibrary
             }
         }*/
 
-        public string GetOption(int p_option)
+        public string SelectOption(int option)
         {
-            return options[p_option];
+            return options[option];
         }
 
-        public int SelectOption()
-        {
-            int selection = -1;
-            bool isValid = false;
+        //int selection = -1;
+        /*        bool isValid = false;
 
-            while (!isValid || selection > options.Length - 1 || selection < 0)
-            {
-                string input = Console.ReadLine();
+                    while (!isValid || selection > options.Length - 1 || selection< 0)
+                    {
+                        string input = Console.ReadLine();
                 isValid = Int32.TryParse(input, out selection);
 
-                //errors
-                if (!isValid)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error! Input a number between 0 and " + (options.Length - 1));
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-                if (selection > options.Length - 1)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error! Number too large!");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-                if (selection < 0)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error! Number too small! Enter a non negative number.");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-            }
+                        //errors
+                        if (!isValid)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Error! Input a number between 0 and " + (options.Length - 1));
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                        if (selection > options.Length - 1)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Error! Number too large!");
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                        if (selection< 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Error! Number too small! Enter a non negative number.");
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                    }
 
-            //Console.WriteLine(options[selection]);
-            return selection;
-        }
+                    //Console.WriteLine(options[selection]);
+                    return selection;
+                }*/
     }
 }

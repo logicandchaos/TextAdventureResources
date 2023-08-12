@@ -6,8 +6,9 @@ namespace TextAdventureLibrary
 {
     public class Place : Noun
     {
-        public Place(string label) : base(label)
+        public Place(string label, Point location) : base(label)
         {
+
         }
 
         public override void GenerateDescription()
