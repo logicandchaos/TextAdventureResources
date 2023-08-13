@@ -6,6 +6,9 @@ namespace TextAdventureLibrary
 {
     public class Ai : Brain
     {
+        Emotion currentEmotionalState;
+        Dictionary<Person, Emotion> feelingsToward;
+
         /*public override bool GetBool()
         {
             throw new NotImplementedException();
@@ -26,7 +29,7 @@ namespace TextAdventureLibrary
             throw new NotImplementedException();
         }*/
 
-        public override void Choice(Menu menu)
+        public override void MakeChoice(Menu menu)
         {
             throw new NotImplementedException();
         }

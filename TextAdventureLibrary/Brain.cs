@@ -14,6 +14,6 @@ namespace TextAdventureLibrary
 
         public abstract string GetString();*/
 
-        public abstract void Choice(Menu menu);
+        public abstract void MakeChoice(Menu menu);
     }
 }

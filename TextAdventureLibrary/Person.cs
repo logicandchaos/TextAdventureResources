@@ -6,9 +6,10 @@ namespace TextAdventureLibrary
 {
     public class Person : Noun
     {
+        string Name { get; }
         Person Father { get; }
         Person Mother { get; }
-        public Random random;
+        public Die die;
         public readonly Species species;
         public enum Gender { male, female }
         public Gender gender;
@@ -19,12 +20,17 @@ namespace TextAdventureLibrary
         public Dictionary<string, StatusEffect> statusEffects = new Dictionary<string, StatusEffect>();
         public readonly Brain brain;
         public readonly DateTime birthdate;
-        public readonly DateTime deathdate;
+        public readonly DateTime deathdate;//readonly??
         public readonly Place birthPlace;
         //public int Age { get { return (int)((Program.world.GetDateTime() - birthdate).TotalDays / 365.2425); } }
 
-        public Person(string label, Person father, Person mother) : base(label)
+        //need factory to create people
+        public Person(string label) : base(label)
         {
+            //create name
+            //Name=
+            //create die
+            die = new Die(Name.GetHashCode(), 10);
         }
 
         public override void GenerateDescription()

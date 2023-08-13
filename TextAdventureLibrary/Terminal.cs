@@ -39,7 +39,7 @@
 
         public abstract void PrintDescription(Noun textGameObject);
 
-        public abstract void MoveCurser(Point point);
+        public abstract void MoveCurser(Point2D point);
 
         public abstract void ResetColor();
 
