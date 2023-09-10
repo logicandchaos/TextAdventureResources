@@ -4,9 +4,9 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class Building : Place
+    public class Utility : Attribute
     {
-        public Building(string label, Point location) : base(label, location)
+        public Utility(string name, object value) : base(name, value)
         {
         }
     }

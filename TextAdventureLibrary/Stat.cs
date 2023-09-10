@@ -4,65 +4,47 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public enum Stats
+    public class Stat : Attribute
     {
-        Strength = 0,
-        Vitality = 1,
-        Dexterity = 2,
-        Speed = 3,
-        Intelligence = 4,
-        Charisma = 5
-    }
-
-    public struct Stat
-    {
-        public readonly string name;
         public readonly int max;
-        public float value;
 
-        public Stat(string p_name, float p_value, int p_max)
+        public Stat(string name, float value, int max) : base(name, value)
         {
-            name = p_name;
-            max = p_max;
-            value = p_value;
+            this.max = max;
+            Value = value;
         }
 
-        public void IncreaseStat(float p_amount)
+        public void IncreaseStat(float amount)
         {
-            value += p_amount;
+            float value = (float)Value;
+            value += amount;
             if (value > max)
                 value = max;
+            Value = value;
         }
 
         public int StatCheck(int roll)
         {
             //if (Program.showRolls)
             //Console.Write(p_character.GetName() + " " + name + " check: ");
-            if (roll == 10)
+            if (roll == 0)
             {
                 Console.Write(roll + "\n");
                 Console.WriteLine("CRITICAL FAIL!!!");
             }
             else
             {
-                if (roll > (int)value)
+                if (roll > (int)Value)
                 {
                     roll = 0;
                 }
-                if (roll == (int)value)
+                if (roll == (int)Value)
                 {
                     roll *= 2;
                     /*if (Program.showRolls)
                     {
                         Console.Write(roll + "\n");
                         Console.WriteLine("CRITICAL ROLL!!!");
-                    }*/
-                }
-                else if (roll < 1)
-                {
-                    /*if (Program.showRolls)
-                    {
-                        Console.Write("FAILED\n");
                     }*/
                 }
                 //else if (Program.showRolls)

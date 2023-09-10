@@ -7,16 +7,17 @@ namespace TextAdventureLibrary
         public string Label { get; private set; }
         public string Description { get; private set; }
 
-        Volume volume;//may make float to simplify
-        float weight;
+        public Dictionary<string, Attribute> attributes;
+        public Inventory inventory;
 
-        public List<Thing> inventory;
-        public float inventorySize;//bulk, size
-        public float inventoryWeight;
+        //will be attributes
+        //Volume volume;//may make float to simplify
+        //float weight;
 
-        public Noun(string label)
+        public Noun(string label, params Attribute[] attributes)
         {
             Label = label;
+
             GenerateDescription();
         }
 

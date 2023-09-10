@@ -4,22 +4,23 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class World //: Place
+    public class World
     {
         public string Label { get; private set; }
         Matrix worldMap;
         public Die die;
         public DateTime dateTime;
-        //List<> history;
+        public Dictionary<string, Noun> stuff;
+        public List<string> history;
 
-        public World(string label, Point2D point)// : base(label, point)
+        public World(string label)
         {
             //create die
             die = new Die(label.GetHashCode(), 10);
-            //create world map
-            GenerateMap();
             //generate dateTime
             //dateTime=
+            //create world map
+            GenerateMap();
         }
 
         void GenerateMap()

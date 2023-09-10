@@ -112,7 +112,7 @@ namespace TextAdventureLibrary
 
         }
 
-        public override void MoveCurser(Point2D point)
+        public override void MoveCurser(Point point)
         {
 
         }

@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TextAdventureLibrary
+﻿namespace TextAdventureLibrary
 {
-    public class Volume
+    public class Volume : Attribute
     {
         public float X { get; set; }
         public float Y { get; set; }
         public float Z { get; set; }
 
-        public Volume(float x, float y, float z)
+        public Volume(float x, float y, float z) : base("Volume", new { X = x, Y = y, Z = z })
         {
             X = x;
             Y = y;
@@ -49,15 +45,13 @@ namespace TextAdventureLibrary
 
         public override string ToString()
         {
-            return $"{X}/{Y}";
+            return $"{X}/{Y}/{Z}";
         }
 
         public float GetVolumeCubed()
         {
             return X * Y * Z;
         }
-
-        //Rotate()//probably don't need if I just go by volume
 
     }
 }
