@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class ItemFactory
+    public class MapFactory
     {
 
     }

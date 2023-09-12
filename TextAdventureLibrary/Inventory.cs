@@ -8,5 +8,8 @@ namespace TextAdventureLibrary
     {
         List<Thing> things;
         //needs attributes volume and weight limit
+        public void AddToInventory(Thing thing) { }
+        public void RemoveFromInventory(Thing thing) { }
+        public void RemoveFromInventory(int index) { }
     }
 }
