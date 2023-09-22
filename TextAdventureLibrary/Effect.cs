@@ -6,9 +6,7 @@ namespace TextAdventureLibrary
 {
     public class Effect
     {
-        Noun target;//affected
-        Attribute attribute;//what atribute and how much, should proabbly be a utility instead
-        //Emotion emotion;//???
-        //float power;//percentage power of effect
+        Attribute attribute;//what atribute and how much, should proabbly be a utility instead?
+        bool addValue;// add or set
     }
 }

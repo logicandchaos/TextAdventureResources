@@ -1,0 +1,9 @@
+C:\Users\Matt Timmermans\source\repos\TextAdventureResources\TextAdventureLibrary\obj\Debug\netstandard2.0\TextAdventureLibrary.csprojAssemblyReference.cache
+C:\Users\Matt Timmermans\source\repos\TextAdventureResources\TextAdventureLibrary\obj\Debug\netstandard2.0\TextAdventureLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Matt Timmermans\source\repos\TextAdventureResources\TextAdventureLibrary\obj\Debug\netstandard2.0\TextAdventureLibrary.AssemblyInfoInputs.cache
+C:\Users\Matt Timmermans\source\repos\TextAdventureResources\TextAdventureLibrary\obj\Debug\netstandard2.0\TextAdventureLibrary.AssemblyInfo.cs
+C:\Users\Matt Timmermans\source\repos\TextAdventureResources\TextAdventureLibrary\bin\Debug\netstandard2.0\TextAdventureLibrary.deps.json
+C:\Users\Matt Timmermans\source\repos\TextAdventureResources\TextAdventureLibrary\bin\Debug\netstandard2.0\TextAdventureLibrary.dll
+C:\Users\Matt Timmermans\source\repos\TextAdventureResources\TextAdventureLibrary\bin\Debug\netstandard2.0\TextAdventureLibrary.pdb
+C:\Users\Matt Timmermans\source\repos\TextAdventureResources\TextAdventureLibrary\obj\Debug\netstandard2.0\TextAdventureLibrary.dll
+C:\Users\Matt Timmermans\source\repos\TextAdventureResources\TextAdventureLibrary\obj\Debug\netstandard2.0\TextAdventureLibrary.pdb

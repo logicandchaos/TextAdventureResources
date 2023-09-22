@@ -6,8 +6,8 @@ namespace TextAdventureLibrary
 {
     public class Ai : Brain
     {
-        Emotion currentEmotionalState;
-        Dictionary<Person, Emotion> feelingsToward;
+        //Emotion currentEmotionalState;
+        //Dictionary<Person, Emotion> feelingsToward;
 
         /*public override bool GetBool()
         {

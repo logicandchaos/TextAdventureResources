@@ -25,15 +25,15 @@
     {
         public abstract void SetColor(Color foregroundColor, Color backgroundColor);
 
-        public abstract void Print(string message, bool newLine = false);
+        public abstract void Print(string text, bool newLine = false);
 
-        public abstract void Type(string message, bool newLine = false, int delay = 20);
+        public abstract void Type(string text, bool newLine = false, int delay = 20);
 
         public abstract void Print(Cell cell);
 
         public abstract void Print(Matrix matrix);
 
-        public abstract void Print(Menu menu);
+        public abstract void Menu(Menu menu);
 
         public abstract void Print(Noun textGameObject);
 
@@ -45,10 +45,18 @@
 
         public abstract void SetColorToHealth(float healthPercent);
 
-        public abstract void Anykey(string p_message = "<Press any key>");
+        public abstract void Anykey(string message = "<Press any key>");
 
         public abstract bool YesNo();
 
+        public abstract char GetChar();
+
+        public abstract int GetDigit(int max);
+
+        public abstract string GetString(string message = "");
+
         public abstract bool GraphicText(string input, Color col, bool clearScreen = true);
+
+        public abstract void ClearScreen();
     }
 }

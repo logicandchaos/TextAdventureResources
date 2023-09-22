@@ -6,14 +6,6 @@ namespace TextAdventureLibrary
 {
     public abstract class Brain
     {
-        /*public abstract bool GetBool();
-
-        public abstract char GetChar();
-
-        public abstract int GetInt();
-
-        public abstract string GetString();*/
-
         public abstract void MakeChoice(Menu menu);
     }
 }

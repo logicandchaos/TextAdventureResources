@@ -16,31 +16,31 @@ namespace TextAdventureLibrary
                 case Color.DarkGreen:
                     return ConsoleColor.DarkGreen;
                 case Color.DarkYellow:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.DarkYellow;
                 case Color.DarkBlue:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.DarkBlue;
                 case Color.DarkMagenta:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.DarkMagenta;
                 case Color.DarkCyan:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.DarkCyan;
                 case Color.Gray:
                     return ConsoleColor.Gray;
                 case Color.DarkGray:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.DarkGray;
                 case Color.Red:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.Red;
                 case Color.Green:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.Green;
                 case Color.Yellow:
                     return ConsoleColor.Gray;
                 case Color.Blue:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.Blue;
                 case Color.Magenta:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.Magenta;
                 case Color.Cyan:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.Cyan;
                 case Color.White:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.White;
                 default:
                     return ConsoleColor.Gray;
             }
@@ -49,7 +49,7 @@ namespace TextAdventureLibrary
         public override void SetColor(Color foreground, Color background)
         {
             Console.ForegroundColor = ColorToCsConsoleColor(foreground);
-            Console.BackgroundColor = ColorToCsConsoleColor(foreground);
+            Console.BackgroundColor = ColorToCsConsoleColor(background);
         }
 
         public override void ResetColor()
@@ -59,8 +59,6 @@ namespace TextAdventureLibrary
 
         public override void SetColorToHealth(float healthPercent)
         {
-            //float ratio = (float)c.GetHealth() / (float)c.GetMaxHealth() * 100;
-            //Console.WriteLine(ratio);
             if ((int)healthPercent > 33)
                 Console.ForegroundColor = ConsoleColor.Gray;
             else
@@ -68,16 +66,16 @@ namespace TextAdventureLibrary
             Console.BackgroundColor = ConsoleColor.Black;
         }
 
-        public override void Print(string message, bool newLine = false)
+        public override void Print(string text, bool newLine = false)
         {
-            Console.Write(message);
+            Console.Write(text);
             if (newLine)
                 Console.Write("\n");
         }
 
-        public override void Type(string message, bool newLine = false, int delay = 20)
+        public override void Type(string text, bool newLine = false, int delay = 20)
         {
-            char[] letters = message.ToCharArray();
+            char[] letters = text.ToCharArray();
             foreach (char c in letters)
             {
                 Console.Write(c);
@@ -97,9 +95,67 @@ namespace TextAdventureLibrary
 
         }
 
-        public override void Print(Menu menu)
+        public override void Menu(Menu menu)
         {
+            ClearScreen();
+            SetColor(Color.White, Color.Black);
 
+            /*int maxLength = 0;
+            if (columns == 2)
+                maxLength = 50;
+            if (columns == 3)
+                maxLength = 36;*/
+
+            if (menu.title.CompareTo("") != 0)
+            {
+                Console.WriteLine(menu.title);
+            }
+
+            SetColor(Color.Gray, Color.Black);
+
+            for (int i = 0; i < menu.items.Length; i++)
+            {
+                string s = "";
+                if (i == 10)
+                    s = 0 + ": " + menu.items[i].Text;
+                else
+                    s = (i + 1) + ": " + menu.items[i].Text;
+                Console.WriteLine(s);
+            }
+            Console.WriteLine();
+
+            menu.SelectOption(GetDigit(menu.items.Length));
+
+            /*for (int i = 0; i < menu.items.Length * columns; i += columns)
+            {
+                if (columns > 1 && i == menu.items.Length)
+                    break;
+                string s = (i + 1) + ": " + menu.items[i].Text;
+                Console.Write(s);
+                if (columns > 1)
+                {
+                    for (int o = 0; o < maxLength - s.Length; o++)
+                    {
+                        Console.Write(" ");
+                    }
+                    if (i == menu.items.Length - 1)
+                        break;
+                    s = (i + 1) + 1 + ": " + menu.items[i + 1].Text;
+                    Console.Write(s);
+                    if (columns > 2)
+                    {
+                        for (int o = 0; o < maxLength - s.Length; o++)
+                        {
+                            Console.Write(" ");
+                        }
+                        if (i == menu.items.Length - 1)
+                            break;
+                        s = (i + 1) + 2 + ": " + menu.items[i + 2].Text;
+                        Console.Write(s);
+                    }
+                }
+                Console.WriteLine();
+            }*/
         }
 
         public override void Print(Noun textGameObject)
@@ -117,7 +173,7 @@ namespace TextAdventureLibrary
 
         }
 
-        public override void Anykey(string p_message = "<Press any key>")
+        public override void Anykey(string message = "<Press any key>")
         {
             while (Console.KeyAvailable) // Flush input queue
                 Console.ReadKey();
@@ -126,7 +182,7 @@ namespace TextAdventureLibrary
             //Console.Beep(500, 500);
             ConsoleColor temp = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\n" + p_message);
+            Console.WriteLine("\n" + message);
             Console.ReadKey(true);//the true turns echo off
             Console.ForegroundColor = temp;
             //Console.WriteLine();
@@ -150,6 +206,59 @@ namespace TextAdventureLibrary
                 return true;
             }
             return false;
+        }
+
+        public override char GetChar()
+        {
+            int charValue;
+            do
+            {
+                while (Console.KeyAvailable) // Flushes the input queue.
+                    Console.ReadKey();
+
+                charValue = Console.Read(); // Gets the user's response.
+                Console.WriteLine(); // Breaks the line.
+            }
+            while (charValue != -1);
+
+            return (char)charValue;
+        }
+
+        public override int GetDigit(int max)
+        {
+            int digit = -1;
+            while (digit < 0 || digit > max || (max < 10 && digit == 0))
+            {
+                while (Console.KeyAvailable) // Flushes the input queue.
+                    Console.ReadKey();
+
+                ConsoleKeyInfo keyInfo;
+                keyInfo = Console.ReadKey(); // Gets the user's response.
+                /*Console.WriteLine("digit " + keyInfo);
+                Console.WriteLine("digit.Key " + keyInfo.Key);
+                Console.WriteLine("digit.KeyChar " + keyInfo.KeyChar);
+                Console.WriteLine("digit.KeyChar-0 " + (keyInfo.KeyChar - '0'));//*/
+                digit = keyInfo.KeyChar - '0';
+                //Console.WriteLine(); // Breaks the line.
+            }
+            /*Console.WriteLine("digit " + digit);
+            Console.WriteLine("digit.Key " + digit.Key);
+            Console.WriteLine("digit.KeyChar " + digit.KeyChar);
+            Console.WriteLine("digit.KeyChar-0 " + (digit.KeyChar - '0'));*/
+
+            return digit;
+        }
+
+        public override string GetString(string message = "")
+        {
+            Print(message);
+
+            while (Console.KeyAvailable) // Flush input queue
+                Console.ReadKey();
+
+            string inputString = Console.ReadLine();
+
+            return inputString;
         }
 
         public override bool GraphicText(string input, Color col, bool clearScreen = true)
@@ -518,6 +627,11 @@ namespace TextAdventureLibrary
             }
             Console.ForegroundColor = temp;
             return true;
+        }
+
+        public override void ClearScreen()
+        {
+            Console.Clear();
         }
     }
 }
