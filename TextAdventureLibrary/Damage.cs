@@ -17,7 +17,7 @@ namespace TextAdventureLibrary
 
         public float damageAmount;
 
-        public StatusEffect statusEffect;
-        public float statisEffectChance;
+        //public StatusEffect statusEffect;
+        //public float statisEffectChance;
     }
 }

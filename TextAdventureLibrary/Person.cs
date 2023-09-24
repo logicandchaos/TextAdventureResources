@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace TextAdventureLibrary
@@ -37,9 +38,23 @@ namespace TextAdventureLibrary
             species = Mother.species;*/
         }
 
+        public void RollStats()
+        {
+            Type stat = typeof(Stat);
+
+            // Use LINQ to filter objects of the specified type
+            List<Stat> objectsOfType = Attributes
+                .Where(kv => kv.Value != null && kv.Value.GetType() == stat)
+                .Select(kv => (Stat)kv.Value)
+                .ToList();
+
+            //roll stats use ranges based on species
+
+        }
+
         public override void GenerateDescription()
         {
-
+            //based on species, stats and other attributes
         }
     }
 }

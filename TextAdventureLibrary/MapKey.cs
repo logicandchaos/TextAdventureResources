@@ -4,8 +4,8 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class MapFactory
+    public class MapKey
     {
-
+        Dictionary<char, Cell> key;
     }
 }
