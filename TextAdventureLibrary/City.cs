@@ -8,7 +8,7 @@ namespace TextAdventureLibrary
     {
         List<Building> buildings;
 
-        public City(string label, Point location) : base(label, location)
+        public City()
         {
         }
     }

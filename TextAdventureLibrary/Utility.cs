@@ -4,9 +4,11 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class Utility : Attribute
+    public class Utility
     {
-        public Utility(string name, object value) : base(name, value)
+        public object Value { get; set; }
+
+        public Utility()
         {
         }
     }

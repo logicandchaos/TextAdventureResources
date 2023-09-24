@@ -6,7 +6,7 @@ namespace TextAdventureLibrary
 {
     public class Thing : Noun
     {
-        public Thing(string label) : base(label)
+        public Thing()
         {
         }
 

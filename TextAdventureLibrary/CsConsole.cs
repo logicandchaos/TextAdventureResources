@@ -79,7 +79,11 @@ namespace TextAdventureLibrary
             foreach (char c in letters)
             {
                 Console.Write(c);
-                Thread.Sleep(delay);
+                //skip epicness
+                if (!Console.KeyAvailable)
+                {
+                    Thread.Sleep(delay);
+                }
             }
             if (newLine)
                 Console.Write("\n");
@@ -233,7 +237,7 @@ namespace TextAdventureLibrary
                     Console.ReadKey();
 
                 ConsoleKeyInfo keyInfo;
-                keyInfo = Console.ReadKey(); // Gets the user's response.
+                keyInfo = Console.ReadKey(true); // Gets the user's response. true-echo off
                 /*Console.WriteLine("digit " + keyInfo);
                 Console.WriteLine("digit.Key " + keyInfo.Key);
                 Console.WriteLine("digit.KeyChar " + keyInfo.KeyChar);

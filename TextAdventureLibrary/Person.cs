@@ -24,17 +24,17 @@ namespace TextAdventureLibrary
         public Dictionary<string, StatusEffect> statusEffects = new Dictionary<string, StatusEffect>();*/
 
         //need factory to create people
-        public Person(string name, Person father, Person mother) : base(name)
+        public Person()//string name, Person father, Person mother) : base(name)
         {
             //create name
             //Name=
             //create die
-            die = new Die(name.GetHashCode(), 10);
+            /*die = new Die(name.GetHashCode(), 10);
             Father = father;
             Mother = mother;
             //birthPlace = Mother.location;
             //birthdate = World.date.Now;
-            species = Mother.species;
+            species = Mother.species;*/
         }
 
         public override void GenerateDescription()

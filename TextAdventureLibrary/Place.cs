@@ -8,7 +8,7 @@ namespace TextAdventureLibrary
     {
         //public List<Person> people;??
 
-        public Place(string label, Point location) : base(label)
+        public Place()
         {
 
         }

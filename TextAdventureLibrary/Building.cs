@@ -6,7 +6,7 @@ namespace TextAdventureLibrary
 {
     public class Building : Place
     {
-        public Building(string label, Point location) : base(label, location)
+        public Building()
         {
         }
     }

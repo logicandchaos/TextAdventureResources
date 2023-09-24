@@ -1,12 +1,12 @@
 ﻿namespace TextAdventureLibrary
 {
-    public class Volume : Attribute
+    public class Volume
     {
         public float X { get; set; }
         public float Y { get; set; }
         public float Z { get; set; }
 
-        public Volume(float x, float y, float z) : base("Volume", new { X = x, Y = y, Z = z })
+        public Volume(float x, float y, float z)
         {
             X = x;
             Y = y;

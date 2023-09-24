@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class Stat : Attribute
+    public class Stat
     {
         public readonly int max;
+        public object Value { get; set; }
 
-        public Stat(string name, float value, int max) : base(name, value)
+        public Stat(float value, int max)
         {
             this.max = max;
             Value = value;
