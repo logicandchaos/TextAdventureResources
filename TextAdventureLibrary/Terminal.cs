@@ -58,5 +58,14 @@
         public abstract bool GraphicText(string input, Color col, bool clearScreen = true);
 
         public abstract void ClearScreen();
+
+        public bool DEBUGMODE { get; private set; } = false;
+
+        public void SetDebugMode(bool b)
+        {
+            DEBUGMODE = b;
+        }
+
+        public abstract void DebugMessage(string message);
     }
 }

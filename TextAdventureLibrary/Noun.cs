@@ -8,7 +8,14 @@ namespace TextAdventureLibrary
 
         public void AddAttribute(string name, object attribute)
         {
-            Attributes.Add(name, attribute);
+            if (!Attributes.ContainsKey(name))
+                Attributes.Add(name, attribute);
+        }
+
+        public void SetAttribute(string name, object attribute)
+        {
+            if (Attributes.ContainsKey(name))
+                Attributes[name] = attribute;
         }
 
         public void RemoveAttribute(string name)

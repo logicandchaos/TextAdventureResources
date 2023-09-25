@@ -8,7 +8,7 @@ namespace TextAdventureLibrary
     public class Person : Noun
     {
         public Die die;
-        public Person Father { get; }
+        /*public Person Father { get; }
         public Person Mother { get; }
         public Species species { get; }
         public enum Gender { male, female }
@@ -16,7 +16,7 @@ namespace TextAdventureLibrary
         public Brain brain { get; }
         public DateTime birthdate { get; }
         public DateTime deathdate { get; private set; }
-        public Place birthPlace { get; }
+        public Place birthPlace { get; }*/
         //public int Age { get { return (int)((Program.world.GetDateTime() - birthdate).TotalDays / 365.2425); } }
         /*public List<Stat> stats = new List<Stat>();
         public int alignment = 0;

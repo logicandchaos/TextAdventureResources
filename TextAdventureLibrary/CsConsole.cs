@@ -32,7 +32,7 @@ namespace TextAdventureLibrary
                 case Color.Green:
                     return ConsoleColor.Green;
                 case Color.Yellow:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.Yellow;
                 case Color.Blue:
                     return ConsoleColor.Blue;
                 case Color.Magenta:
@@ -636,6 +636,21 @@ namespace TextAdventureLibrary
         public override void ClearScreen()
         {
             Console.Clear();
+        }
+
+        public override void DebugMessage(string message)
+        {
+            if (!DEBUGMODE)
+                return;
+
+            ConsoleColor foreTemp = Console.ForegroundColor;
+            ConsoleColor backTemp = Console.BackgroundColor;
+
+            SetColor(Color.DarkRed, Color.Yellow);
+            Console.WriteLine("DebugLog: " + message);
+
+            Console.ForegroundColor = foreTemp;
+            Console.BackgroundColor = backTemp;
         }
     }
 }
