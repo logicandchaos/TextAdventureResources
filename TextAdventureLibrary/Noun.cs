@@ -49,7 +49,7 @@ namespace TextAdventureLibrary
                 return defaultValue;
         }
 
-        public float GetAttributeValue(string key, float defaultValue = 0)
+        public float GetAttributeValue(string key, float defaultValue = .0f)
         {
             if (!Attributes.ContainsKey(key))
                 return defaultValue;

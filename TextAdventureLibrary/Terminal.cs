@@ -31,13 +31,13 @@
 
         public abstract void Print(Cell cell);
 
-        public abstract void Print(Matrix matrix);
+        public abstract void Print(Matrix matrix, bool clearScreen = false, bool title = true, bool info = true);
 
-        public abstract void Menu(Menu menu);
+        public abstract void Menu(Menu menu, int health = 100);
 
-        public abstract void Print(Noun textGameObject);
+        public abstract void Print(Noun noun);
 
-        public abstract void PrintDescription(Noun textGameObject);
+        public abstract void PrintDescription(Noun noun);
 
         public abstract void MoveCurser(Point point);
 

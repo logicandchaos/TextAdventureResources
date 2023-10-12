@@ -68,9 +68,9 @@ namespace TextAdventureLibrary
 
         public override void Print(string text, bool newLine = false)
         {
-            Console.Write(text);
             if (newLine)
-                Console.Write("\n");
+                text += "\n";
+            Console.Write(text);
         }
 
         public override void Type(string text, bool newLine = false, int delay = 20)
@@ -89,19 +89,43 @@ namespace TextAdventureLibrary
                 Console.Write("\n");
         }
 
-        public override void Print(Cell tile)
+        public override void Print(Cell cell)
         {
-
+            SetColor(cell.fore, cell.back);
+            Console.Write(cell.symbol);
         }
 
-        public override void Print(Matrix matrix)
+        public override void Print(Matrix matrix, bool clearScreen = false, bool title = true, bool info = true)
         {
+            if (clearScreen)
+                ClearScreen();
 
+            if (title)
+            {
+                SetColor(Color.White, Color.Black);
+                Print(matrix.Name, true);
+            }
+
+            if (info)
+            {
+                SetColor(Color.Gray, Color.Black);
+                Print(matrix.Info, true);
+            }
+
+            for (int y = 0; y < matrix.matrix.GetLength(1); y++)
+            {
+                for (int x = 0; x < matrix.matrix.GetLength(0); x++)
+                {
+                    Print(matrix.matrix[x, y]);
+                }
+                Print("", true);
+            }
         }
 
-        public override void Menu(Menu menu)
+        public override void Menu(Menu menu, int health = 100)
         {
             ClearScreen();
+
             SetColor(Color.White, Color.Black);
 
             /*int maxLength = 0;
@@ -115,16 +139,17 @@ namespace TextAdventureLibrary
                 Console.WriteLine(menu.title);
             }
 
-            SetColor(Color.Gray, Color.Black);
+            //SetColor(Color.Gray, Color.Black);
+            SetColorToHealth(health);
 
             for (int i = 0; i < menu.items.Length; i++)
             {
-                string s = "";
-                if (i == 10)
-                    s = 0 + ": " + menu.items[i].Text;
+                string item = "";
+                if (i == 9)
+                    item = 0 + ": " + menu.items[i].Text;
                 else
-                    s = (i + 1) + ": " + menu.items[i].Text;
-                Console.WriteLine(s);
+                    item = (i + 1) + ": " + menu.items[i].Text;
+                Console.WriteLine(item);
             }
             Console.WriteLine();
 
@@ -162,19 +187,19 @@ namespace TextAdventureLibrary
             }*/
         }
 
-        public override void Print(Noun textGameObject)
+        public override void Print(Noun noun)
         {
-
+            Console.Write(noun.GetAttributeValue("name", "unknown"));
         }
 
-        public override void PrintDescription(Noun textGameObject)
+        public override void PrintDescription(Noun noun)
         {
-
+            Console.Write(noun.GetAttributeValue("description", "indescribable"));
         }
 
         public override void MoveCurser(Point point)
         {
-
+            Console.SetCursorPosition(point.X, point.Y);
         }
 
         public override void Anykey(string message = "<Press any key>")

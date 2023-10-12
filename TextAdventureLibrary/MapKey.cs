@@ -6,6 +6,17 @@ namespace TextAdventureLibrary
 {
     public class MapKey
     {
-        Dictionary<char, Cell> key;
+        public Dictionary<char, Cell> Key { get; private set; }
+
+        public void AddKey(char key, Cell cell)
+        {
+            if (!Key.ContainsKey(key))
+            {
+                if (!Key.ContainsValue(cell))
+                {
+                    Key.Add(key, cell);
+                }
+            }
+        }
     }
 }
