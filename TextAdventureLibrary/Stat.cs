@@ -4,12 +4,23 @@ namespace TextAdventureLibrary
 {
     public class Stat
     {
-        public readonly int max;
-        public object Value { get; set; }
+        public int DieSides { get; }
+        public int Min { get; }
+        public int Max { get; }
+        public object Value { get; private set; }
 
-        public Stat(float value, int max)
+        public Stat(int dieSides, int min, int max)
         {
-            this.max = max;
+            DieSides = dieSides;
+            Min = min;
+            Max = max;
+        }
+
+        public void SetValue(float value)
+        {
+            value = (value < Min) ? Min : value;
+            value = (value < Max) ? Max : value;
+
             Value = value;
         }
 
@@ -17,37 +28,20 @@ namespace TextAdventureLibrary
         {
             float value = (float)Value;
             value += amount;
-            if (value > max)
-                value = max;
+            if (value > Max)
+                value = Max;
             Value = value;
         }
 
         public int StatCheck(int roll)
         {
-            //if (Program.showRolls)
-            //Console.Write(p_character.GetName() + " " + name + " check: ");
-            if (roll == 0)
+            if (roll > (int)Value)
             {
-                Console.Write(roll + "\n");
-                Console.WriteLine("CRITICAL FAIL!!!");
+                roll = 0;
             }
-            else
+            if (roll == (int)Value)
             {
-                if (roll > (int)Value)
-                {
-                    roll = 0;
-                }
-                if (roll == (int)Value)
-                {
-                    roll *= 2;
-                    /*if (Program.showRolls)
-                    {
-                        Console.Write(roll + "\n");
-                        Console.WriteLine("CRITICAL ROLL!!!");
-                    }*/
-                }
-                //else if (Program.showRolls)
-                //  Console.Write(roll + "\n");
+                roll *= 2;
             }
             return roll;
         }

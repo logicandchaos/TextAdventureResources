@@ -6,6 +6,11 @@ namespace TextAdventureLibrary
 {
     public class Template
     {
-        Dictionary<string, object> attributes;
+        public Dictionary<string, object> attributes;
+
+        public Template(string name)
+        {
+            attributes.Add("name", name);
+        }
     }
 }

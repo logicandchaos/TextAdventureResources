@@ -189,15 +189,15 @@ namespace TextAdventureLibrary
 
         public override void Print(Noun noun)
         {
-            Console.Write(noun.GetAttributeValue("name", "unknown"));
+            Console.Write(noun.GetAttributeValue<string>("name"));
         }
 
         public override void PrintDescription(Noun noun)
         {
-            Console.Write(noun.GetAttributeValue("description", "indescribable"));
+            Console.Write(noun.GetAttributeValue<string>("description"));
         }
 
-        public override void MoveCurser(Point point)
+        public override void MoveCurser(Vector2Int point)
         {
             Console.SetCursorPosition(point.X, point.Y);
         }
@@ -218,8 +218,10 @@ namespace TextAdventureLibrary
             Console.Clear();
         }
 
-        public override bool YesNo()
+        public override bool YesNo(string question = "")
         {
+            if (question.CompareTo("") != 0)
+                Print(question + " ");
             ConsoleKey response;
             do
             {

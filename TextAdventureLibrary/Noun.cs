@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TextAdventureLibrary
 {
@@ -16,76 +18,37 @@ namespace TextAdventureLibrary
         {
             if (Attributes.ContainsKey(name))
                 Attributes[name] = attribute;
+            else
+                Attributes.Add(name, attribute);
         }
 
         public void RemoveAttribute(string name)
         {
-            Attributes.Remove(name);
+            if (Attributes.ContainsKey(name))
+                Attributes.Remove(name);
         }
 
-        public int GetAttributeValue(string key, int defaultValue = 0)
+        public T GetAttributeValue<T>(string key)
         {
             if (!Attributes.ContainsKey(key))
-                return defaultValue;
+                return default;
 
             object attribute;
             Attributes.TryGetValue(key, out attribute);
-            if (attribute is int value)
+
+            if (attribute is T value)
+            {
                 return value;
-            else
-                return defaultValue;
+            }
+
+            return default;
         }
 
-        public string GetAttributeValue(string key, string defaultValue = "")
+        public Dictionary<string, T> FilterAttributesByType<T>()
         {
-            if (!Attributes.ContainsKey(key))
-                return defaultValue;
-
-            object attribute;
-            Attributes.TryGetValue(key, out attribute);
-            if (attribute is string value)
-                return value;
-            else
-                return defaultValue;
-        }
-
-        public float GetAttributeValue(string key, float defaultValue = .0f)
-        {
-            if (!Attributes.ContainsKey(key))
-                return defaultValue;
-
-            object attribute;
-            Attributes.TryGetValue(key, out attribute);
-            if (attribute is float value)
-                return value;
-            else
-                return defaultValue;
-        }
-
-        public Stat GetAttributeValue(string key, Stat defaultValue = null)
-        {
-            if (!Attributes.ContainsKey(key))
-                return defaultValue;
-
-            object attribute;
-            Attributes.TryGetValue(key, out attribute);
-            if (attribute is Stat value)
-                return value;
-            else
-                return defaultValue;
-        }
-
-        public Utility GetAttributeValue(string key, Utility defaultValue = null)
-        {
-            if (!Attributes.ContainsKey(key))
-                return defaultValue;
-
-            object attribute;
-            Attributes.TryGetValue(key, out attribute);
-            if (attribute is Utility value)
-                return value;
-            else
-                return defaultValue;
+            return Attributes
+                .Where(pair => pair.Value != null && pair.Value.GetType() == typeof(T))
+                .ToDictionary(pair => pair.Key, pair => (T)pair.Value);
         }
 
         public abstract void GenerateDescription();

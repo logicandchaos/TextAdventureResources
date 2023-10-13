@@ -39,7 +39,7 @@
 
         public abstract void PrintDescription(Noun noun);
 
-        public abstract void MoveCurser(Point point);
+        public abstract void MoveCurser(Vector2Int point);
 
         public abstract void ResetColor();
 
@@ -47,7 +47,7 @@
 
         public abstract void Anykey(string message = "<Press any key>");
 
-        public abstract bool YesNo();
+        public abstract bool YesNo(string question = "");
 
         public abstract char GetChar();
 

@@ -6,7 +6,7 @@ namespace TextAdventureLibrary
 {
     public class Species
     {
-        public enum Diet
+        /*public enum Diet
         {
             HERBIVORE,
             CARNIVORE,
@@ -101,6 +101,6 @@ namespace TextAdventureLibrary
             rarity = p_rarity;
             alignment = p_alignment;
             regenRate = p_regen;
-        }
+        }*/
     }
 }
