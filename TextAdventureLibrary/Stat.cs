@@ -4,14 +4,12 @@ namespace TextAdventureLibrary
 {
     public class Stat
     {
-        public int DieSides { get; }
         public int Min { get; }
         public int Max { get; }
         public object Value { get; private set; }
 
-        public Stat(int dieSides, int min, int max)
+        public Stat(int min, int max)
         {
-            DieSides = dieSides;
             Min = min;
             Max = max;
         }

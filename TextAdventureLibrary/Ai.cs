@@ -6,6 +6,9 @@ namespace TextAdventureLibrary
 {
     public class Ai : Brain
     {
+        //make response system?? dialogs could just be menu choices too..
+        //dialog could be a menu item, so I create a menu for conversations
+
         //Emotion currentEmotionalState;
         //Dictionary<Person, Emotion> feelingsToward;
 

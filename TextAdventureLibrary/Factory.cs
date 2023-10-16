@@ -4,14 +4,14 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class Factory
+    public static class Factory
     {
-        public Person CreatePerson(Template species)
+        public static Person CreatePerson(Dictionary<string, object> template)
         {
             Person person = new Person();
 
             //add in all attributes from Template
-            foreach (KeyValuePair<string, object> attribute in species.attributes)
+            foreach (KeyValuePair<string, object> attribute in template)
             {
                 person.Attributes.Add(attribute.Key, attribute.Value);
             }
@@ -19,23 +19,23 @@ namespace TextAdventureLibrary
             return person;
         }
 
-        public Person CreatePerson(Person father, Person mother)
+        public static Person CreatePerson(Person father, Person mother)
         {
             //check same species
-            if (father.GetAttributeValue<Template>("species")
-                != mother.GetAttributeValue<Template>("species"))
+            if (father.GetAttributeValue<string>("species").CompareTo(
+                mother.GetAttributeValue<string>("species")) != 0)
             {
                 return null;
             }
 
             Person person = new Person();
-            Template species = father.GetAttributeValue<Template>("species");
+            /*Template species = father.GetAttributeValue<Template>("species");
 
             //add in all attributes from Template
             foreach (KeyValuePair<string, object> attribute in species.attributes)
             {
                 person.Attributes.Add(attribute.Key, attribute.Value);
-            }
+            }*/
 
             person.AddAttribute("father", father);
             person.AddAttribute("mother", mother);
@@ -48,12 +48,12 @@ namespace TextAdventureLibrary
             return person;
         }
 
-        public Place CreatePlace(Template template)
+        public static Place CreatePlace(Dictionary<string, object> template)
         {
             Place place = new Place();
 
             //add in all attributes from Template
-            foreach (KeyValuePair<string, object> attribute in template.attributes)
+            foreach (KeyValuePair<string, object> attribute in template)
             {
                 place.Attributes.Add(attribute.Key, attribute.Value);
             }
@@ -61,12 +61,12 @@ namespace TextAdventureLibrary
             return place;
         }
 
-        public Thing CreateThing(Template template)
+        public static Thing CreateThing(Dictionary<string, object> template)
         {
             Thing thing = new Thing();
 
             //add in all attributes from Template
-            foreach (KeyValuePair<string, object> attribute in template.attributes)
+            foreach (KeyValuePair<string, object> attribute in template)
             {
                 thing.Attributes.Add(attribute.Key, attribute.Value);
             }
