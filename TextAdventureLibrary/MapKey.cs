@@ -6,7 +6,7 @@ namespace TextAdventureLibrary
 {
     public class MapKey
     {
-        public Dictionary<char, Cell> Key { get; private set; }
+        public Dictionary<char, Cell> Key { get; private set; } = new Dictionary<char, Cell>();
 
         public void AddKey(char key, Cell cell)
         {

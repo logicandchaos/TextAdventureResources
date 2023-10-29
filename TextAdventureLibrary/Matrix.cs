@@ -23,24 +23,28 @@ namespace TextAdventureLibrary
 
         public void CreateMatrixFromString(MapKey key, params string[] rows)
         {
-            int length = rows[0].Length;
-            foreach (string s in rows)
             {
-                if (s.Length != length)
-                {
-                    throw new ArgumentException("All strings must be equal length.");
-                }
-            }
+                int numRows = rows.Length;
+                int numCols = rows[0].Length;
 
-            matrix = new Cell[length, rows.Length];
-
-            for (int y = 0; y < rows.Length; y++)
-            {
-                for (int x = 0; x < length; x++)
+                for (int i = 1; i < numRows; i++)
                 {
-                    if (key.Key.TryGetValue(rows[x][y], out var cell))
+                    if (rows[i].Length != numCols)
                     {
-                        matrix[x, y] = cell;
+                        throw new ArgumentException("All strings must be equal length.");
+                    }
+                }
+
+                matrix = new Cell[numCols, numRows];
+
+                for (int y = 0; y < numRows; y++)
+                {
+                    for (int x = 0; x < numCols; x++)
+                    {
+                        if (key.Key.TryGetValue(rows[y][x], out var cell))
+                        {
+                            matrix[x, y] = cell;
+                        }
                     }
                 }
             }

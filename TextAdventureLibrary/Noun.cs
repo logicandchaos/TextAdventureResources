@@ -6,15 +6,9 @@ namespace TextAdventureLibrary
 {
     public abstract class Noun
     {
-        public Dictionary<string, object> Attributes { get; private set; }
+        public Dictionary<string, object> Attributes { get; private set; } = new Dictionary<string, object>();
 
-        public void AddAttribute(string name, object attribute)
-        {
-            if (!Attributes.ContainsKey(name))
-                Attributes.Add(name, attribute);
-        }
-
-        public void SetAttribute(string name, object attribute)
+        public void AddOrSetAttribute(string name, object attribute)
         {
             if (Attributes.ContainsKey(name))
                 Attributes[name] = attribute;
