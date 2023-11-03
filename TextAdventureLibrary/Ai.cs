@@ -6,11 +6,25 @@ namespace TextAdventureLibrary
 {
     public class Ai : Brain
     {
-        //make response system?? dialogs could just be menu choices too..
-        //dialog could be a menu item, so I create a menu for conversations
+        public float Outlook { get; }
+        //utility weights
+        public Dictionary<Utility, float> Priorities { get; }
 
-        //Emotion currentEmotionalState;
-        //Dictionary<Person, Emotion> feelingsToward;
+        EmotionalState emotionalState;
+        EmotionalState mood;
+        //Dictionary<Person, List<EmotionalState>> relationships;
+        //Dictionary<Person, List<Utility>> relationships;//expectations
+
+        public Ai(float outlook)//, Person person)
+        {
+            if (outlook > 1)
+                outlook = 1;
+            if (outlook < -1)
+                outlook = -1;
+            Outlook = outlook;
+
+            //var utilities = person.FilterAttributesByType<Utility>();
+        }
 
         /*public override bool GetBool()
         {
@@ -32,9 +46,33 @@ namespace TextAdventureLibrary
             throw new NotImplementedException();
         }*/
 
+        public void SetMood(float surprise, float joy, float fear, float anger, float disgust, float sadness)
+        {
+            mood[EmotionType.Surprise] = surprise;
+            mood[EmotionType.Joy] = joy;
+            mood[EmotionType.Fear] = fear;
+            mood[EmotionType.Anger] = anger;
+            mood[EmotionType.Disgust] = disgust;
+            mood[EmotionType.Sadness] = sadness;
+        }
+
         public override void MakeChoice(Menu menu)
         {
+            //use Priorities, outlook, relationships, and currentEmotionalState to make choice
             throw new NotImplementedException();
+        }
+
+        public void PredictedOutcomes(Menu menu)
+        {
+            foreach (MenuItem mi in menu.items)
+            {
+                //use Priorities and outlook to predict outcome/change to utiliy
+            }
+        }
+
+        public void UpdateEmotionalState(Utility utility, float expectedChange, float actualChange)
+        {
+            float priority = Priorities[utility];
         }
     }
 }

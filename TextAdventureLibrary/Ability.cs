@@ -4,15 +4,22 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class Ability
+    public abstract class Ability
     {
-        Predicate<Person> condition;
-        Action<Person, Person> action;
+        private string governingStat;
 
-        public Ability(Predicate<Person> condition, Action<Person, Person> action)
+        public Ability(string stat)
         {
-            this.condition = condition;
-            this.action = action;
+            governingStat = stat;
         }
+
+        public abstract void UseAbility(Person user, Person target);
+        /*{
+            int roll = user.die.Roll();
+            if (user.GetAttributeValue<Stat>(governingStat).StatCheck(roll) > 0)
+            {
+                effect(user, target);
+            }
+        }*/
     }
 }

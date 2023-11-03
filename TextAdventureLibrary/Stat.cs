@@ -34,13 +34,7 @@ namespace TextAdventureLibrary
         public int StatCheck(int roll)
         {
             if (roll > (int)Value)
-            {
-                roll = 0;
-            }
-            if (roll == (int)Value)
-            {
-                roll *= 2;
-            }
+                return 0;
             return roll;
         }
     }

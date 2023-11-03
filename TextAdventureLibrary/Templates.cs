@@ -42,6 +42,10 @@ namespace TextAdventureLibrary
         public static Dictionary<string, object> mummy = new Dictionary<string, object>();
         public static Dictionary<string, object> jackal = new Dictionary<string, object>();
 
+        //Personality Templates
+        public static Dictionary<Utility, float> cautious = new Dictionary<Utility, float>();
+        public static Dictionary<Utility, float> reckless = new Dictionary<Utility, float>();
+
         static Templates()
         {
             //add equip methods?
@@ -68,16 +72,10 @@ namespace TextAdventureLibrary
             Utility health = new Utility(10, 10);
             human.Add("health", health);
 
-            Thing sword = new Thing();
+            Thing sword = new ThingBuilder().Build();
 
             Predicate<Person> hasSwordEquiped = person => person.GetAttributeValue<Thing>("equipedItem") == sword;
-            Ability swingSword = new Ability(hasSwordEquiped, (p1, p2) =>
-            {
-                p2.GetAttributeValue<Utility>("health").SetValue((float)p2.GetAttributeValue<Utility>("health").Value
-                    - (float)p1.GetAttributeValue<Stat>("strength").Value+ p1.GetAttributeValue<Thing>("equipedItem").);
-                //should be held item??
-                
-            });
+
             human.Add("punch", health);
         }
     }
