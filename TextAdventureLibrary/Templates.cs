@@ -6,25 +6,78 @@ namespace TextAdventureLibrary
 {
     public static class Templates
     {
-        public static BodyPart Head { get; } = new BodyPart(2, 1);
-        public static BodyPart Body { get; } = new BodyPart(1, 50);
-        public static BodyPart LeftHand { get; } = new BodyPart(1, 5);
-        public static BodyPart RightHand { get; } = new BodyPart(1, 5);
-        public static BodyPart LeftArm { get; } = new BodyPart(1, 10);
-        public static BodyPart RightArm { get; } = new BodyPart(1, 10);
-        public static BodyPart LeftLeg { get; } = new BodyPart(1, 10);
-        public static BodyPart RightLeg { get; } = new BodyPart(1, 10);
-        public static BodyPart FrontLeftLeg { get; } = new BodyPart(1, 10);
-        public static BodyPart FrontRightLeg { get; } = new BodyPart(1, 10);
-        public static BodyPart BackLeftLeg { get; } = new BodyPart(1, 10);
-        public static BodyPart BackRightLeg { get; } = new BodyPart(1, 10);
-        public static BodyPart Tail { get; } = new BodyPart(1, 10);
-        //could add teeth and claws for different species
-        /*public static BodyPart Wings { get; } = new BodyPart(1, 10);
-        public static BodyPart Claws { get; } = new BodyPart(1, 10);
-        public static BodyPart Fangs { get; } = new BodyPart(1, 10);
-        public static BodyPart Stinger { get; } = new BodyPart(1, 10);*/
+        //Name Generators
+        static NameGenerator humanMaleNameGenerator = new NameGenerator
+            (
+            "Aelfric",
+            "Eadmund",
+            "Leofwine",
+            "Wulfstan",
+            "Godwin",
+            "Aldred",
+            "Cuthbert",
+            "Hrothgar",
+            "Ecgbert",
+            "Aethelred",
+            "Alfred",
+            "Cenric",
+            "Osgood",
+            "Sigurd",
+            "Guthrum",
+            "Hengest",
+            "Ceolwulf",
+            "Osric",
+            "Wilfrid",
+            "Ethelbert"
+            );
+        static NameGenerator humanFemaleNameGenerator = new NameGenerator
+            (
+            "Aeliana",
+            "Aelis",
+            "Aldora",
+            "Aldwynn",
+            "Aveline",
+            "Berhtrude",
+            "Brunhilda",
+            "Edith",
+            "Elizabeth",
+            "Ethelwyn",
+            "Gisela",
+            "Grimilda",
+            "Guinevere",
+            "Hildeburg",
+            "Hildred",
+            "Hrothwyn",
+            "Mildrith",
+            "Thyra",
+            "Wynfrith",
+            "Zelda"
+            );
+        static NameGenerator humanLastNameGenerator = new NameGenerator
+            (
+            "Glover",
+            "Osricson",
+            "Wynstan",
+            "Wilfridson",
+            "Eadmundson",
+            "Cuthbert",
+            "Fletcher",
+            "Miller",
+            "Taylor",
+            "Carpenter",
+            "Cooper",
+            "Baker",
+            "Fisher",
+            "Archer",
+            "Mason",
+            "Shepherd",
+            "Sexton",
+            "Tanner",
+            "Bowman",
+            "Cartwright"
+            );
 
+        //Species
         public static Dictionary<string, object> human = new Dictionary<string, object>();
         public static Dictionary<string, object> slime = new Dictionary<string, object>();
         public static Dictionary<string, object> wolf = new Dictionary<string, object>();
@@ -42,23 +95,11 @@ namespace TextAdventureLibrary
         public static Dictionary<string, object> mummy = new Dictionary<string, object>();
         public static Dictionary<string, object> jackal = new Dictionary<string, object>();
 
-        //Personality Templates
-        public static Dictionary<Utility, float> cautious = new Dictionary<Utility, float>();
-        public static Dictionary<Utility, float> reckless = new Dictionary<Utility, float>();
-
         static Templates()
         {
-            //add equip methods?
-
-            //add body parts
-            human.Add("head", Head);
-            human.Add("torso", Body);
-            human.Add("leftHand", LeftHand);
-            human.Add("rightHand", RightHand);
-            human.Add("leftArm", LeftArm);
-            human.Add("rightArm", RightArm);
-            human.Add("leftLeg", LeftLeg);
-            human.Add("rightLeg", RightLeg);
+            //HUMAN
+            human.Add("species", "human");
+            human.Add("bodyType", "humanoid");
             //stats
             human.Add("strength", new Stat(3, 9));
             human.Add("vitality", new Stat(3, 9));
@@ -66,17 +107,19 @@ namespace TextAdventureLibrary
             human.Add("speed", new Stat(3, 9));
             human.Add("intelligence", new Stat(3, 9));
             human.Add("charisma", new Stat(3, 9));
-            //human.Add("body", humanoid);//if I want to add as a dictionary
-
             //utilities
             Utility health = new Utility(10, 10);
             human.Add("health", health);
 
+            //SWORD
             Thing sword = new ThingBuilder().Build();
 
-            Predicate<Person> hasSwordEquiped = person => person.GetAttributeValue<Thing>("equipedItem") == sword;
+            //Predicate<Person> hasSwordEquiped = person => person.GetAttributeValue<Thing>("equipedItem") == sword;
 
-            human.Add("punch", health);
+            //PersonBuilder personBuilder = new PersonBuilder();
+            //Person character = personBuilder
+            //    .WithAttributes(human)
+            //    .Build();
         }
     }
 }

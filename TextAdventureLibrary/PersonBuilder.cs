@@ -5,14 +5,11 @@ namespace TextAdventureLibrary
 {
     public class PersonBuilder
     {
-        private Person person;// = new Person();
+        Person person;
 
         public PersonBuilder()
         {
             person = new Person();
-            //default attributes
-            //person.AddOrSetAttribute("defaultAttribute1", defaultValue1);
-            //person.AddOrSetAttribute("defaultAttribute2", defaultValue2);
         }
 
         public PersonBuilder WithAttribute(string key, object value)
@@ -30,8 +27,17 @@ namespace TextAdventureLibrary
             return this;
         }
 
-        public PersonBuilder WithParents(Person father, Person mother, Random randomGenerator)
+        public Person Build()
         {
+            //dice
+            //roll stats
+            return person;
+        }
+
+        public Person Procreate(Person father, Person mother, Random randomGenerator)
+        {
+            person = new Person();
+
             //make sure same species
             if (father.Attributes["species"] != mother.Attributes["species"])
             {
@@ -71,11 +77,8 @@ namespace TextAdventureLibrary
             if (father.Attributes.ContainsKey("lastName"))
                 person.AddOrSetAttribute("lastName", father.GetAttributeValue<string>("lastName"));*/
 
-            return this;
-        }
+            //0-3 father, 4-7 mother, 8-9 mutation
 
-        public Person Build()
-        {
             return person;
         }
     }

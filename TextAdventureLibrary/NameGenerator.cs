@@ -9,12 +9,12 @@ namespace TextAdventureLibrary
         private readonly Dictionary<string, List<string>> _chain = new Dictionary<string, List<string>>();
         private readonly List<string> _vowels = new List<string> { "a", "e", "i", "o", "u", "y" };
 
-        public NameGenerator(List<string> names)
+        public NameGenerator(params string[] names)
         {
             BuildChain(names);
         }
 
-        private void BuildChain(List<string> names)
+        private void BuildChain(string[] names)
         {
             foreach (var name in names)
             {
