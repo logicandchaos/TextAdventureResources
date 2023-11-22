@@ -95,6 +95,8 @@ namespace TextAdventureLibrary
         public static Dictionary<string, object> mummy = new Dictionary<string, object>();
         public static Dictionary<string, object> jackal = new Dictionary<string, object>();
 
+        public static PersonBuilder personBuilder = new PersonBuilder();
+
         static Templates()
         {
             //HUMAN
