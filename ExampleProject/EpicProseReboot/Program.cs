@@ -73,7 +73,7 @@ namespace EpicProseRedux
         static NameGenerator animalNameGenerator;
         static NameGenerator monsterNameGenerator;
 
-        //Species
+        //Species templates
         public static Dictionary<string, object> human = new Dictionary<string, object>();
         public static Dictionary<string, object> slime = new Dictionary<string, object>();
         public static Dictionary<string, object> wolf = new Dictionary<string, object>();
@@ -91,10 +91,32 @@ namespace EpicProseRedux
         public static Dictionary<string, object> mummy = new Dictionary<string, object>();
         public static Dictionary<string, object> jackal = new Dictionary<string, object>();
 
-        public static PersonBuilder personBuilder = new PersonBuilder();
-        public static PlaceBuilder placeBuilder = new PlaceBuilder();
-        public static ThingBuilder thingBuilder = new ThingBuilder();
+        //item templates
+        public static Dictionary<string, object> sword = new Dictionary<string, object>();
 
+        public static Builder<Person> personBuilder = new Builder<Person>(
+            "name",
+            "age",
+            "species",
+            "gender",
+            "bodyType",
+            "humanoid",
+            "strength",
+            "vitality",
+            "dexterity",
+            "speed",
+            "intelligence",
+            "charisma",
+            "health"
+            );
+        public static Builder<Place> placeBuilder = new Builder<Place>(
+            "name",
+            "Location"
+            );
+        public static Builder<Thing> thingBuilder = new Builder<Thing>(
+            "name",
+            "Weight"
+            );
         static Person player;
 
         static Cell desertCell = new Cell('░', Color.DarkYellow, Color.DarkRed);
@@ -174,11 +196,11 @@ namespace EpicProseRedux
                             );
                         console.Menu(selectGender);
 
-                        player = Templates.personBuilder
-                            .WithAttributes(Templates.human)
+                        player = personBuilder
+                            .WithAttributes(human)
                             .WithAttribute("name", name)
                             .WithAttribute("gender", gender)
-                            .Build();
+                            .TryBuild();
 
                         //die
                         player.die = new Die(name.GetHashCode(), 10);
@@ -459,9 +481,6 @@ namespace EpicProseRedux
             //utilities
             Utility health = new Utility(10, 10);
             human.Add("health", health);
-
-            //SWORD
-            Thing sword = new ThingBuilder().Build();
         }
 
         public static void SetupNPCs()
@@ -482,6 +501,9 @@ namespace EpicProseRedux
 
         public static void SetupItemTemplates()
         {
+            //SWORD
+            Thing sword = thingBuilder
+                .TryBuild();
         }
 
         public static void SetupPlaceTemplates()
@@ -742,19 +764,6 @@ namespace EpicProseRedux
             Console.WriteLine("one attribute. To succeed in using an action you must roll your attribute score or");
             Console.WriteLine("lower with a d10. Rolling your exact attibute is a critical hit. When you successfully");
             Console.WriteLine("use a skill you get a fractional increase to the governing stat.");
-            Console.WriteLine("\nI would like to thank my friends:");
-            Console.WriteLine("\nTravis Sitter - He helped me with my 1st text adventure when we were kids, armed only with my programming");
-            Console.WriteLine("ability, his D&D monstrous manual and his explosive charisma we made two text games. He later became the");
-            Console.WriteLine("retro game reviewer Mr. Bughorn and sadly is not with us anymore.");
-            Console.WriteLine("\nBechard Brothers - They got me into AD&D and reading more fantasy books, led me to create better dice");
-            Console.WriteLine("rolling rules.");
-            Console.WriteLine("\nPatrick McCloud - He helped me with the 1st Epic Prose, his tireless testing and sagely advice was invaluable");
-            Console.WriteLine("to the developement of the original Epic Prose and really showed me how invaluable that is to developement!");
-            Console.WriteLine("\nAprt123 - For making the excellent YouTube video and providing me with valuable input.");
-            Console.WriteLine("\nKonstatine - Gave a new direction for the input system.");
-            Console.WriteLine("\nEveryone on Reddit that has given helpful suggestions and ideas.");
-            Console.WriteLine("\nAll my fans on the Facebook page and twitter encouraging me onward!");
-            Console.WriteLine("\nGame Jolt - such an amazing place for the indie game developer!");
             console.Anykey();
         }
 

@@ -7,7 +7,9 @@ namespace TextAdventureLibrary
     public abstract class Ability
     {
         private string governingStat;
-        List<Predicate<object>> requirements;
+        //List<Predicate<object>> requirements;
+        List<Condition> conditions;
+        List<Effect> effects;
 
         public Ability(string stat)
         {
@@ -19,13 +21,19 @@ namespace TextAdventureLibrary
             return true;
         }
 
-        public abstract void UseAbility(Person user, Person target);
-        /*{
+        public void UseAbility(Person user, Person target)
+        {
+            if (!CanUse())//?
+                return;
+
             int roll = user.die.Roll();
             if (user.GetAttributeValue<Stat>(governingStat).StatCheck(roll) > 0)
             {
-                effect(user, target);
+                foreach (Effect e in effects)
+                {
+                    //e(user, target);
+                }
             }
-        }*/
+        }
     }
 }

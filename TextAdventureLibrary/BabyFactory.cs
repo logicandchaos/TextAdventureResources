@@ -1,42 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class PersonBuilder
+    public static class BabyFactory
     {
-        Person person;
-
-        public PersonBuilder()
+        public static Person Procreate(Person father, Person mother, Random randomGenerator)
         {
-            person = new Person();
-        }
-
-        public PersonBuilder WithAttribute(string key, object value)
-        {
-            person.AddOrSetAttribute(key, value);
-            return this;
-        }
-
-        public PersonBuilder WithAttributes(Dictionary<string, object> attributes)
-        {
-            foreach (var kvp in attributes)
-            {
-                person.AddOrSetAttribute(kvp.Key, kvp.Value);
-            }
-            return this;
-        }
-
-        public Person Build()
-        {
-            //dice
-            //roll stats
-            return person;
-        }
-
-        public Person Procreate(Person father, Person mother, Random randomGenerator)
-        {
-            person = new Person();
+            Person person = new Person();
 
             //make sure same species
             if (father.Attributes["species"] != mother.Attributes["species"])
@@ -45,10 +17,17 @@ namespace TextAdventureLibrary
                 return null;
             }
 
+            if (father.GetAttributeValue<string>("gender") != "male"
+                && mother.GetAttributeValue<string>("gender") != "female")
+            {
+                person = null;
+                return null;
+            }
+
             // Inherit attributes from father and mother
             foreach (var kvp in father.Attributes)
             {
-                if (kvp.Value is Thing)
+                if (kvp.Value is Thing)//skip things
                     continue;
 
                 person.AddOrSetAttribute(kvp.Key, kvp.Value);
@@ -56,7 +35,7 @@ namespace TextAdventureLibrary
 
             foreach (var kvp in mother.Attributes)
             {
-                if (kvp.Value is Thing)
+                if (kvp.Value is Thing)//skip things
                     continue;
 
                 if (person.Attributes.ContainsKey(kvp.Key))

@@ -5,9 +5,11 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
+
     public class Person : Noun
     {
-        public Die die;
+        //Dictionary<string, Stat> stats;//???
+        public Die die;//attribute?
         /*public Person Father { get; }
         public Person Mother { get; }
         public Species species { get; }

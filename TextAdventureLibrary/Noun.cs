@@ -8,12 +8,9 @@ namespace TextAdventureLibrary
     {
         public Dictionary<string, object> Attributes { get; private set; } = new Dictionary<string, object>();
 
-        public void AddOrSetAttribute(string name, object attribute)
+        public void AddOrSetAttribute(string name, object value)
         {
-            if (Attributes.ContainsKey(name))
-                Attributes[name] = attribute;
-            else
-                Attributes.Add(name, attribute);
+            Attributes[name] = value;
         }
 
         public void RemoveAttribute(string name)
@@ -24,16 +21,8 @@ namespace TextAdventureLibrary
 
         public T GetAttributeValue<T>(string key)
         {
-            if (!Attributes.ContainsKey(key))
-                return default;
-
-            object attribute;
-            Attributes.TryGetValue(key, out attribute);
-
-            if (attribute is T value)
-            {
+            if (Attributes.TryGetValue(key, out var attribute) && attribute is T value)
                 return value;
-            }
 
             return default;
         }
@@ -41,7 +30,7 @@ namespace TextAdventureLibrary
         public Dictionary<string, T> FilterAttributesByType<T>()
         {
             return Attributes
-                .Where(pair => pair.Value != null && pair.Value.GetType() == typeof(T))
+                .Where(pair => pair.Value is T)
                 .ToDictionary(pair => pair.Key, pair => (T)pair.Value);
         }
 

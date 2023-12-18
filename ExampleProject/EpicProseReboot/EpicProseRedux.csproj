@@ -42,8 +42,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TextAdventureLibrary">
-      <HintPath>..\..\TextAdventureResources\TextAdventureLibrary\bin\Debug\netstandard2.0\TextAdventureLibrary.dll</HintPath>
+    <Reference Include="TextAdventureLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\TextAdventureLibrary\bin\Debug\netstandard2.0\TextAdventureLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
