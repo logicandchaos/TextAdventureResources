@@ -111,11 +111,11 @@ namespace EpicProseRedux
             );
         public static Builder<Place> placeBuilder = new Builder<Place>(
             "name",
-            "Location"
+            "location"
             );
         public static Builder<Thing> thingBuilder = new Builder<Thing>(
             "name",
-            "Weight"
+            "weight"
             );
         static Person player;
 
@@ -202,14 +202,22 @@ namespace EpicProseRedux
                             .WithAttribute("gender", gender)
                             .TryBuild();
 
-                        //die
-                        player.die = new Die(name.GetHashCode(), 10);
+                        if (player == null)
+                        {
+                            console.Print("Error character could not be created!", true);
+                            break;
+                        }
 
                         console.Print("Roll Stats", true);
                         //roll stats
+                        Dictionary<string, Stat> stats = player.FilterAttributesByType<Stat>();
                         do
                         {
-                            player.RollStats();
+                            foreach (var stat in stats)
+                            {
+                                stat.Value.RollStat(player.Die);
+                                console.Print($"{stat.Key}: {stat.Value}", true);
+                            }
                         }
                         while (console.YesNo("Reroll?"));
 
@@ -223,6 +231,38 @@ namespace EpicProseRedux
                         console.Menu(worldMenu);
                         break;
                     case GameStates.ENCOUNTER:
+                        List<Person> people = new List<Person>();
+                        //initiative
+                        int[] initiatives = new int[people.Count];
+                        //roll for each Person
+                        for (int i = 0; i < people.Count; i++)
+                        {
+                            initiatives[i] = people[i].GetAttributeValue<Stat>("speed").StatCheck(people[i].Die);
+                        }
+
+                        // Use LINQ to order people array by the corresponding number in initiatives
+                        Person[] orderedPeople = people
+                            .Zip(initiatives, (person, initiative) => new { Person = person, Initiative = initiative })
+                            .OrderBy(item => item.Initiative)
+                            .Select(item => item.Person)
+                            .ToArray();
+
+                        int turn = 0;
+
+                        //List<Menu> encounterMenus = new List<Menu>();
+                        Menu encounterMenu;
+
+                        //turn based loop
+                        while (true)
+                        {
+                            //build encounter menu
+                            encounterMenu = new Menu("What will you do?");
+                            console.Print(encounterMenu.title);
+                            //orderedPeople[turn].Brain.MakeChoice(encounterMenu);
+
+                            turn = turn < orderedPeople.Length ? turn++ : 0;
+                            break;
+                        }
                         gameState = GameStates.WORLD;
                         break;
                     default:
@@ -242,6 +282,23 @@ namespace EpicProseRedux
             SetupItemTemplates();
             SetupPlaceTemplates();
             SetupMap();
+        }
+
+        public void RollStats(Person person)
+        {
+            Type type = typeof(Stat);
+
+            // Use LINQ to filter objects of the specified type
+            List<Stat> stats = person.Attributes
+                .Where(kv => kv.Value != null && kv.Value.GetType() == type)
+                .Select(kv => (Stat)kv.Value)
+                .ToList();
+
+            //roll stats use ranges based on species
+            foreach (Stat stat in stats)
+            {
+
+            }
         }
 
         public static void SetupMenues()
@@ -812,3 +869,141 @@ namespace EpicProseRedux
         }
     }
 }
+/*
+public class Species
+    {
+        /*public enum Diet
+        {
+            HERBIVORE,
+            CARNIVORE,
+            OMNIVORE
+        }
+
+        public enum SleepCycle
+        {
+            DIURNAL, //active during the day and sleeping at night
+            NOCTURNAL, //active at night and sleeping during the day
+            CREPUSCULAR, //active during twilight (dawn and dusk)
+            MATUTINAL, //early-rising and active in the morning
+            VESPERTINE, //active in the evening or just after sunset
+        }
+
+        public static List<SleepCycle> GetActiveSleepCycles(DateTime time)
+        {
+            List<SleepCycle> activeCycles = new List<SleepCycle>();
+
+            // Check if time falls within each sleep cycle's range
+            if (time.TimeOfDay >= new TimeSpan(6, 0, 0) && time.TimeOfDay < new TimeSpan(18, 0, 0))
+            {
+                activeCycles.Add(SleepCycle.DIURNAL);
+            }
+            if (time.TimeOfDay >= new TimeSpan(18, 0, 0) || time.TimeOfDay < new TimeSpan(6, 0, 0))
+            {
+                activeCycles.Add(SleepCycle.NOCTURNAL);
+            }
+            if (time.TimeOfDay >= new TimeSpan(5, 0, 0) && time.TimeOfDay < new TimeSpan(8, 0, 0) ||
+                time.TimeOfDay >= new TimeSpan(17, 0, 0) && time.TimeOfDay < new TimeSpan(20, 0, 0))
+            {
+                activeCycles.Add(SleepCycle.CREPUSCULAR);
+            }
+            if (time.TimeOfDay >= new TimeSpan(4, 0, 0) && time.TimeOfDay < new TimeSpan(7, 0, 0))
+            {
+                activeCycles.Add(SleepCycle.MATUTINAL);
+            }
+            if (time.TimeOfDay >= new TimeSpan(19, 0, 0) && time.TimeOfDay < new TimeSpan(22, 0, 0))
+            {
+                activeCycles.Add(SleepCycle.VESPERTINE);
+            }
+
+            return activeCycles;
+        }
+
+        public readonly string name;
+        //lifespan
+        public readonly int lifeExpectancy;
+        public readonly Diet diet;
+        public readonly SleepCycle sleepCycle;
+        public readonly Tuple<int, int> grouping;
+        public readonly List<Cell> habitat;
+        public readonly int rarity;
+        //stats
+        //have a min and max for character generation
+        //str, vit, dex, spe, tel, cha;
+        public readonly Tuple<int, int> strengthRange;
+        public readonly Tuple<int, int> vitalityRange;
+        public readonly Tuple<int, int> dexterityRange;
+        public readonly Tuple<int, int> speedRange;
+        public readonly Tuple<int, int> intelligenceRange;
+        public readonly Tuple<int, int> charismaRange;
+
+        public readonly float regenRate;//regen per hour /60 in battle add only whole numbers, constitution may add to regen rate
+
+        public readonly int alignment;
+
+        public Body body;
+
+        public Species(string p_name, int p_lifeExpectancy, Diet p_diet, SleepCycle p_sleepCycle,
+            Tuple<int, int> p_grouping, List<Cell> p_habitat, int p_rarity, int p_alignment, Body p_body,
+            float p_regen, params int[] p_stats)
+        {
+            if (p_stats == null || p_stats.Length != 12)
+            {
+                throw new ArgumentException("Array parameter must have a length of 12");
+            }
+            name = p_name;
+            lifeExpectancy = p_lifeExpectancy;
+            grouping = p_grouping;
+            diet = p_diet;
+            sleepCycle = p_sleepCycle;
+            body = p_body;
+            //set stat ranges
+            strengthRange = new Tuple<int, int>(p_stats[0], p_stats[1]);
+            vitalityRange = new Tuple<int, int>(p_stats[2], p_stats[3]);
+            dexterityRange = new Tuple<int, int>(p_stats[4], p_stats[5]);
+            speedRange = new Tuple<int, int>(p_stats[6], p_stats[7]);
+            intelligenceRange = new Tuple<int, int>(p_stats[8], p_stats[9]);
+            charismaRange = new Tuple<int, int>(p_stats[10], p_stats[11]);
+            habitat = p_habitat;
+            rarity = p_rarity;
+            alignment = p_alignment;
+            regenRate = p_regen;
+        }
+    }
+    public class Ai : Brain
+    {
+        //utility weights
+        public Dictionary<Utility, float> Priorities { get; }
+        //relationships
+        public Dictionary<Person, float> relationships;//friend/foe        
+
+        public Ai()
+        {
+            //var utilities = person.FilterAttributesByType<Utility>();
+        }
+        public override void MakeChoice(Menu menu)
+        {
+            //use Priorities, relationships to make choice
+            throw new NotImplementedException();
+        }
+    }
+    People
+        //Dictionary<string, Stat> stats;//???
+        public Die Die { get; private set; }
+        //public Brain Brain { get; private set; }
+        //?
+        //public float Alignment { get; set; }//good/neutral/evil
+        public Person Father { get; }
+        public Person Mother { get; }
+        public Species species { get; }
+        public enum Gender { male, female }
+        public Gender gender { get; }
+        public DateTime birthdate { get; }
+        public DateTime deathdate { get; private set; }
+        public Place birthPlace { get; }
+        //public int Age { get { return (int)((Program.world.GetDateTime() - birthdate).TotalDays / 365.2425); } }
+        public List<Stat> stats = new List<Stat>();
+        public int alignment = 0;
+        public int health;
+        public int MaxHealth => (int)stats[(int)Stats.Vitality].value * 10;
+        public Dictionary<string, StatusEffect> statusEffects = new Dictionary<string, StatusEffect>();
+*/

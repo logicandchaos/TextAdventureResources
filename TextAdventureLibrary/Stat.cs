@@ -14,6 +14,11 @@ namespace TextAdventureLibrary
             Max = max;
         }
 
+        public void RollStat(Die die)
+        {
+            Value = die.Roll(Min, Max);
+        }
+
         public void SetValue(float value)
         {
             value = (value < Min) ? Min : value;
@@ -31,10 +36,13 @@ namespace TextAdventureLibrary
             Value = value;
         }
 
-        public int StatCheck(int roll)
+        public int StatCheck(Die die)
         {
+            int roll = die.Roll(Min, Max + 1);
             if (roll > (int)Value)
                 return 0;
+            /*if (roll == (int)Value)//critical hit
+                return roll * 2;*/
             return roll;
         }
     }

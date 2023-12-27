@@ -10,7 +10,6 @@ namespace TextAdventureLibrary
         public Matrix Map { get; set; }
         public Die die;
         public DateTime dateTime;
-        //public Dictionary<string, Noun> stuff;
         public Dictionary<string, Person> everyone;
         public Dictionary<string, Place> everywhere;
         public Dictionary<string, Thing> everything;
@@ -19,7 +18,7 @@ namespace TextAdventureLibrary
         public World(string name, Matrix map)
         {
             //create die
-            die = new Die(name.GetHashCode(), 10);
+            die = new Die(name.GetHashCode());
             //generate dateTime
             //dateTime=
         }
