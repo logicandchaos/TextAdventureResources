@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TextAdventureLibrary
+﻿namespace TextAdventureLibrary
 {
-
     public class Person : Noun
     {
-        public Die Die { get; private set; }
-        public Person() { }
+        public Die Die { get; private set; }//Make attribute, make required attribute
 
-        public override void GenerateDescription()
-        {
-            //based on species, stats and other attributes
-        }
+        public Person() { }
     }
 }

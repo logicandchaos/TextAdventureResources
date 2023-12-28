@@ -9,18 +9,23 @@ namespace TextAdventureLibrary
         public string Name { get; private set; }
         public Matrix Map { get; set; }
         public Die die;
-        public DateTime dateTime;
+        public DateTime DateTimeCurrent { get; private set; }
         public Dictionary<string, Person> everyone;
         public Dictionary<string, Place> everywhere;
         public Dictionary<string, Thing> everything;
-        public List<string> history;
+        public Dictionary<DateTime, string> history;
 
         public World(string name, Matrix map)
         {
             //create die
             die = new Die(name.GetHashCode());
             //generate dateTime
-            //dateTime=
+            //DateTime=
+        }
+
+        public void AddTimeSpan(TimeSpan timeSpan)
+        {
+            DateTimeCurrent += timeSpan;
         }
     }
 }

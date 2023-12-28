@@ -6,13 +6,6 @@ namespace TextAdventureLibrary
 {
     public class Thing : Noun
     {
-        public Thing()
-        {
-        }
-
-        public override void GenerateDescription()
-        {
-
-        }
+        public Thing() { }
     }
 }

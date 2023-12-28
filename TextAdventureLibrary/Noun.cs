@@ -33,8 +33,5 @@ namespace TextAdventureLibrary
                 .Where(pair => pair.Value is T)
                 .ToDictionary(pair => pair.Key, pair => (T)pair.Value);
         }
-
-        public abstract void GenerateDescription();
-
     }
 }

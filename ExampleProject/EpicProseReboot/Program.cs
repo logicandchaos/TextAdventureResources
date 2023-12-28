@@ -9,7 +9,13 @@ using TextAdventureLibrary;
 
 /// <summary>
 /// This is a remake of my Text Adventure Epic Prose to test out my TextAdventureLibrary
+/// I might add a couple dungeons to the game, for the boss locations.
 /// </summary>
+
+//TODO:
+//encounter menu building
+//Ai
+//build characters and player
 
 //Predicate<Person> hasSwordEquiped = person => person.GetAttributeValue<Thing>("equipedItem") == sword;
 
@@ -125,21 +131,22 @@ namespace EpicProseRedux
         static Cell swampCell = new Cell('▒', Color.DarkYellow, Color.DarkRed);
         static Cell plainsCell = new Cell(' ', Color.DarkYellow, Color.DarkRed);
         static Cell mountainCell0 = new Cell('m', Color.DarkYellow, Color.DarkRed);
-        static Cell mountainCell1 = new Cell('m', Color.DarkYellow, Color.DarkRed);
-        static Cell mountainCell2 = new Cell('m', Color.DarkYellow, Color.DarkRed);
-        static Cell shoreCell0 = new Cell('▒', Color.DarkYellow, Color.DarkRed);
-        static Cell shoreCell1 = new Cell('▒', Color.DarkYellow, Color.DarkRed);
-        static Cell shoreCell2 = new Cell('▒', Color.DarkYellow, Color.DarkRed);
-        static Cell mark0 = new Cell('0', Color.DarkYellow, Color.DarkRed);
-        static Cell mark1 = new Cell('1', Color.DarkYellow, Color.DarkRed);
-        static Cell mark2 = new Cell('2', Color.DarkYellow, Color.DarkRed);
-        static Cell mark3 = new Cell('3', Color.DarkYellow, Color.DarkRed);
-        static Cell mark4 = new Cell('4', Color.DarkYellow, Color.DarkRed);
-        static Cell mark5 = new Cell('5', Color.DarkYellow, Color.DarkRed);
-        static Cell mark6 = new Cell('6', Color.DarkYellow, Color.DarkRed);
-        static Cell mark7 = new Cell('7', Color.DarkYellow, Color.DarkRed);
-        static Cell mark8 = new Cell('8', Color.DarkYellow, Color.DarkRed);
-        static Cell mark9 = new Cell('9', Color.DarkYellow, Color.DarkRed);
+        static Cell mountainCell1 = new Cell('/', Color.DarkYellow, Color.DarkRed);
+        static Cell mountainCell2 = new Cell('\\', Color.DarkYellow, Color.DarkRed);
+        static Cell shoreCell0 = new Cell('_', Color.DarkYellow, Color.DarkRed);
+        static Cell shoreCell1 = new Cell('/', Color.DarkYellow, Color.DarkRed);
+        static Cell shoreCell2 = new Cell('|', Color.DarkYellow, Color.DarkRed);
+        static Cell shoreCell3 = new Cell('\\', Color.DarkYellow, Color.DarkRed);
+        static Cell iceMountain = new Cell('0', Color.DarkYellow, Color.DarkRed);
+        static Cell dwarfCave = new Cell('1', Color.DarkYellow, Color.DarkRed);
+        static Cell dragonLair = new Cell('2', Color.DarkYellow, Color.DarkRed);
+        static Cell witchDoctorHut = new Cell('3', Color.DarkYellow, Color.DarkRed);
+        static Cell burnedVillage = new Cell('4', Color.DarkYellow, Color.DarkRed);
+        static Cell plainsville = new Cell('5', Color.DarkYellow, Color.DarkRed);
+        static Cell roguesDen = new Cell('6', Color.DarkYellow, Color.DarkRed);
+        static Cell townopolus = new Cell('7', Color.DarkYellow, Color.DarkRed);
+        static Cell sandland = new Cell('8', Color.DarkYellow, Color.DarkRed);
+        static Cell pyramid = new Cell('9', Color.DarkYellow, Color.DarkRed);
 
         static MapKey mapKey = new MapKey();
         //I have 10 locations, so I might number them 0-9
@@ -570,6 +577,7 @@ namespace EpicProseRedux
         public static void SetupMap()
         {
             mapKey.AddKey('~', waterCell);
+            mapKey.AddKey('_', shoreCell1);
 
             worldMap.CreateMatrixFromString(
             mapKey,
@@ -639,32 +647,36 @@ namespace EpicProseRedux
             @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
             @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
             );
+            //key
+            /*@"0: Ice Mountain,     1: Dwarf Cave,     2: Dragon Lair     3: Witch Doctor,",
+            @"4: Burned Village,   5: Plainsville     6: Rogue's Den,",
+            @"7: Townopolus,       8: Sandland        9: Pyramid"*/
         }
 
         public static void Intro()
         {
-            Console.Clear();
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Green;
+            console.ClearScreen();
+            console.Print("\n");
+            console.SetColor(Color.Green, Color.Black);
             console.Type("                    /\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("                    \\/\\\\\\///////////", true, 1);
-            console.Type("                     \\/\\\\\\               /\\\\\\\\\\\\\\\\\\   /\\\\\\", true, 1);
-            console.Type("                      \\/\\\\\\\\\\\\\\\\\\\\\\      /\\\\\\/////\\\\\\ \\///      /\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("                       \\/\\\\\\///////      \\/\\\\\\\\\\\\\\\\\\\\   /\\\\\\   /\\\\\\//////", true, 1);
-            console.Type("                        \\/\\\\\\             \\/\\\\\\//////   \\/\\\\\\  /\\\\\\", true, 1);
-            console.Type("                         \\/\\\\\\             \\/\\\\\\         \\/\\\\\\ \\//\\\\\\", true, 1);
-            console.Type("       /\\\\\\\\\\\\\\\\\\\\\\\\\\     \\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\         \\/\\\\\\  \\///\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("       \\/\\\\\\/////////\\\\\\   \\///////////////  \\///          \\///     \\////////", true, 1);
-            console.Type("        \\/\\\\\\       \\/\\\\\\", true, 1);
-            console.Type("         \\/\\\\\\\\\\\\\\\\\\\\\\\\\\/   /\\\\/\\\\\\\\\\\\\\      /\\\\\\\\\\     /\\\\\\\\\\\\\\\\\\\\     /\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("          \\/\\\\\\/////////    \\/\\\\\\/////\\\\\\   /\\\\\\///\\\\\\  \\/\\\\\\//////    /\\\\\\/////\\\\\\", true, 1);
-            console.Type("           \\/\\\\\\             \\/\\\\\\   \\///   /\\\\\\  \\//\\\\\\ \\/\\\\\\\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("            \\/\\\\\\             \\/\\\\\\         \\//\\\\\\  /\\\\\\  \\////////\\\\\\ \\//\\\\///////", true, 1);
-            console.Type("             \\/\\\\\\             \\/\\\\\\          \\///\\\\\\\\\\/    /\\\\\\\\\\\\\\\\\\\\  \\//\\\\\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("              \\///              \\///             \\/////     \\//////////    \\//////////", true, 1);
-            console.Type("\n                 REDUX!", false, textSpeed);
+            console.Type("\n                    \\/\\\\\\///////////", true, 1);
+            console.Type("\n                     \\/\\\\\\               /\\\\\\\\\\\\\\\\\\   /\\\\\\", true, 1);
+            console.Type("\n                      \\/\\\\\\\\\\\\\\\\\\\\\\      /\\\\\\/////\\\\\\ \\///      /\\\\\\\\\\\\\\\\", true, 1);
+            console.Type("\n                       \\/\\\\\\///////      \\/\\\\\\\\\\\\\\\\\\\\   /\\\\\\   /\\\\\\//////", true, 1);
+            console.Type("\n                        \\/\\\\\\             \\/\\\\\\//////   \\/\\\\\\  /\\\\\\", true, 1);
+            console.Type("\n                         \\/\\\\\\             \\/\\\\\\         \\/\\\\\\ \\//\\\\\\", true, 1);
+            console.Type("\n       /\\\\\\\\\\\\\\\\\\\\\\\\\\     \\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\         \\/\\\\\\  \\///\\\\\\\\\\\\\\\\", true, 1);
+            console.Type("\n       \\/\\\\\\/////////\\\\\\   \\///////////////  \\///          \\///     \\////////", true, 1);
+            console.Type("\n        \\/\\\\\\       \\/\\\\\\", true, 1);
+            console.Type("\n         \\/\\\\\\\\\\\\\\\\\\\\\\\\\\/   /\\\\/\\\\\\\\\\\\\\      /\\\\\\\\\\     /\\\\\\\\\\\\\\\\\\\\     /\\\\\\\\\\\\\\\\", true, 1);
+            console.Type("\n          \\/\\\\\\/////////    \\/\\\\\\/////\\\\\\   /\\\\\\///\\\\\\  \\/\\\\\\//////    /\\\\\\/////\\\\\\", true, 1);
+            console.Type("\n           \\/\\\\\\             \\/\\\\\\   \\///   /\\\\\\  \\//\\\\\\ \\/\\\\\\\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\", true, 1);
+            console.Type("\n            \\/\\\\\\             \\/\\\\\\         \\//\\\\\\  /\\\\\\  \\////////\\\\\\ \\//\\\\///////", true, 1);
+            console.Type("\n             \\/\\\\\\             \\/\\\\\\          \\///\\\\\\\\\\/    /\\\\\\\\\\\\\\\\\\\\  \\//\\\\\\\\\\\\\\\\\\\\", true, 1);
+            console.Type("\n              \\///              \\///             \\/////     \\//////////    \\//////////", true, 1);
+            console.Type("\n\n                 REDUX!", false, textSpeed);
             Thread.Sleep(500);
-            Console.ForegroundColor = ConsoleColor.Gray;
+            console.ResetColor();
             console.Type("\n                                    By Matt Timmermans", true, textSpeed);
             Thread.Sleep(500);
             console.Anykey();
@@ -673,31 +685,31 @@ namespace EpicProseRedux
         public static void Story()
         {
             console.ClearScreen();
-            Console.WriteLine("STORY");
-            Console.WriteLine("\n<you can skip ahead at anytime by pressing any key>");
+            console.Print("STORY");
+            console.Print("\n\n<you can skip ahead at anytime by pressing any key>");
             console.Type("\n\tYou live in a small peaceful village, in the land of Epica. One day", true, textSpeed);
-            console.Type("you are out exploring. After hiking for sometime, you stop to rest your feet.", true, textSpeed);
-            console.Type("You awake it is dark, black clouds are in the sky. You hurry back home to", true, textSpeed);
-            console.Type("shelter. As you get closer you see light coming from ahead. You realize it's", true, textSpeed);
-            console.Type("not storm clouds, it's smoke! Your entire village is in flames!", true, textSpeed);
-            console.Type("By the time you reach your village all that is left is burning rubble and ash.", true, textSpeed);
-            console.Type("No survivors, nothing. The only thing that could have caused such destruction", true, textSpeed);
-            console.Type("is a dragon! Watching the burning embers of what was once your home, you vow", true, textSpeed);
-            console.Type("to avenge them, you will slay the dragon!", true, textSpeed);
-            console.Type("...", true, textSpeed * 5);
+            console.Type("\nyou are out exploring. After hiking for sometime, you stop to rest your feet.", true, textSpeed);
+            console.Type("\nYou awake it is dark, black clouds are in the sky. You hurry back home to", true, textSpeed);
+            console.Type("\nshelter. As you get closer you see light coming from ahead. You realize it's", true, textSpeed);
+            console.Type("\nnot storm clouds, it's smoke! Your entire village is in flames!", true, textSpeed);
+            console.Type("\nBy the time you reach your village all that is left is burning rubble and ash.", true, textSpeed);
+            console.Type("\nNo survivors, nothing. The only thing that could have caused such destruction", true, textSpeed);
+            console.Type("\nis a dragon! Watching the burning embers of what was once your home, you vow", true, textSpeed);
+            console.Type("\nto avenge them, you will slay the dragon!", true, textSpeed);
+            console.Type("\n...", true, textSpeed * 5);
             console.Anykey();
 
             console.ClearScreen();
-            console.Type("\n\"What a tragity!\" a small voice says, you turn around to see a tiny man walk out from behind a tree.", true, textSpeed);
-            console.Type("\"I'm Harold nice to meet you\" he says extending his tiny arm, you bend over and give him a finger to shake.", true, textSpeed);
-            console.Type("\"Are you new to the land of Epica?\" (Y/N)\n", true, textSpeed);
+            console.Type("\n\n\"What a tragity!\" a small voice says, you turn around to see a tiny man walk out from behind a tree.", true, textSpeed);
+            console.Type("\n\"I'm Harold nice to meet you\" he says extending his tiny arm, you bend over and give him a finger to shake.", true, textSpeed);
+            console.Type("\n\"Are you new to the land of Epica?\" (Y/N)\n", true, textSpeed);
             if (console.YesNo())
             {
-                console.Type("\"Welcome to the land of Epica. You can go to The Forest, The Town, The Caves,", true, textSpeed);
-                console.Type("The Ice Mountain and The Dragon's Lair. The weaker monsters are near the forest", true, textSpeed);
-                console.Type("and town. If you need some help just press H. You should look around the area", true, textSpeed);
-                console.Type("before you go there's got to be a weapon laying around here somewhere.", true, textSpeed);
-                console.Type("Make sure to equip it before battle in the character menu.\n", true, textSpeed);
+                console.Type("\n\"Welcome to the land of Epica. You can go to The Forest, The Town, The Caves,", true, textSpeed);
+                console.Type("\nThe Ice Mountain and The Dragon's Lair. The weaker monsters are near the forest", true, textSpeed);
+                console.Type("\nand town. If you need some help just press H. You should look around the area", true, textSpeed);
+                console.Type("\nbefore you go there's got to be a weapon laying around here somewhere.", true, textSpeed);
+                console.Type("\nMake sure to equip it before battle in the character menu.\n", true, textSpeed);
                 //noob = true;
             }
             else
@@ -709,99 +721,86 @@ namespace EpicProseRedux
 
         static void Help()
         {
-            Console.WriteLine("\nHELP");
-            Console.WriteLine("~~~~");
-            Console.WriteLine("Epic Prose SE now uses a menu system for most input, but in the");
-            Console.WriteLine("cases where you need to type in an input a list is provided.");
-            Console.WriteLine("Using the up and down arrows you can scroll through previous input.");
+            console.Print("\nHELP");
+            console.Print("\n~~~~");
+            console.Print("\n\nEpic Prose SE now uses a menu system for most input, but in the");
+            console.Print("\ncases where you need to type in an input a list is provided.");
+            console.Print("\nUsing the up and down arrows you can scroll through previous input.");
             console.Anykey();
-            Console.WriteLine("\nSTATS");
-            Console.WriteLine("~~~~~");
-            Console.WriteLine("Str - Strength - how much damage you do when you attack.");
-            Console.WriteLine("Vit - Vitality - how much max health you have.");
-            Console.WriteLine("Dex - Dexterity - your accuracy with fighting.");
-            Console.WriteLine("Spe - Speed - running away, dodging and travel speed.");
-            Console.WriteLine("Int - Intelligence - used for talking your way out of fights.");
-            Console.WriteLine("Cha - Charisma - How liked you are, effects prices and things.");
+            console.Print("\n\nSTATS");
+            console.Print("\n~~~~~");
+            console.Print("\n\nStr - Strength - how much damage you do when you attack.");
+            console.Print("\nVit - Vitality - how much max health you have.");
+            console.Print("\nDex - Dexterity - your accuracy with fighting.");
+            console.Print("\nSpe - Speed - running away, dodging and travel speed.");
+            console.Print("\nInt - Intelligence - used for talking your way out of fights.");
+            console.Print("\nCha - Charisma - How liked you are, effects prices and things.");
             console.Anykey();
-            Console.WriteLine("\nBASE MENU");
-            Console.WriteLine("~~~~~~~~~");
-            Console.WriteLine("GO - shows you a list of locations with the distance away from you, you will be asked");
-            Console.WriteLine("where you want to go, then type one of the options and you will travel in that direction");
-            Console.WriteLine("until you reach it, encounter a monster or press a key. After a battle you may not be at");
-            Console.WriteLine("your destination, just repeat the process.");
-            Console.WriteLine("LOOK - gives you a description of your surroundings and any people or items around");
+            console.Print("\n\nBASE MENU");
+            console.Print("\n~~~~~~~~~");
+            console.Print("\nGO - shows you a list of locations with the distance away from you, you will be asked");
+            console.Print("\nwhere you want to go, then type one of the options and you will travel in that direction");
+            console.Print("\nuntil you reach it, encounter a monster or press a key. After a battle you may not be at");
+            console.Print("\nyour destination, just repeat the process.");
+            console.Print("\nLOOK - gives you a description of your surroundings and any people or items around");
             console.Anykey();
-            Console.WriteLine("\nCONVERSATIONS");
-            Console.WriteLine("~~~~~~~~~~~~~");
-            Console.WriteLine("PRICES -> see a list and prices of what's for sale");
-            Console.WriteLine("BUY <item name> -> buy an item");
-            Console.WriteLine("SELL <item name> -> sell an item");
-            Console.WriteLine("LEAVE -> leave the conversation.");
-            Console.WriteLine("TRAIN -> they will tell you what they can train you in an for how much.");
-            Console.WriteLine("TRAIN <stat> -> they will train the named stat for a price.");
+            console.Print("\n\nCONVERSATIONS");
+            console.Print("\n~~~~~~~~~~~~~");
+            console.Print("\nPRICES -> see a list and prices of what's for sale");
+            console.Print("\nBUY <item name> -> buy an item");
+            console.Print("\nSELL <item name> -> sell an item");
+            console.Print("\nLEAVE -> leave the conversation.");
+            console.Print("\nTRAIN -> they will tell you what they can train you in an for how much.");
+            console.Print("\nTRAIN <stat> -> they will train the named stat for a price.");
             console.Anykey();
-            Console.WriteLine("\nMONSTERS");
-            Console.WriteLine("~~~~~~~~");
-            Console.WriteLine("Here is a list of terrain types and the types of monsters found there:");
-            Console.WriteLine("grassland easy -slime, goblin, wolf, bandit");
-            Console.WriteLine("grassland hard - briggand, hobgoblin, bugbear, ogre");
-            Console.WriteLine("forest easy - slime, goblin, wolf, bandit");
-            Console.WriteLine("forest hard - briggand, hobgoblin, bugbear, troll");
-            Console.WriteLine("swamp easy - slime, goblin, wyvern, hobgoblin");
-            Console.WriteLine("swamp hard - troll, wyvern, hobgoblin, bugbear");
-            Console.WriteLine("rocky easy - bandit, skeleton, briggand, goblin");
-            Console.WriteLine("rocky hard - ogre, manticore, troll, skeleton warrior");
-            Console.WriteLine("desert easy -skeleton, jackal, bandit, briggand");
-            Console.WriteLine("desert hard - mummy, skeleton warrior, manticore, briggand");
+            console.Print("\n\nMONSTERS");
+            console.Print("\n~~~~~~~~");
+            console.Print("\nHere is a list of terrain types and the types of monsters found there:");
+            console.Print("\ngrassland easy -slime, goblin, wolf, bandit");
+            console.Print("\ngrassland hard - briggand, hobgoblin, bugbear, ogre");
+            console.Print("\nforest easy - slime, goblin, wolf, bandit");
+            console.Print("\nforest hard - briggand, hobgoblin, bugbear, troll");
+            console.Print("\nswamp easy - slime, goblin, wyvern, hobgoblin");
+            console.Print("\nswamp hard - troll, wyvern, hobgoblin, bugbear");
+            console.Print("\nrocky easy - bandit, skeleton, briggand, goblin");
+            console.Print("\nrocky hard - ogre, manticore, troll, skeleton warrior");
+            console.Print("\ndesert easy -skeleton, jackal, bandit, briggand");
+            console.Print("\ndesert hard - mummy, skeleton warrior, manticore, briggand");
             console.Anykey();
         }
 
         static void Options()
         {
-            Console.Clear();
-            Console.WriteLine("OPTIONS");
-            //Console.WriteLine("\nGame options will be configured here. Text speed");
-            Console.WriteLine("The current buffer height is {0} rows.", Console.BufferHeight);
-            Console.WriteLine("The current buffer width is {0} columns.", Console.BufferWidth);
-            Console.Write("\nEnter text speed (fast) 0 - 5 (slow): ");
+            console.ClearScreen();
+            console.Print("OPTIONS");
+            console.Print("\n\nEnter text speed, (no delay) 0 (fast) 1 - 5 (slow): ");
             int input;
             do
             {
-                while (Console.KeyAvailable) // Flushes the input queue.
-                    Console.ReadKey();
-
-                //input = Console.Read();
-                try
-                {
-                    input = Int32.Parse(Console.ReadLine());
-                }
-                catch (FormatException e)
-                {
-                    input = 3;
-                    Console.WriteLine(e.Message);
-                }
-                //Console.WriteLine(); // Breaks the line.
-                Console.WriteLine("\nInput: " + input);
+                //while (Console.KeyAvailable) // Flushes the input queue.
+                //Console.ReadKey();
+                input = console.GetDigit(5);
+                //console.Print(); // Breaks the line.
+                console.Print("\nInput: " + input);
             }
             while (input != 0 && input != 1 && input != 2 && input != 3 && input != 4 && input != 5);
             //SetTextSpeed(input * 20);
             textSpeed = input * 20;
-            Console.WriteLine("\n");
+            console.Print("\n");
             console.Type("Text speed set, speed test in now process", false, textSpeed);
             console.Type("...", false, textSpeed * 5);
             //Console.WriteLine("\nText speed: " + textSpeed);
 
             //Show Rolls
-            Console.Write("\nShow dice rolls(Y/N): ");
+            console.Print("\nShow dice rolls(Y/N): ");
             showRolls = console.YesNo();
 
             //Show Enemy Health
-            Console.Write("\nShow enemy health(Y/N): ");
+            console.Print("\nShow enemy health(Y/N): ");
             showEnemyHealth = console.YesNo();
 
             //Sound
-            Console.Write("\nSound on(Y/N): ");
+            console.Print("\nSound on(Y/N): ");
             sound = console.YesNo();
 
             console.Anykey();
@@ -810,42 +809,37 @@ namespace EpicProseRedux
 
         static void About()
         {
-            Console.Clear();
-            Console.WriteLine("ABOUT");
-            Console.WriteLine("~~~~~");
-            Console.WriteLine("\nThis game was created by Matt Timmermans a C# remake of Epic Prose. Epic Prose was made by Matt Timmermans"
-            + "\nin 2016 for a school project. This version contains all the things there was not enough time to add in the\noriginal.");
-            Console.WriteLine("\tThe rules for Epic Prose are based on a system I came up for a dice");
-            Console.WriteLine("and paper RPG, I wanted a system that was simple, versitile and expandable.");
-            Console.WriteLine("Basically you have attributes that go up to 9, each action/reaction is governed by");
-            Console.WriteLine("one attribute. To succeed in using an action you must roll your attribute score or");
-            Console.WriteLine("lower with a d10. Rolling your exact attibute is a critical hit. When you successfully");
-            Console.WriteLine("use a skill you get a fractional increase to the governing stat.");
+            console.ClearScreen();
+            console.Print("ABOUT");
+            console.Print("\n~~~~~");
+            console.Print("\nThis game was created by Matt Timmermans a remake of Epic Prose SE using the");
+            console.Print("\nTextAdventureLibrary also created by Matt Timmermans. This also serves as the");
+            console.Print("\ntutorial for the TextAdventureLibrary.");
             console.Anykey();
         }
 
         static void GameOver()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("                /\\\\\\\\\\\\\\\\\\\\\\\\                                                                                          ");
-            Console.WriteLine("               /\\\\\\//////////                                                                                          ");
-            Console.WriteLine("               /\\\\\\                                                                                                    ");
-            Console.WriteLine("               \\/\\\\\\    /\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\       /\\\\\\\\\\  /\\\\\\\\\\       /\\\\\\\\\\\\\\\\                                      ");
-            Console.WriteLine("                \\/\\\\\\   \\/////\\\\\\ \\////////\\\\\\    /\\\\\\///\\\\\\\\\\///\\\\\\   /\\\\\\/////\\\\\\                                    ");
-            Console.WriteLine("                 \\/\\\\\\       \\/\\\\\\   /\\\\\\\\\\\\\\\\\\\\  \\/\\\\\\ \\//\\\\\\  \\/\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\                                    ");
-            Console.WriteLine("                  \\/\\\\\\       \\/\\\\\\  /\\\\\\/////\\\\\\  \\/\\\\\\  \\/\\\\\\  \\/\\\\\\ \\//\\\\///////                                    ");
-            Console.WriteLine("                   \\//\\\\\\\\\\\\\\\\\\\\\\\\/  \\//\\\\\\\\\\\\\\\\/\\\\ \\/\\\\\\  \\/\\\\\\  \\/\\\\\\  \\//\\\\\\\\\\\\\\\\\\\\                                 ");
-            Console.WriteLine("                     \\////////////     \\////////\\//  \\///   \\///   \\///    \\//////////                                 ");
-            Console.WriteLine("                                     /\\\\\\\\\\                                                                            ");
-            Console.WriteLine("                                    /\\\\\\///\\\\\\                                                                         ");
-            Console.WriteLine("                                   /\\\\\\/  \\///\\\\\\                                                                      ");
-            Console.WriteLine("                                   /\\\\\\      \\//\\\\\\  /\\\\\\    /\\\\\\     /\\\\\\\\\\\\\\\\   /\\\\/\\\\\\\\\\\\\\                          ");
-            Console.WriteLine("                                   \\/\\\\\\       \\/\\\\\\ \\//\\\\\\  /\\\\\\    /\\\\\\/////\\\\\\ \\/\\\\\\/////\\\\\\                        ");
-            Console.WriteLine("                                    \\//\\\\\\      /\\\\\\   \\//\\\\\\/\\\\\\    /\\\\\\\\\\\\\\\\\\\\\\  \\/\\\\\\   \\///                        ");
-            Console.WriteLine("                                      \\///\\\\\\  /\\\\\\      \\//\\\\\\\\\\    \\//\\\\///////   \\/\\\\\\                              ");
-            Console.WriteLine("                                         \\///\\\\\\\\\\/        \\//\\\\\\      \\//\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\                             ");
-            Console.WriteLine("                                            \\/////           \\///        \\//////////  \\///                             ");
-            Console.ForegroundColor = ConsoleColor.Gray;
+            console.SetColor(Color.Red, Color.Black);
+            console.Print("                /\\\\\\\\\\\\\\\\\\\\\\\\                                                                                          ");
+            console.Print("\n               /\\\\\\//////////                                                                                          ");
+            console.Print("\n               /\\\\\\                                                                                                    ");
+            console.Print("\n               \\/\\\\\\    /\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\       /\\\\\\\\\\  /\\\\\\\\\\       /\\\\\\\\\\\\\\\\                                      ");
+            console.Print("\n                \\/\\\\\\   \\/////\\\\\\ \\////////\\\\\\    /\\\\\\///\\\\\\\\\\///\\\\\\   /\\\\\\/////\\\\\\                                    ");
+            console.Print("\n                 \\/\\\\\\       \\/\\\\\\   /\\\\\\\\\\\\\\\\\\\\  \\/\\\\\\ \\//\\\\\\  \\/\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\                                    ");
+            console.Print("\n                  \\/\\\\\\       \\/\\\\\\  /\\\\\\/////\\\\\\  \\/\\\\\\  \\/\\\\\\  \\/\\\\\\ \\//\\\\///////                                    ");
+            console.Print("\n                   \\//\\\\\\\\\\\\\\\\\\\\\\\\/  \\//\\\\\\\\\\\\\\\\/\\\\ \\/\\\\\\  \\/\\\\\\  \\/\\\\\\  \\//\\\\\\\\\\\\\\\\\\\\                                 ");
+            console.Print("\n                     \\////////////     \\////////\\//  \\///   \\///   \\///    \\//////////                                 ");
+            console.Print("\n                                     /\\\\\\\\\\                                                                            ");
+            console.Print("\n                                    /\\\\\\///\\\\\\                                                                         ");
+            console.Print("\n                                   /\\\\\\/  \\///\\\\\\                                                                      ");
+            console.Print("\n                                   /\\\\\\      \\//\\\\\\  /\\\\\\    /\\\\\\     /\\\\\\\\\\\\\\\\   /\\\\/\\\\\\\\\\\\\\                          ");
+            console.Print("\n                                   \\/\\\\\\       \\/\\\\\\ \\//\\\\\\  /\\\\\\    /\\\\\\/////\\\\\\ \\/\\\\\\/////\\\\\\                        ");
+            console.Print("\n                                    \\//\\\\\\      /\\\\\\   \\//\\\\\\/\\\\\\    /\\\\\\\\\\\\\\\\\\\\\\  \\/\\\\\\   \\///                        ");
+            console.Print("\n                                      \\///\\\\\\  /\\\\\\      \\//\\\\\\\\\\    \\//\\\\///////   \\/\\\\\\                              ");
+            console.Print("\n                                         \\///\\\\\\\\\\/        \\//\\\\\\      \\//\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\                             ");
+            console.Print("\n                                            \\/////           \\///        \\//////////  \\///                             ");
+            console.ResetColor();
             //if (!DEBUG)
             //{
             /*if (!player.IsAlive())
