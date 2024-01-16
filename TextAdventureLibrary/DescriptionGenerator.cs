@@ -6,20 +6,31 @@ namespace TextAdventureLibrary
 {
     public class DescriptionGenerator<T> where T : Noun, new()
     {
-        //textGenerationRules
-        //maybe have a dictionary of attributes and how to describe it, like height =< 5'6 return "short"
-        //what to use Delegates?? Action?? RegEx??
+        private Dictionary<string, Tracery> attributeRules = new Dictionary<string, Tracery>();
 
-        public DescriptionGenerator(/*textGenerationRules*/)
+        // Add a rule for a specific attribute
+        public void AddAttributeRule(string attributeName, Tracery rule)
         {
+            attributeRules[attributeName] = rule;
         }
 
         public string GenerateDescription(T noun)
         {
-            string description = "";
-            //get attributes from noun
-            //describe each attribute based on rules
-            return description;
+            StringBuilder description = new StringBuilder();
+
+            // Apply rules for attributes based on the type
+            foreach (var rule in attributeRules)
+            {
+                string attributeName = rule.Key;
+                Tracery attributeRule = rule.Value;
+
+                string attributeValue = noun.GetAttributeValue<string>(attributeName);
+                string expandedRule = attributeRule.Expand(attributeValue);
+
+                description.Append(expandedRule).Append(" ");
+            }
+
+            return description.ToString().Trim();
         }
     }
 }

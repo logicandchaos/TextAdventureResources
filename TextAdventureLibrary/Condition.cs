@@ -4,16 +4,14 @@ namespace TextAdventureLibrary
 {
     public class Condition
     {
-        private Predicate<object> predicate;
+        public Predicate<Noun> Predicate { get; set; }
+        bool isTrue;
 
-        public Condition(Predicate<object> predicate)
+        public bool Evaluate(Noun noun, World world)
         {
-            this.predicate = predicate;
-        }
-
-        public bool IsTrue(object obj)
-        {
-            return predicate(obj);
+            if (!isTrue)
+                return !Predicate(noun);
+            return Predicate(noun);
         }
     }
 }

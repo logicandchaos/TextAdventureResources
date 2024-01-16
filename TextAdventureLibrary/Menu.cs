@@ -1,5 +1,7 @@
 ﻿using System;
 
+//I need to make some sort of menu builder that uses a rule engine
+
 namespace TextAdventureLibrary
 {
     public class Menu

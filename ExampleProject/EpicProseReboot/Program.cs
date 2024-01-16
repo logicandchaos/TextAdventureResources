@@ -102,6 +102,7 @@ namespace EpicProseRedux
 
         public static Builder<Person> personBuilder = new Builder<Person>(
             "name",
+            "die",
             "age",
             "species",
             "gender",
@@ -222,7 +223,7 @@ namespace EpicProseRedux
                         {
                             foreach (var stat in stats)
                             {
-                                stat.Value.RollStat(player.Die);
+                                stat.Value.RollStat(player.GetAttributeValue<Die>("die"));
                                 console.Print($"{stat.Key}: {stat.Value}", true);
                             }
                         }
@@ -244,7 +245,7 @@ namespace EpicProseRedux
                         //roll for each Person
                         for (int i = 0; i < people.Count; i++)
                         {
-                            initiatives[i] = people[i].GetAttributeValue<Stat>("speed").StatCheck(people[i].Die);
+                            initiatives[i] = people[i].GetAttributeValue<Stat>("speed").StatCheck(people[i].GetAttributeValue<Die>("die"));
                         }
 
                         // Use LINQ to order people array by the corresponding number in initiatives

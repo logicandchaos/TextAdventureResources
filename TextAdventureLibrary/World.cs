@@ -15,12 +15,20 @@ namespace TextAdventureLibrary
         public Dictionary<string, Thing> everything;
         public Dictionary<DateTime, string> history;
 
-        public World(string name, Matrix map)
+        public World()
+        {
+        }
+
+        public World(string name)
         {
             //create die
             die = new Die(name.GetHashCode());
-            //generate dateTime
-            //DateTime=
+        }
+
+        public World(int seed)
+        {
+            //create die
+            die = new Die(seed);
         }
 
         public void AddTimeSpan(TimeSpan timeSpan)

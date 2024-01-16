@@ -6,9 +6,6 @@ namespace TextAdventureLibrary
 {
     public class Place : Noun
     {
-        //public List<Person> people;??
-        //public Vector2Int location;
-
         public Place() { }
     }
 }

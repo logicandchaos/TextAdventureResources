@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
+/// <summary>
+/// This is an implementation of Tracery, a story-grammar generation library created by Kate Compton
+/// </summary>
+
 namespace TextAdventureLibrary
 {
     public class Tracery
