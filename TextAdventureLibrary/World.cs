@@ -15,9 +15,11 @@ namespace TextAdventureLibrary
         public Dictionary<string, Thing> everything;
         public Dictionary<DateTime, string> history;
 
-        public World()
-        {
-        }
+        /*private static readonly Lazy<World> lazyInstance = new Lazy<World>(() => new World());
+        public static World Instance => lazyInstance.Value;
+        private World() { }*/
+
+        public World() { }
 
         public World(string name)
         {
