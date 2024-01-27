@@ -4,24 +4,24 @@ using System.Linq;
 
 namespace TextAdventureLibrary
 {
-    public class Builder<T> where T : Noun, new()
+    public class NounBuilder<T> where T : Noun, new()
     {
         private T noun;
         private string[] requiredAttributes;
 
-        public Builder(params string[] requiredAttributes)
+        public NounBuilder(params string[] requiredAttributes)
         {
             noun = new T();
             this.requiredAttributes = requiredAttributes;
         }
 
-        public Builder<T> WithAttribute(string key, object value)
+        public NounBuilder<T> WithAttribute(string key, object value)
         {
             noun.AddOrSetAttribute(key, value);
             return this;
         }
 
-        public Builder<T> WithAttributes(Dictionary<string, object> attributes)
+        public NounBuilder<T> WithAttributes(Dictionary<string, object> attributes)
         {
             foreach (var kvp in attributes)
             {

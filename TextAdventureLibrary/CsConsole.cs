@@ -95,6 +95,12 @@ namespace TextAdventureLibrary
             Console.Write(cell.symbol);
         }
 
+        public override void Print(Inventory inventory)
+        {
+            for (int i = 0; i < inventory.Things.Count; i++)
+                Console.Write($"{i}: {inventory.Things[i].GetAttributeValue<string>("name")}");
+        }
+
         public override void Print(Matrix matrix, bool clearScreen = false, bool title = true, bool info = true)
         {
             if (clearScreen)
@@ -122,11 +128,9 @@ namespace TextAdventureLibrary
             }
         }
 
-        public override void Menu(Menu menu, int health = 100)
+        public override void Menu(Menu menu)
         {
             ClearScreen();
-
-            SetColor(Color.White, Color.Black);
 
             /*int maxLength = 0;
             if (columns == 2)
@@ -138,9 +142,6 @@ namespace TextAdventureLibrary
             {
                 Console.WriteLine(menu.title);
             }
-
-            //SetColor(Color.Gray, Color.Black);
-            SetColorToHealth(health);
 
             for (int i = 0; i < menu.items.Length; i++)
             {

@@ -12,6 +12,22 @@ namespace TextAdventureLibrary
     {
         Menu menu;
 
+        public MenuBuilder WithItem(MenuItem menuItem)
+        {
+            if (menu.items.Length > 10)
+                return this;
+
+            return this;
+        }
+
+        public MenuBuilder WithItems(params MenuItem[] menuItem)
+        {
+            if (menu.items.Length > 10)
+                return this;
+
+            return this;
+        }
+
         public Menu Builder()
         {
             return menu;

@@ -57,9 +57,12 @@ namespace EpicProseRedux
         static Menu characterMenu;
         static Menu pickUpMenu;
         static Menu inventory;
+        static Menu itemMenu;
         static Menu encounterMenu;
         static Menu fileMenu;
         static Menu helpMenu;
+
+        //items should have attributes for what you can do with them. So like Equip: hand, head, Throwable? Consumable? etc..
 
         //create cells
         //create mapKeys

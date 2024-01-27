@@ -37,5 +37,17 @@ namespace TextAdventureLibrary
         {
             DateTimeCurrent += timeSpan;
         }
+
+        public void Save()
+        {
+            //serialize all the data
+            //save to text file
+        }
+
+        public void Load(string worldName)
+        {
+            //read in the textfile for the worldName
+            //parse string data into world
+        }
     }
 }

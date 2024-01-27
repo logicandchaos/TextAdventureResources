@@ -43,6 +43,7 @@ namespace TextAdventureLibrary
             return availableActions;
         }
 
+        //Greedy method
         public static Action<Person, Person> GetFirstAvailableAction(Person person, World world)
         {
             foreach (var rule in actions)
