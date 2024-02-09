@@ -103,7 +103,7 @@ namespace EpicProseRedux
         //item templates
         public static Dictionary<string, object> sword = new Dictionary<string, object>();
 
-        public static Builder<Person> personBuilder = new Builder<Person>(
+        /*public static Builder<Person> personBuilder = new Builder<Person>(
             "name",
             "die",
             "age",
@@ -126,7 +126,7 @@ namespace EpicProseRedux
         public static Builder<Thing> thingBuilder = new Builder<Thing>(
             "name",
             "weight"
-            );
+            );*/
         static Person player;
 
         static Cell desertCell = new Cell('░', Color.DarkYellow, Color.DarkRed);
@@ -186,10 +186,10 @@ namespace EpicProseRedux
                 switch (gameState)
                 {
                     case GameStates.MAIN_MENU:
-                        console.Menu(mainMenu);
+                        console.Print(mainMenu);
                         break;
                     case GameStates.PLAY_MENU:
-                        console.Menu(playMenu);
+                        console.Print(playMenu);
                         break;
                     case GameStates.NEW_GAME:
                         console.Print("Create Your Character", true);
@@ -205,13 +205,14 @@ namespace EpicProseRedux
                             new MenuItem("male", () => gender = "male"),
                             new MenuItem("female", () => gender = "female")
                             );
-                        console.Menu(selectGender);
+                        console.Print(selectGender);
+                        selectGender.SelectOption(console.GetDigit(selectGender.items.Length));
 
-                        player = personBuilder
+                        /*player = personBuilder
                             .WithAttributes(human)
                             .WithAttribute("name", name)
                             .WithAttribute("gender", gender)
-                            .TryBuild();
+                            .TryBuild();*/
 
                         if (player == null)
                         {
@@ -239,7 +240,7 @@ namespace EpicProseRedux
                         gameState = GameStates.WORLD;
                         break;
                     case GameStates.WORLD:
-                        console.Menu(worldMenu);
+                        console.Print(worldMenu);
                         break;
                     case GameStates.ENCOUNTER:
                         List<Person> people = new List<Person>();
@@ -333,7 +334,7 @@ namespace EpicProseRedux
             worldMenu = new Menu
                 (
                 "What would you like to do?",
-                     new MenuItem("Travel", () => console.Menu(travelMenu)),
+                     new MenuItem("Travel", () => console.Print(travelMenu)),
                      new MenuItem("Camp", () => gameState = GameStates.QUIT),
                      new MenuItem("Look", () => gameState = GameStates.QUIT),
                      new MenuItem("Character", () => gameState = GameStates.QUIT),
@@ -346,44 +347,44 @@ namespace EpicProseRedux
             travelMenu = new Menu//this one has to be dynamic ? could keep the same. add distance?
                 (
                 "Travel",
-                new MenuItem("Ice Mountain", () => console.Menu(worldMenu)),
-                new MenuItem("Cave", () => console.Menu(worldMenu)),
-                new MenuItem("Lair", () => console.Menu(worldMenu)),
-                new MenuItem("Witch Doctor", () => console.Menu(worldMenu)),
-                new MenuItem("Burned Village", () => console.Menu(worldMenu)),
-                new MenuItem("Plainsville", () => console.Menu(worldMenu)),
-                new MenuItem("Rogue's Den", () => console.Menu(worldMenu)),
-                new MenuItem("Townopolus", () => console.Menu(worldMenu)),
-                new MenuItem("Next", () => console.Menu(travelMenu2)),
-                new MenuItem("Back", () => console.Menu(worldMenu))
+                new MenuItem("Ice Mountain", () => console.Print(worldMenu)),
+                new MenuItem("Cave", () => console.Print(worldMenu)),
+                new MenuItem("Lair", () => console.Print(worldMenu)),
+                new MenuItem("Witch Doctor", () => console.Print(worldMenu)),
+                new MenuItem("Burned Village", () => console.Print(worldMenu)),
+                new MenuItem("Plainsville", () => console.Print(worldMenu)),
+                new MenuItem("Rogue's Den", () => console.Print(worldMenu)),
+                new MenuItem("Townopolus", () => console.Print(worldMenu)),
+                new MenuItem("Next", () => console.Print(travelMenu2)),
+                new MenuItem("Back", () => console.Print(worldMenu))
                 );
 
             travelMenu2 = new Menu//this one has to be dynamic ? could keep the same. add distance?
                 (
                 "Travel",
-                new MenuItem("Sandland", () => console.Menu(worldMenu)),
-                new MenuItem("Pyramid", () => console.Menu(worldMenu)),
-                new MenuItem("Prev", () => console.Menu(travelMenu)),
-                new MenuItem("Back", () => console.Menu(worldMenu))
+                new MenuItem("Sandland", () => console.Print(worldMenu)),
+                new MenuItem("Pyramid", () => console.Print(worldMenu)),
+                new MenuItem("Prev", () => console.Print(travelMenu)),
+                new MenuItem("Back", () => console.Print(worldMenu))
                 );
 
             characterMenu = new Menu//this one has to be dynamic
                 (
                 "Character",
-                new MenuItem("Status", () => console.Menu(inventory)),
-                new MenuItem("Inventory", () => console.Menu(inventory)),
-                new MenuItem("Back", () => console.Menu(worldMenu))
+                new MenuItem("Status", () => console.Print(inventory)),
+                new MenuItem("Inventory", () => console.Print(inventory)),
+                new MenuItem("Back", () => console.Print(worldMenu))
                 );
 
             inventory = new Menu
                 (
                 "Inventory",
-                new MenuItem("Examine", () => console.Menu(worldMenu)),
-                new MenuItem("Equip", () => console.Menu(worldMenu)),
-                new MenuItem("Repair", () => console.Menu(worldMenu)),
-                new MenuItem("Use", () => console.Menu(worldMenu)),
-                new MenuItem("Drop", () => console.Menu(worldMenu)),
-                new MenuItem("Back", () => console.Menu(worldMenu))
+                new MenuItem("Examine", () => console.Print(worldMenu)),
+                new MenuItem("Equip", () => console.Print(worldMenu)),
+                new MenuItem("Repair", () => console.Print(worldMenu)),
+                new MenuItem("Use", () => console.Print(worldMenu)),
+                new MenuItem("Drop", () => console.Print(worldMenu)),
+                new MenuItem("Back", () => console.Print(worldMenu))
                 );
 
             encounterMenu = new Menu//this one has to be dynamic
@@ -570,8 +571,8 @@ namespace EpicProseRedux
         public static void SetupItemTemplates()
         {
             //SWORD
-            Thing sword = thingBuilder
-                .TryBuild();
+            /*Thing sword = thingBuilder
+                .TryBuild();*/
         }
 
         public static void SetupPlaceTemplates()

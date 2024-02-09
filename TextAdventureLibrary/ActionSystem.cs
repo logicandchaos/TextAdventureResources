@@ -14,7 +14,6 @@ namespace TextAdventureLibrary
 {
     public static class ActionSystem
     {
-        //the rules
         static Dictionary<Rule, Action<Person, Person>> actions = new Dictionary<Rule, Action<Person, Person>>();
 
         public static void AddAction(Rule rule, Action<Person, Person> action)

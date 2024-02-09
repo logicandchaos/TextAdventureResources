@@ -128,15 +128,9 @@ namespace TextAdventureLibrary
             }
         }
 
-        public override void Menu(Menu menu)
+        public override void Print(Menu menu)
         {
             ClearScreen();
-
-            /*int maxLength = 0;
-            if (columns == 2)
-                maxLength = 50;
-            if (columns == 3)
-                maxLength = 36;*/
 
             if (menu.title.CompareTo("") != 0)
             {
@@ -153,39 +147,6 @@ namespace TextAdventureLibrary
                 Console.WriteLine(item);
             }
             Console.WriteLine();
-
-            menu.SelectOption(GetDigit(menu.items.Length));
-
-            /*for (int i = 0; i < menu.items.Length * columns; i += columns)
-            {
-                if (columns > 1 && i == menu.items.Length)
-                    break;
-                string s = (i + 1) + ": " + menu.items[i].Text;
-                Console.Write(s);
-                if (columns > 1)
-                {
-                    for (int o = 0; o < maxLength - s.Length; o++)
-                    {
-                        Console.Write(" ");
-                    }
-                    if (i == menu.items.Length - 1)
-                        break;
-                    s = (i + 1) + 1 + ": " + menu.items[i + 1].Text;
-                    Console.Write(s);
-                    if (columns > 2)
-                    {
-                        for (int o = 0; o < maxLength - s.Length; o++)
-                        {
-                            Console.Write(" ");
-                        }
-                        if (i == menu.items.Length - 1)
-                            break;
-                        s = (i + 1) + 2 + ": " + menu.items[i + 2].Text;
-                        Console.Write(s);
-                    }
-                }
-                Console.WriteLine();
-            }*/
         }
 
         public override void Print(Noun noun)
@@ -201,96 +162,6 @@ namespace TextAdventureLibrary
         public override void MoveCurser(Vector2Int point)
         {
             Console.SetCursorPosition(point.X, point.Y);
-        }
-
-        public override void Anykey(string message = "<Press any key>")
-        {
-            while (Console.KeyAvailable) // Flush input queue
-                Console.ReadKey();
-
-            //sound
-            //Console.Beep(500, 500);
-            ConsoleColor temp = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\n" + message);
-            Console.ReadKey(true);//the true turns echo off
-            Console.ForegroundColor = temp;
-            //Console.WriteLine();
-            Console.Clear();
-        }
-
-        public override bool YesNo(string question = "")
-        {
-            if (question.CompareTo("") != 0)
-                Print(question + " ");
-            ConsoleKey response;
-            do
-            {
-                while (Console.KeyAvailable) // Flushes the input queue.
-                    Console.ReadKey();
-
-                response = Console.ReadKey().Key; // Gets the user's response.
-                Console.WriteLine(); // Breaks the line.
-            }
-            while (response != ConsoleKey.Y && response != ConsoleKey.N);
-            if (response == ConsoleKey.Y)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public override char GetChar()
-        {
-            int charValue;
-            do
-            {
-                while (Console.KeyAvailable) // Flushes the input queue.
-                    Console.ReadKey();
-
-                charValue = Console.Read(); // Gets the user's response.
-                Console.WriteLine(); // Breaks the line.
-            }
-            while (charValue != -1);
-
-            return (char)charValue;
-        }
-
-        public override int GetDigit(int max)
-        {
-            int digit = -1;
-            while (digit < 0 || digit > max || (max < 10 && digit == 0))
-            {
-                while (Console.KeyAvailable) // Flushes the input queue.
-                    Console.ReadKey();
-
-                ConsoleKeyInfo keyInfo;
-                keyInfo = Console.ReadKey(true); // Gets the user's response. true-echo off
-                /*Console.WriteLine("digit " + keyInfo);
-                Console.WriteLine("digit.Key " + keyInfo.Key);
-                Console.WriteLine("digit.KeyChar " + keyInfo.KeyChar);
-                Console.WriteLine("digit.KeyChar-0 " + (keyInfo.KeyChar - '0'));//*/
-                digit = keyInfo.KeyChar - '0';
-                //Console.WriteLine(); // Breaks the line.
-            }
-            /*Console.WriteLine("digit " + digit);
-            Console.WriteLine("digit.Key " + digit.Key);
-            Console.WriteLine("digit.KeyChar " + digit.KeyChar);
-            Console.WriteLine("digit.KeyChar-0 " + (digit.KeyChar - '0'));*/
-
-            return digit;
-        }
-
-        public override string GetString(string message = "")
-        {
-            Print(message);
-
-            while (Console.KeyAvailable) // Flush input queue
-                Console.ReadKey();
-
-            string inputString = Console.ReadLine();
-
-            return inputString;
         }
 
         public override bool GraphicText(string input, Color col, bool clearScreen = true)
@@ -679,6 +550,88 @@ namespace TextAdventureLibrary
 
             Console.ForegroundColor = foreTemp;
             Console.BackgroundColor = backTemp;
+        }
+
+        //INPUT
+        public override void Anykey(string message = "<Press any key>")
+        {
+            while (Console.KeyAvailable) // Flush input queue
+                Console.ReadKey();
+
+            //sound
+            //Console.Beep(500, 500);
+            ConsoleColor temp = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n" + message);
+            Console.ReadKey(true);//the true turns echo off
+            Console.ForegroundColor = temp;
+            //Console.WriteLine();
+            Console.Clear();
+        }
+
+        public override bool YesNo(string question = "")
+        {
+            if (question.CompareTo("") != 0)
+                Print(question + " ");
+            ConsoleKey response;
+            do
+            {
+                while (Console.KeyAvailable) // Flushes the input queue.
+                    Console.ReadKey();
+
+                response = Console.ReadKey().Key; // Gets the user's response.
+                Console.WriteLine(); // Breaks the line.
+            }
+            while (response != ConsoleKey.Y && response != ConsoleKey.N);
+            if (response == ConsoleKey.Y)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public override char GetChar()
+        {
+            int charValue;
+            do
+            {
+                while (Console.KeyAvailable) // Flushes the input queue.
+                    Console.ReadKey();
+
+                charValue = Console.Read(); // Gets the user's response.
+                Console.WriteLine(); // Breaks the line.
+            }
+            while (charValue != -1);
+
+            return (char)charValue;
+        }
+
+        public override int GetDigit(int max)
+        {
+            int digit = -1;
+            while (digit < 0 || digit > max || (max < 10 && digit == 0))
+            {
+                while (Console.KeyAvailable) // Flushes the input queue.
+                    Console.ReadKey();
+
+                ConsoleKeyInfo keyInfo;
+                keyInfo = Console.ReadKey(true); // Gets the user's response. true-echo off
+                digit = keyInfo.KeyChar - '0';
+            }
+
+            return digit;
+        }
+
+        public override string GetString(string message = "")
+        {
+            Print(message);
+
+            while (Console.KeyAvailable) // Flush input queue
+                Console.ReadKey();
+
+            string inputString = Console.ReadLine();
+
+            return inputString;
         }
     }
 }

@@ -35,7 +35,7 @@
 
         public abstract void Print(Matrix matrix, bool clearScreen = false, bool title = true, bool info = true);
 
-        public abstract void Menu(Menu menu);
+        public abstract void Print(Menu menu);
 
         public abstract void Print(Noun noun);
 

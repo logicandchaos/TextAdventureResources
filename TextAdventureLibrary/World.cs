@@ -14,33 +14,84 @@ namespace TextAdventureLibrary
     public class World
     {
         static string saveFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SaveData");
-        /*private static readonly Lazy<World> lazyInstance = new Lazy<World>(() => new World());
-        public static World Instance => lazyInstance.Value;
-        private World() { }*/
 
         public string Name { get; private set; }
-        public Matrix Map { get; set; }
-        public Die die;
-        public DateTime DateTimeCurrent { get; private set; }
-        public List<Person> Everyone { get; set; }
-        public List<Place> Everywhere { get; set; }
-        public List<Thing> Everything { get; set; }
+        public Matrix Map { get; private set; }
+        public Die Die { get; private set; }
+        public DateTime CurrentDateTime { get; private set; }
+        public HashSet<Person> Everyone { get; private set; }
+        public HashSet<Place> Everywhere { get; private set; }
+        public HashSet<Thing> Everything { get; private set; }
         public Dictionary<DateTime, string> History { get; private set; }
 
         public World(string name)
         {
             Name = name;
-            //create die
-            die = new Die(name.GetHashCode());
-            Everyone = new List<Person>();
-            Everywhere = new List<Place>();
-            Everything = new List<Thing>();
+            Die = new Die(name.GetHashCode());
+            Everyone = new HashSet<Person>();
+            Everywhere = new HashSet<Place>();
+            Everything = new HashSet<Thing>();
             History = new Dictionary<DateTime, string>();
         }
 
         public void AddTimeSpan(TimeSpan timeSpan)
         {
-            DateTimeCurrent += timeSpan;
+            CurrentDateTime += timeSpan;
+        }
+
+        public void AddPerson(Person person)
+        {
+            Everyone.Add(person);
+        }
+
+        public void AddPeople(params Person[] people)
+        {
+            Everyone.UnionWith(people);
+        }
+
+        public void RemovePerson(Person person)
+        {
+            Everyone.Remove(person);
+        }
+
+        public void AddThing(Thing thing)
+        {
+            Everything.Add(thing);
+        }
+
+        public void AddThings(params Thing[] things)
+        {
+            Everything.UnionWith(things);
+        }
+
+        public void RemoveThing(Thing thing)
+        {
+            Everything.Remove(thing);
+        }
+
+        public void AddPlace(Place place)
+        {
+            Everywhere.Add(place);
+        }
+
+        public void AddPlaces(params Place[] places)
+        {
+            Everywhere.UnionWith(places);
+        }
+
+        public void RemovePlace(Place place)
+        {
+            Everywhere.Remove(place);
+        }
+
+        public void AddHistoricalEvent(string historicalEvent)
+        {
+            if (History.ContainsKey(CurrentDateTime))
+            {
+                History.Add(CurrentDateTime, History.TryGetValue(CurrentDateTime, out string value) + "\n" + historicalEvent);
+            }
+            else
+                History.Add(CurrentDateTime, historicalEvent);
         }
 
         public void AddHistoricalEvent(DateTime dateTime, string historicalEvent)
