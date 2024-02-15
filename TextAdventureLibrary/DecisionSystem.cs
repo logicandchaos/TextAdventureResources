@@ -19,7 +19,7 @@ namespace TextAdventureLibrary
         {
             if(person.GetAttributeValue<string>("").Contains("Player"))
             {
-                terminal.GetDigit(encounter.CurrentMenu.items.Length);
+                terminal.GetDigit(encounter.CurrentMenu.Items.Length);
             }
             else
             {

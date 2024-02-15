@@ -11,13 +11,13 @@ namespace TextAdventureLibrary
     public class Encounter
     {
         public List<Person> People { get; private set; }
-        List<Menu> encounterMenus = new List<Menu>();
+        List<Menu<Noun, Noun>> encounterMenus = new List<Menu<Noun, Noun>>();
         public Menu CurrentMenu { get; private set; }
         public World World { get; private set; }
         Terminal terminal;
         int turn = 0;
         string story;
-        MultiMenuBuilder menuBuilder = new MultiMenuBuilder();
+        MultiMenuBuilder<Noun, Noun> menuBuilder = new MultiMenuBuilder<Noun, Noun>();
 
         public Encounter(Terminal terminal, World world, Action<List<Person>> Sort = null, params Person[] people)
         {
@@ -35,12 +35,14 @@ namespace TextAdventureLibrary
             while (true)
             {
                 //build menu with ActionSystem
-                List<MenuItem> menuItems = new List<MenuItem>();
-                foreach (var action in ActionSystem.GetAvailableActions(People[turn], World))
+                //List<MenuItem<Person, Person>> menuItems = new List<MenuItem<Person, Person>>();
+                foreach (Action<Noun, Noun> action in ActionSystem.GetAvailableActions(People[turn], World))
                 {
-
+                    //menuItems.Add(new MenuItem<Person, Person>("",action));
+                    menuBuilder.WithItem(new MenuItem<Noun, Noun>("", action));
                 }
-                encounterMenus = menuBuilder.WithItem();
+                //encounterMenus = menuBuilder.WithItems(menuItems.ToArray()).Build();
+                encounterMenus = menuBuilder.Build();
                 //encounterMenus=
                 //set current menu
                 //currentMenu=encounterMenus[0];

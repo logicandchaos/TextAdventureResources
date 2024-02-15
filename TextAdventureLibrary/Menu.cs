@@ -6,8 +6,8 @@ namespace TextAdventureLibrary
 {
     public class Menu
     {
-        public string title;
-        public MenuItem[] items;
+        public string Title { get; set; }
+        public MenuItem[] Items { get; set; }
 
         public Menu(string p_title, params MenuItem[] items)
         {
@@ -16,8 +16,8 @@ namespace TextAdventureLibrary
                 throw new ArgumentException("Too many menu options. Maximum allowed is 10.");
             }
 
-            title = p_title;
-            this.items = items;
+            Title = p_title;
+            Items = items;
         }
 
         public void SelectOption(int option)
@@ -27,7 +27,41 @@ namespace TextAdventureLibrary
             else
                 option--;//to start at 1
 
-            items[option].OnSelected();
+            MenuItem selectedItem = Items[option];
+
+            selectedItem.OnSelected?.Invoke();
+        }
+    }
+
+    public class Menu<T1, T2> where T1 : Noun where T2 : Noun
+    {
+        public string Title { get; set; }
+        public MenuItem<T1, T2>[] Items { get; set; }
+        //selectedItem.OnSelectedWithParameters(person1, person2);
+        public Menu(string p_title, params MenuItem<T1, T2>[] items)
+        {
+            if (items.Length > 10)
+            {
+                throw new ArgumentException("Too many menu options. Maximum allowed is 10.");
+            }
+
+            Title = p_title;
+            Items = items;
+        }
+
+        public void SelectOption(int option)
+        {
+            if (option == 0)
+                option = 10;
+            else
+                option--;//to start at 1
+
+            MenuItem<T1, T2> selectedItem = Items[option];
+
+            if (selectedItem.OnSelectedWithParameters != null)
+            {
+                selectedItem.OnSelectedWithParameters?.Invoke(null, null);
+            }
         }
     }
 }

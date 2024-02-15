@@ -132,18 +132,18 @@ namespace TextAdventureLibrary
         {
             ClearScreen();
 
-            if (menu.title.CompareTo("") != 0)
+            if (menu.Title.CompareTo("") != 0)
             {
-                Console.WriteLine(menu.title);
+                Console.WriteLine(menu.Title);
             }
 
-            for (int i = 0; i < menu.items.Length; i++)
+            for (int i = 0; i < menu.Items.Length; i++)
             {
                 string item = "";
                 if (i == 9)
-                    item = 0 + ": " + menu.items[i].Text;
+                    item = 0 + ": " + menu.Items[i].Text;
                 else
-                    item = (i + 1) + ": " + menu.items[i].Text;
+                    item = (i + 1) + ": " + menu.Items[i].Text;
                 Console.WriteLine(item);
             }
             Console.WriteLine();
