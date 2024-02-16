@@ -11,13 +11,14 @@ namespace TextAdventureLibrary
     public class Encounter
     {
         public List<Person> People { get; private set; }
-        List<Menu<Noun, Noun>> encounterMenus = new List<Menu<Noun, Noun>>();
+        List<Menu> encounterMenus = new List<Menu>();
         public Menu CurrentMenu { get; private set; }
+        public Menu SelectedMenu { get; private set; }
         public World World { get; private set; }
         Terminal terminal;
         int turn = 0;
         string story;
-        MultiMenuBuilder<Noun, Noun> menuBuilder = new MultiMenuBuilder<Noun, Noun>();
+        MultiMenuBuilder menuBuilder;
 
         public Encounter(Terminal terminal, World world, Action<List<Person>> Sort = null, params Person[] people)
         {
@@ -35,22 +36,33 @@ namespace TextAdventureLibrary
             while (true)
             {
                 //build menu with ActionSystem
-                //List<MenuItem<Person, Person>> menuItems = new List<MenuItem<Person, Person>>();
-                foreach (Action<Noun, Noun> action in ActionSystem.GetAvailableActions(People[turn], World))
+                foreach (Action action in ActionSystem.GetAvailableActions(People[turn], World))
                 {
                     //menuItems.Add(new MenuItem<Person, Person>("",action));
-                    menuBuilder.WithItem(new MenuItem<Noun, Noun>("", action));
+                    menuBuilder = new MultiMenuBuilder();
+                    menuBuilder.WithItem(new MenuItem("", action));
                 }
                 //encounterMenus = menuBuilder.WithItems(menuItems.ToArray()).Build();
                 encounterMenus = menuBuilder.Build();
-                //encounterMenus=
-                //set current menu
-                //currentMenu=encounterMenus[0];
+                CurrentMenu = encounterMenus[0];
                 terminal.Print(CurrentMenu);
                 Menu prevMenu = CurrentMenu;
-                DecisionSystem.Decide(People[turn], this);
+                SelectedMenu = CurrentMenu;
+                CurrentMenu.SelectOption(DecisionSystem.Decide(People[turn], this));
                 if (CurrentMenu == prevMenu)
                 {
+                    menuBuilder = new MultiMenuBuilder().WithName("Select Target");
+                    MenuItem menuItem;
+                    foreach (Person p in People)
+                    {
+                        menuItem = new MenuItem(p.GetAttributeValue<String>("name"), () => People[turn].AddOrSetAttribute("target", p));
+                        menuBuilder.WithItem(menuItem);
+                    }
+                    List<Menu> personSelection = menuBuilder.Build();
+                    CurrentMenu = personSelection[0];
+                    terminal.Print(CurrentMenu);
+                    CurrentMenu.SelectOption(DecisionSystem.Decide(People[turn], this));
+                    SelectedMenu.Execute();
                     story += "";
                     turn++;
                     if (turn > People.Count)

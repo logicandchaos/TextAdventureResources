@@ -14,9 +14,9 @@ namespace TextAdventureLibrary
 {
     public static class ActionSystem
     {
-        static Dictionary<Rule, Action<Person, Person>> actions = new Dictionary<Rule, Action<Person, Person>>();
+        static Dictionary<Rule, Action> actions = new Dictionary<Rule, Action>();
 
-        public static void AddAction(Rule rule, Action<Person, Person> action)
+        public static void AddAction(Rule rule, Action action)
         {
             actions.Add(rule, action);
         }
@@ -26,9 +26,9 @@ namespace TextAdventureLibrary
             actions.Remove(rule);
         }
 
-        public static List<Action<Person, Person>> GetAvailableActions(Person person, World world)
+        public static List<Action> GetAvailableActions(Person person, World world)
         {
-            List<Action<Person, Person>> availableActions = new List<Action<Person, Person>>();
+            List<Action> availableActions = new List<Action>();
 
             foreach (var rule in actions)
             {
@@ -43,7 +43,7 @@ namespace TextAdventureLibrary
         }
 
         //Greedy method
-        public static Action<Person, Person> GetFirstAvailableAction(Person person, World world)
+        public static Action GetFirstAvailableAction(Person person, World world)
         {
             foreach (var rule in actions)
             {

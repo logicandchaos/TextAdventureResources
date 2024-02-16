@@ -31,16 +31,6 @@ namespace TextAdventureLibrary
             return this;
         }
 
-        /*public Menu Build()
-        {
-            if (menuItems.Count > 10)
-                return null;
-
-            Menu menu = new Menu(name);
-            menu.items = menuItems.ToArray();
-            return menu;
-        }*/
-
         public List<Menu> Build()
         {
             List<Menu> menus = new List<Menu>();
@@ -78,7 +68,7 @@ namespace TextAdventureLibrary
         }
     }
 
-    public class MultiMenuBuilder<T1, T2> where T1 : Noun where T2 : Noun
+    /*public class MultiMenuBuilder<T1, T2> where T1 : Noun where T2 : Noun
     {
         string name;
         List<MenuItem<T1, T2>> menuItems;
@@ -136,5 +126,5 @@ namespace TextAdventureLibrary
 
             return menus;
         }
-    }
+    }*/
 }

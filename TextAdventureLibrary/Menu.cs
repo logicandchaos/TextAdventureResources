@@ -8,6 +8,7 @@ namespace TextAdventureLibrary
     {
         public string Title { get; set; }
         public MenuItem[] Items { get; set; }
+        int selected;
 
         public Menu(string p_title, params MenuItem[] items)
         {
@@ -27,13 +28,17 @@ namespace TextAdventureLibrary
             else
                 option--;//to start at 1
 
-            MenuItem selectedItem = Items[option];
+            //MenuItem selectedItem = Items[option];
+            selected = option;
+        }
 
-            selectedItem.OnSelected?.Invoke();
+        public void Execute()
+        {
+            Items[selected].OnSelected?.Invoke();
         }
     }
 
-    public class Menu<T1, T2> where T1 : Noun where T2 : Noun
+    /*public class Menu<T1, T2> where T1 : Noun where T2 : Noun
     {
         public string Title { get; set; }
         public MenuItem<T1, T2>[] Items { get; set; }
@@ -63,5 +68,5 @@ namespace TextAdventureLibrary
                 selectedItem.OnSelectedWithParameters?.Invoke(null, null);
             }
         }
-    }
+    }*/
 }

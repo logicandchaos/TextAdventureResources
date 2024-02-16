@@ -206,7 +206,7 @@ namespace EpicProseRedux
                             new MenuItem("female", () => gender = "female")
                             );
                         console.Print(selectGender);
-                        selectGender.SelectOption(console.GetDigit(selectGender.items.Length));
+                        selectGender.SelectOption(console.GetDigit(selectGender.Items.Length));
 
                         /*player = personBuilder
                             .WithAttributes(human)
@@ -269,7 +269,7 @@ namespace EpicProseRedux
                         {
                             //build encounter menu
                             encounterMenu = new Menu("What will you do?");
-                            console.Print(encounterMenu.title);
+                            console.Print(encounterMenu.Title);
                             //orderedPeople[turn].Brain.MakeChoice(encounterMenu);
 
                             turn = turn < orderedPeople.Length ? turn++ : 0;

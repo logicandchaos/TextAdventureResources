@@ -15,15 +15,15 @@ namespace TextAdventureLibrary
             terminal = t;
         }
 
-        public static void Decide(Person person, Encounter encounter)
+        public static int Decide(Person person, Encounter encounter)
         {
-            if(person.GetAttributeValue<string>("").Contains("Player"))
+            if (person.GetAttributeValue<string>("").Contains("Player"))
             {
-                terminal.GetDigit(encounter.CurrentMenu.Items.Length);
+                return terminal.GetDigit(encounter.CurrentMenu.Items.Length);
             }
             else
             {
-
+                return new Random().Next(encounter.CurrentMenu.Items.Length);
             }
         }
     }

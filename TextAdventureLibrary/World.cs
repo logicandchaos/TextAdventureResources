@@ -84,7 +84,7 @@ namespace TextAdventureLibrary
             Everywhere.Remove(place);
         }
 
-        public void AddHistoricalEvent(string historicalEvent)
+        public void AddHistoricalEvent(string historicalEvent)//should have title too? or use title as key??
         {
             if (History.ContainsKey(CurrentDateTime))
             {

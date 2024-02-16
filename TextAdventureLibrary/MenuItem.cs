@@ -4,23 +4,19 @@ using System.Text;
 
 namespace TextAdventureLibrary
 {
-    public class MenuItem : MenuItemBase
+    public class MenuItem
     {
-        public Action OnSelected { get; set; }
+        public string Text { get; private set; }
+        public Action OnSelected { get; private set; }
 
         public MenuItem(string text, Action action)
         {
             Text = text;
             OnSelected = action;
         }
-
-        public override void Execute()
-        {
-            OnSelected?.Invoke();
-        }
     }
 
-    public class MenuItem<T1, T2> : MenuItemBase where T1 : Noun where T2 : Noun
+    /*public class MenuItem<T1, T2> : MenuItemBase where T1 : Noun where T2 : Noun
     {
         public Action<T1, T2> OnSelectedWithParameters { get; set; }
         public T1 parameter1;
@@ -36,5 +32,5 @@ namespace TextAdventureLibrary
         {
             OnSelectedWithParameters?.Invoke(parameter1, parameter2);
         }
-    }
+    }*/
 }
