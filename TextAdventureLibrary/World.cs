@@ -14,6 +14,7 @@ namespace TextAdventureLibrary
     public class World
     {
         static string saveFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SaveData");
+        //public static World CurrentWorld { get; private set; }
 
         public string Name { get; private set; }
         public Matrix Map { get; private set; }
@@ -32,6 +33,7 @@ namespace TextAdventureLibrary
             Everywhere = new HashSet<Place>();
             Everything = new HashSet<Thing>();
             History = new Dictionary<DateTime, string>();
+            //CurrentWorld = this;
         }
 
         public void AddTimeSpan(TimeSpan timeSpan)
@@ -137,7 +139,9 @@ namespace TextAdventureLibrary
             string json = File.ReadAllText(filePath);
 
             // Deserialize JSON to object
-            return JsonConvert.DeserializeObject<World>(json);
+            World world = JsonConvert.DeserializeObject<World>(json);
+
+            return world;
         }
     }
 }

@@ -14,41 +14,39 @@ namespace TextAdventureLibrary
         List<Menu> encounterMenus = new List<Menu>();
         public Menu CurrentMenu { get; private set; }
         public Menu SelectedMenu { get; private set; }
-        public World World { get; private set; }
         Terminal terminal;
         int turn = 0;
         string story;
         MultiMenuBuilder menuBuilder;
+        World world;
 
         public Encounter(Terminal terminal, World world, Action<List<Person>> Sort = null, params Person[] people)
         {
             if (people.Length < 2)
                 return;
-            World = world;
             this.terminal = terminal;
             People.AddRange(people);
             Sort?.Invoke(People);
             Run();
+            this.world = world;
         }
 
         void Run()
         {
             while (true)
             {
-                //build menu with ActionSystem
-                foreach (Action action in ActionSystem.GetAvailableActions(People[turn], World))
+
+                menuBuilder = new MultiMenuBuilder();
+                foreach (var action in People[turn].FilterAttributesByType<Action>())
                 {
-                    //menuItems.Add(new MenuItem<Person, Person>("",action));
-                    menuBuilder = new MultiMenuBuilder();
-                    menuBuilder.WithItem(new MenuItem("", action));
+                    menuBuilder.WithItem(new MenuItem(action.Key, action.Value));
                 }
-                //encounterMenus = menuBuilder.WithItems(menuItems.ToArray()).Build();
                 encounterMenus = menuBuilder.Build();
                 CurrentMenu = encounterMenus[0];
                 terminal.Print(CurrentMenu);
                 Menu prevMenu = CurrentMenu;
                 SelectedMenu = CurrentMenu;
-                CurrentMenu.SelectOption(DecisionSystem.Decide(People[turn], this));
+                CurrentMenu.SelectOption(People[turn].GetAttributeValue<Brain>("Brain").Choose());
                 if (CurrentMenu == prevMenu)
                 {
                     menuBuilder = new MultiMenuBuilder().WithName("Select Target");
@@ -61,7 +59,7 @@ namespace TextAdventureLibrary
                     List<Menu> personSelection = menuBuilder.Build();
                     CurrentMenu = personSelection[0];
                     terminal.Print(CurrentMenu);
-                    CurrentMenu.SelectOption(DecisionSystem.Decide(People[turn], this));
+                    CurrentMenu.SelectOption(People[turn].GetAttributeValue<Brain>("Brain").Choose());
                     SelectedMenu.Execute();
                     story += "";
                     turn++;
@@ -76,7 +74,7 @@ namespace TextAdventureLibrary
                 break;
             }
             //results
-            World.AddHistoricalEvent(story);
+            world.AddHistoricalEvent(story);
         }
     }
 }
