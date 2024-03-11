@@ -11,7 +11,7 @@ namespace TextAdventureLibrary
     public class MultiMenuBuilder
     {
         string name;
-        List<MenuItem> menuItems;
+        List<MenuItem> menuItems = new List<MenuItem>();
 
         public MultiMenuBuilder WithName(string name)
         {
