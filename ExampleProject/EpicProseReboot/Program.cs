@@ -28,7 +28,10 @@ namespace EpicProseRedux
 {
     public class Program
     {
-        //FULL SCREEN CODE
+        /// <summary>
+        /// This code if for the console fullscreen mode
+        /// </summary>
+        /// <returns></returns>
         [DllImport("kernel32.dll", ExactSpelling = true)]
         private static extern IntPtr GetConsoleWindow();
         private static IntPtr ThisConsole = GetConsoleWindow();
@@ -45,7 +48,7 @@ namespace EpicProseRedux
         public static bool showEnemyHealth;
         public static bool sound;
 
-        public static CsConsole console = new CsConsole();        
+        public static CsConsole console = new CsConsole();
 
         //items should have attributes for what you can do with them. So like Equip: hand, head, Throwable? Consumable? etc..        
 
@@ -79,7 +82,7 @@ namespace EpicProseRedux
             "weight"
             );*/
 
-        const bool DEBUG = true;
+        const bool DEBUG = false;
 
         static void Main(string[] args)
         {
@@ -91,17 +94,20 @@ namespace EpicProseRedux
             Game game = new Game();
             console.Print("Finished Loading.", true);
 
-            console.SetDebugMode(DEBUG);
-            console.DebugMessage("Debug mode is active");
-
-            if (DEBUG)
-                console.Anykey();
-
             if (!DEBUG)
                 Intro();
 
-            game.Setup();
-            game.Play();
+            Menu mainMenu = new Menu("Main Menu",
+                new MenuItem("New Game", () => { }),
+                new MenuItem("Load Game", () => { }),
+                new MenuItem("Settings", () => { }),
+                new MenuItem("Quit", () => { })
+                );
+
+            console.Print(mainMenu);
+
+            //game.Setup();
+            //game.Play();
 
             if (!DEBUG)
                 Outro();

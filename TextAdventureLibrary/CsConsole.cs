@@ -66,14 +66,12 @@ namespace TextAdventureLibrary
             Console.BackgroundColor = ConsoleColor.Black;
         }
 
-        public override void Print(string text, bool newLine = false)
+        public override void Print(string text)
         {
-            if (newLine)
-                text += "\n";
             Console.Write(text);
         }
 
-        public override void Type(string text, bool newLine = false, int delay = 20)
+        public override void Type(string text, int delay = 20)
         {
             char[] letters = text.ToCharArray();
             foreach (char c in letters)
@@ -85,8 +83,6 @@ namespace TextAdventureLibrary
                     Thread.Sleep(delay);
                 }
             }
-            if (newLine)
-                Console.Write("\n");
         }
 
         public override void Print(Cell cell)
@@ -109,13 +105,13 @@ namespace TextAdventureLibrary
             if (title)
             {
                 SetColor(Color.White, Color.Black);
-                Print(matrix.Name, true);
+                Print(matrix.Name + "\n");
             }
 
             if (info)
             {
                 SetColor(Color.Gray, Color.Black);
-                Print(matrix.Info, true);
+                Print(matrix.Info + "\n");
             }
 
             for (int y = 0; y < matrix.matrix.GetLength(1); y++)
@@ -124,7 +120,7 @@ namespace TextAdventureLibrary
                 {
                     Print(matrix.matrix[x, y]);
                 }
-                Print("", true);
+                Print("\n");
             }
         }
 

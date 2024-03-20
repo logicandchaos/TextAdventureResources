@@ -25,9 +25,9 @@
     {
         public abstract void SetColor(Color foregroundColor, Color backgroundColor);
 
-        public abstract void Print(string text, bool newLine = false);
+        public abstract void Print(string text);
 
-        public abstract void Type(string text, bool newLine = false, int delay = 20);
+        public abstract void Type(string text, int delay = 20);
 
         public abstract void Print(Cell cell);
 
