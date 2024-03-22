@@ -1,39 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TextAdventureLibrary;
 
 namespace EpicProseRedux
 {
     public class Game
     {
-        public enum GameStates { MAIN_MENU, OPTIONS, PLAY_MENU, NEW_GAME, LOAD_GAME, WORLD, ENCOUNTER, QUIT };
-        public GameStates gameState = GameStates.MAIN_MENU;
-
-        MenuSystem menuSystem;
+        public enum GameStates { SETUP, NEWGAME, WORLDMAP, PLACE, ENCOUNTER, DUNGEON, QUIT };
+        public GameStates gameState;
+        public GameStates prevGameState;
 
         Person player;
 
-        Maps maps;
-
-        NameGenerator monsterNameGenerator;
-        NameGenerator humanMaleNameGenerator;
-        NameGenerator humanFemaleNameGenerator;
-        NameGenerator humanLastNameGenerator;
-        NameGenerator animalNameGenerator;
+        Map worldMap;
 
         bool DEBUG = true;
 
         public Game()
         {
-            Program.console.Print("New Game Created", true);
+            Program.console.Print("Creating New Game\n");
+            ChangeState(GameStates.SETUP);
+        }
 
-            Program.console.SetDebugMode(DEBUG);
-            Program.console.DebugMessage("Debug mode is active");
-            if (DEBUG)
-                Program.console.Anykey();
+        public void Setup()
+        {
+            Program.console.Print("Configuring Game\n");
+            SetupMenues();
+            SetupNameGenerators();
+            SetupSpeciesTemplates();
+            SetupItemTemplates();
+            SetupPlaces();
+            worldMap = new Map();
+            worldMap.SetupMap();
+            Program.console.Print("Game Configured\n");
         }
 
         public void Play()
@@ -42,62 +42,49 @@ namespace EpicProseRedux
             {
                 switch (gameState)
                 {
-                    case GameStates.MAIN_MENU:
-                        Program.console.Print(menuSystem.mainMenu);
+                    case GameStates.SETUP:
+                        Setup();
+                        ChangeState(GameStates.NEWGAME);
                         break;
-                    case GameStates.PLAY_MENU:
-                        Program.console.Print(menuSystem.playMenu);
-                        break;
-                    case GameStates.NEW_GAME:
-                        Program.console.Print("Create Your Character", true);
-
+                    case GameStates.NEWGAME:
+                        Program.console.Print("Create Your Character\n");
                         //name
-                        string name = Program.console.GetString("Enter Your Name: ");
-
+                        string name = Program.console.GetString("\nEnter Your Name: ");
                         //choose gender
                         string gender = "";
                         Menu selectGender = new Menu
                             (
-                            "Choose your gender:",
+                            "\nChoose your gender:",
                             new MenuItem("male", () => gender = "male"),
                             new MenuItem("female", () => gender = "female")
                             );
                         Program.console.Print(selectGender);
                         selectGender.SelectOption(Program.console.GetDigit(selectGender.Items.Length));
 
-                        /*player = personBuilder
-                            .WithAttributes(human)
+                        player = ChacterCreator.personBuilder
+                            .WithAttributes(Species.human)
                             .WithAttribute("name", name)
                             .WithAttribute("gender", gender)
-                            .TryBuild();*/
+                            .TryBuild();
 
                         if (player == null)
                         {
-                            Program.console.Print("Error character could not be created!", true);
+                            Program.console.Print("Error character could not be created!");
+                            ChangeState(GameStates.QUIT);
                             break;
                         }
 
-                        Program.console.Print("Roll Stats", true);
-                        //roll stats
-                        Dictionary<string, Stat> stats = player.FilterAttributesByType<Stat>();
+                        Program.console.Print("\nRoll Stats");
                         do
                         {
-                            foreach (var stat in stats)
-                            {
-                                stat.Value.RollStat(player.GetAttributeValue<Die>("die"));
-                                Program.console.Print($"{stat.Key}: {stat.Value}", true);
-                            }
+                            ChacterCreator.RollStats(player);
                         }
                         while (Program.console.YesNo("Reroll?"));
 
-                        //Story();
-                        gameState = GameStates.WORLD;
+                        Story1();
+                        ChangeState(GameStates.PLACE);
                         break;
-                    case GameStates.LOAD_GAME:
-                        gameState = GameStates.WORLD;
-                        break;
-                    case GameStates.WORLD:
-                        Program.console.Print(menuSystem.worldMenu);
+                    case GameStates.PLACE:
                         break;
                     case GameStates.ENCOUNTER:
                         List<Person> people = new List<Person>();
@@ -118,12 +105,17 @@ namespace EpicProseRedux
 
                         int turn = 0;
 
-                        List<Menu> encounterMenus = new List<Menu>();
+                        Menu encounterMenu = new Menu("Encounter");
                         /*MenuItem attack=new MenuItem("Attack",);
                         MenuItem useItem=new MenuItem("Use Item",);
                         MenuItem talk=new MenuItem("Talk",);
                         MenuItem leave=new MenuItem("Leave",);*/
-                        Menu currentMenu = encounterMenus[0];
+                        Menu attackMenu = new Menu("Select Attack");
+                        Menu talkMenu = new Menu("Encounter");
+                        Menu dealMenu = new Menu("Encounter");
+                        Menu itemMenu = new Menu("Encounter");
+                        Menu targetMenu = new Menu("Encounter");
+                        Menu currentMenu = encounterMenu;
 
                         //turn based loop
                         while (true)
@@ -137,7 +129,13 @@ namespace EpicProseRedux
                             turn = turn < orderedPeople.Length ? turn++ : 0;
                             break;
                         }
-                        gameState = GameStates.WORLD;
+                        ChangeState(GameStates.WORLDMAP);
+                        break;
+                    case GameStates.DUNGEON:
+                        //Program.console.Print();
+                        break;
+                    case GameStates.QUIT:
+                        //Program.console.Print();
                         break;
                     default:
                         break;
@@ -145,19 +143,15 @@ namespace EpicProseRedux
             }
         }
 
-        public void Setup()
+        public void ChangeState(GameStates gameState)
         {
-            SetupMenues();
-            SetupNameGenerators();
-            SetupSpeciesTemplates();
-            SetupItemTemplates();
-            SetupPlaceTemplates();
-            maps.SetupMap();
+            prevGameState = this.gameState;
+            this.gameState = gameState;
         }
 
         public void SetupMenues()
         {
-            menuSystem = new MenuSystem(this);
+
         }
 
         public void RollStats(Person person)
@@ -176,6 +170,12 @@ namespace EpicProseRedux
 
             }
         }
+
+        NameGenerator monsterNameGenerator;
+        NameGenerator humanMaleNameGenerator;
+        NameGenerator humanFemaleNameGenerator;
+        NameGenerator humanLastNameGenerator;
+        NameGenerator animalNameGenerator;
 
         public void SetupNameGenerators()
         {
@@ -303,18 +303,18 @@ namespace EpicProseRedux
         public void SetupSpeciesTemplates()
         {
             //HUMAN
-            SpeciesTemplates.human.Add("species", "human");
-            SpeciesTemplates.human.Add("bodyType", "humanoid");
+            Species.human.Add("species", "human");
+            Species.human.Add("bodyType", "humanoid");
             //stats
-            SpeciesTemplates.human.Add("strength", new Stat(3, 9));
-            SpeciesTemplates.human.Add("vitality", new Stat(3, 9));
-            SpeciesTemplates.human.Add("dexterity", new Stat(3, 9));
-            SpeciesTemplates.human.Add("speed", new Stat(3, 9));
-            SpeciesTemplates.human.Add("intelligence", new Stat(3, 9));
-            SpeciesTemplates.human.Add("charisma", new Stat(3, 9));
+            Species.human.Add("strength", new Stat(3, 9));
+            Species.human.Add("vitality", new Stat(3, 9));
+            Species.human.Add("dexterity", new Stat(3, 9));
+            Species.human.Add("speed", new Stat(3, 9));
+            Species.human.Add("intelligence", new Stat(3, 9));
+            Species.human.Add("charisma", new Stat(3, 9));
             //utilities
             Utility health = new Utility(10, 10, .5f);//maybe use a random number for weight within a certain range based on race??
-            SpeciesTemplates.human.Add("health", health);
+            Species.human.Add("health", health);
         }
 
         public static void SetupNPCs()
@@ -340,38 +340,50 @@ namespace EpicProseRedux
                 .TryBuild();*/
         }
 
-        public static void SetupPlaceTemplates()
-        {
-        }        
+        Place iceMountain;
+        Place dwarfCave;
+        Place dragonLair;
+        Place witchDoctorHut;
+        Place burnedVillage;
+        Place plainsville;
+        Place roguesDen;
+        Place townopolus;
+        Place sandland;
+        Place pyramid;
 
-        public void Story()
+        public static void SetupPlaces()
+        {
+
+        }
+
+        public void Story1()
         {
             Program.console.ClearScreen();
             Program.console.Print("STORY");
             Program.console.Print("\n\n<you can skip ahead at anytime by pressing any key>");
-            Program.console.Type("\n\tYou live in a small peaceful village, in the land of Epica. One day", true, Program.textSpeed);
-            Program.console.Type("\nyou are out exploring. After hiking for sometime, you stop to rest your feet.", true, Program.textSpeed);
-            Program.console.Type("\nYou awake it is dark, black clouds are in the sky. You hurry back home to", true, Program.textSpeed);
-            Program.console.Type("\nshelter. As you get closer you see light coming from ahead. You realize it's", true, Program.textSpeed);
-            Program.console.Type("\nnot storm clouds, it's smoke! Your entire village is in flames!", true, Program.textSpeed);
-            Program.console.Type("\nBy the time you reach your village all that is left is burning rubble and ash.", true, Program.textSpeed);
-            Program.console.Type("\nNo survivors, nothing. The only thing that could have caused such destruction", true, Program.textSpeed);
-            Program.console.Type("\nis a dragon! Watching the burning embers of what was once your home, you vow", true, Program.textSpeed);
-            Program.console.Type("\nto avenge them, you will slay the dragon!", true, Program.textSpeed);
-            Program.console.Type("\n...", true, Program.textSpeed * 5);
+            Program.console.Type("\n\tYou live in a small peaceful village, in the land of Epica. One day", Program.textSpeed);
+            Program.console.Type("\nyou are out exploring. After hiking for sometime, you stop to rest your feet.", Program.textSpeed);
+            Program.console.Type("\nYou awake it is dark, black clouds are in the sky. You hurry back home to", Program.textSpeed);
+            Program.console.Type("\nshelter. As you get closer you see light coming from ahead. You realize it's", Program.textSpeed);
+            Program.console.Type("\nnot storm clouds, it's smoke! Your entire village is in flames!", Program.textSpeed);
+            Program.console.Type("\nBy the time you reach your village all that is left is burning rubble and ash.", Program.textSpeed);
+            Program.console.Type("\nNo survivors, nothing. The only thing that could have caused such destruction", Program.textSpeed);
+            Program.console.Type("\nis a dragon! Watching the burning embers of what was once your home, you vow", Program.textSpeed);
+            Program.console.Type("\nto avenge them, you will slay the dragon!", Program.textSpeed);
+            Program.console.Type("\n...", Program.textSpeed * 5);
             Program.console.Anykey();
 
             Program.console.ClearScreen();
-            Program.console.Type("\n\n\"What a tragity!\" a small voice says, you turn around to see a tiny man walk out from behind a tree.", true, Program.textSpeed);
-            Program.console.Type("\n\"I'm Harold nice to meet you\" he says extending his tiny arm, you bend over and give him a finger to shake.", true, Program.textSpeed);
-            Program.console.Type("\n\"Are you new to the land of Epica?\" (Y/N)\n", true, Program.textSpeed);
+            Program.console.Type("\n\n\"What a tragity!\" a small voice says, you turn around to see a tiny man walk out from behind a tree.", Program.textSpeed);
+            Program.console.Type("\n\"I'm Harold nice to meet you\" he says extending his tiny arm, you bend over and give him a finger to shake.", Program.textSpeed);
+            Program.console.Type("\n\"Are you new to the land of Epica?\" (Y/N)\n", Program.textSpeed);
             if (Program.console.YesNo())
             {
-                Program.console.Type("\n\"Welcome to the land of Epica. You can go to The Forest, The Town, The Caves,", true, Program.textSpeed);
-                Program.console.Type("\nThe Ice Mountain and The Dragon's Lair. The weaker monsters are near the forest", true, Program.textSpeed);
-                Program.console.Type("\nand town. If you need some help just press H. You should look around the area", true, Program.textSpeed);
-                Program.console.Type("\nbefore you go there's got to be a weapon laying around here somewhere.", true, Program.textSpeed);
-                Program.console.Type("\nMake sure to equip it before battle in the character menu.\n", true, Program.textSpeed);
+                Program.console.Type("\n\"Welcome to the land of Epica. You can go to The Forest, The Town, The Caves,", Program.textSpeed);
+                Program.console.Type("\nThe Ice Mountain and The Dragon's Lair. The weaker monsters are near the forest", Program.textSpeed);
+                Program.console.Type("\nand town. If you need some help just press H. You should look around the area", Program.textSpeed);
+                Program.console.Type("\nbefore you go there's got to be a weapon laying around here somewhere.", Program.textSpeed);
+                Program.console.Type("\nMake sure to equip it before battle in the character menu.\n", Program.textSpeed);
                 //noob = true;
             }
             else
@@ -467,6 +479,11 @@ namespace EpicProseRedux
             }
             Console.WriteLine("\nYou had " + player.GetGold() + " gold and killed " + player.GetKills() + " monsters.");*/
             Program.console.Anykey();
+        }
+
+        public static Game Load()
+        {
+            return new Game();
         }
     }
 }

@@ -51,8 +51,7 @@
     <Compile Include="ChacterCreator.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="ItemTemplates.cs" />
-    <Compile Include="Maps.cs" />
-    <Compile Include="MenuSystem.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpeciesTemplates.cs" />

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using System.Runtime.InteropServices;
 using TextAdventureLibrary;
@@ -31,7 +27,6 @@ namespace EpicProseRedux
         /// <summary>
         /// This code if for the console fullscreen mode
         /// </summary>
-        /// <returns></returns>
         [DllImport("kernel32.dll", ExactSpelling = true)]
         private static extern IntPtr GetConsoleWindow();
         private static IntPtr ThisConsole = GetConsoleWindow();
@@ -82,7 +77,8 @@ namespace EpicProseRedux
             "weight"
             );*/
 
-        const bool DEBUG = false;
+        const bool DEBUG = true;
+        static bool isRunning = true;
 
         static void Main(string[] args)
         {
@@ -90,24 +86,32 @@ namespace EpicProseRedux
             Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
             ShowWindow(ThisConsole, MAXIMIZE);
 
-            console.Print("Loading.", true);
-            Game game = new Game();
-            console.Print("Finished Loading.", true);
-
             if (!DEBUG)
                 Intro();
 
+            Game game = null;
+
             Menu mainMenu = new Menu("Main Menu",
-                new MenuItem("New Game", () => { }),
-                new MenuItem("Load Game", () => { }),
-                new MenuItem("Settings", () => { }),
-                new MenuItem("Quit", () => { })
+                new MenuItem("New Game", () => { game = NewGame(); }),
+                new MenuItem("Load Game", () => { game = LoadGame(); }),
+                new MenuItem("Settings", () => { Options(); }),
+                new MenuItem("About", () => { About(); }),
+                new MenuItem("Quit", () => { isRunning = false; })
                 );
 
-            console.Print(mainMenu);
-
-            //game.Setup();
-            //game.Play();
+            while (isRunning)
+            {
+                if (game == null)
+                {
+                    console.Print(mainMenu);
+                    mainMenu.SelectOption(console.GetDigit(mainMenu.Items.Length));
+                    mainMenu.Execute();
+                }
+                else
+                {
+                    game.Play();
+                }
+            }
 
             if (!DEBUG)
                 Outro();
@@ -118,26 +122,26 @@ namespace EpicProseRedux
             console.ClearScreen();
             console.Print("\n");
             console.SetColor(Color.Green, Color.Black);
-            console.Type("                    /\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("\n                    \\/\\\\\\///////////", true, 1);
-            console.Type("\n                     \\/\\\\\\               /\\\\\\\\\\\\\\\\\\   /\\\\\\", true, 1);
-            console.Type("\n                      \\/\\\\\\\\\\\\\\\\\\\\\\      /\\\\\\/////\\\\\\ \\///      /\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("\n                       \\/\\\\\\///////      \\/\\\\\\\\\\\\\\\\\\\\   /\\\\\\   /\\\\\\//////", true, 1);
-            console.Type("\n                        \\/\\\\\\             \\/\\\\\\//////   \\/\\\\\\  /\\\\\\", true, 1);
-            console.Type("\n                         \\/\\\\\\             \\/\\\\\\         \\/\\\\\\ \\//\\\\\\", true, 1);
-            console.Type("\n       /\\\\\\\\\\\\\\\\\\\\\\\\\\     \\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\         \\/\\\\\\  \\///\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("\n       \\/\\\\\\/////////\\\\\\   \\///////////////  \\///          \\///     \\////////", true, 1);
-            console.Type("\n        \\/\\\\\\       \\/\\\\\\", true, 1);
-            console.Type("\n         \\/\\\\\\\\\\\\\\\\\\\\\\\\\\/   /\\\\/\\\\\\\\\\\\\\      /\\\\\\\\\\     /\\\\\\\\\\\\\\\\\\\\     /\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("\n          \\/\\\\\\/////////    \\/\\\\\\/////\\\\\\   /\\\\\\///\\\\\\  \\/\\\\\\//////    /\\\\\\/////\\\\\\", true, 1);
-            console.Type("\n           \\/\\\\\\             \\/\\\\\\   \\///   /\\\\\\  \\//\\\\\\ \\/\\\\\\\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("\n            \\/\\\\\\             \\/\\\\\\         \\//\\\\\\  /\\\\\\  \\////////\\\\\\ \\//\\\\///////", true, 1);
-            console.Type("\n             \\/\\\\\\             \\/\\\\\\          \\///\\\\\\\\\\/    /\\\\\\\\\\\\\\\\\\\\  \\//\\\\\\\\\\\\\\\\\\\\", true, 1);
-            console.Type("\n              \\///              \\///             \\/////     \\//////////    \\//////////", true, 1);
-            console.Type("\n\n                 REDUX!", false, textSpeed);
+            console.Type("                    /\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\", 1);
+            console.Type("\n                    \\/\\\\\\///////////", 1);
+            console.Type("\n                     \\/\\\\\\               /\\\\\\\\\\\\\\\\\\   /\\\\\\", 1);
+            console.Type("\n                      \\/\\\\\\\\\\\\\\\\\\\\\\      /\\\\\\/////\\\\\\ \\///      /\\\\\\\\\\\\\\\\", 1);
+            console.Type("\n                       \\/\\\\\\///////      \\/\\\\\\\\\\\\\\\\\\\\   /\\\\\\   /\\\\\\//////", 1);
+            console.Type("\n                        \\/\\\\\\             \\/\\\\\\//////   \\/\\\\\\  /\\\\\\", 1);
+            console.Type("\n                         \\/\\\\\\             \\/\\\\\\         \\/\\\\\\ \\//\\\\\\", 1);
+            console.Type("\n       /\\\\\\\\\\\\\\\\\\\\\\\\\\     \\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \\/\\\\\\         \\/\\\\\\  \\///\\\\\\\\\\\\\\\\", 1);
+            console.Type("\n       \\/\\\\\\/////////\\\\\\   \\///////////////  \\///          \\///     \\////////", 1);
+            console.Type("\n        \\/\\\\\\       \\/\\\\\\", 1);
+            console.Type("\n         \\/\\\\\\\\\\\\\\\\\\\\\\\\\\/   /\\\\/\\\\\\\\\\\\\\      /\\\\\\\\\\     /\\\\\\\\\\\\\\\\\\\\     /\\\\\\\\\\\\\\\\", 1);
+            console.Type("\n          \\/\\\\\\/////////    \\/\\\\\\/////\\\\\\   /\\\\\\///\\\\\\  \\/\\\\\\//////    /\\\\\\/////\\\\\\", 1);
+            console.Type("\n           \\/\\\\\\             \\/\\\\\\   \\///   /\\\\\\  \\//\\\\\\ \\/\\\\\\\\\\\\\\\\\\\\  /\\\\\\\\\\\\\\\\\\\\\\", 1);
+            console.Type("\n            \\/\\\\\\             \\/\\\\\\         \\//\\\\\\  /\\\\\\  \\////////\\\\\\ \\//\\\\///////", 1);
+            console.Type("\n             \\/\\\\\\             \\/\\\\\\          \\///\\\\\\\\\\/    /\\\\\\\\\\\\\\\\\\\\  \\//\\\\\\\\\\\\\\\\\\\\", 1);
+            console.Type("\n              \\///              \\///             \\/////     \\//////////    \\//////////", 1);
+            console.Type("\n\n                 REDUX!", textSpeed);
             Thread.Sleep(500);
             console.ResetColor();
-            console.Type("\n                                    By Matt Timmermans", true, textSpeed);
+            console.Type("\n                                    By Matt Timmermans", textSpeed);
             Thread.Sleep(500);
             console.Anykey();
         }
@@ -150,19 +154,14 @@ namespace EpicProseRedux
             int input;
             do
             {
-                //while (Console.KeyAvailable) // Flushes the input queue.
-                //Console.ReadKey();
-                input = console.GetDigit(5);
-                //console.Print(); // Breaks the line.
-                console.Print("\nInput: " + input);
+                input = console.GetDigit(10);
             }
             while (input != 0 && input != 1 && input != 2 && input != 3 && input != 4 && input != 5);
-            //SetTextSpeed(input * 20);
+            console.Print("\nInput: " + input);
             textSpeed = input * 20;
             console.Print("\n");
-            console.Type("Text speed set, speed test in now process", false, textSpeed);
-            console.Type("...", false, textSpeed * 5);
-            //Console.WriteLine("\nText speed: " + textSpeed);
+            console.Type("Text speed set, speed test in now process", textSpeed);
+            console.Type("...", textSpeed * 5);
 
             //Show Rolls
             console.Print("\nShow dice rolls(Y/N): ");
@@ -191,9 +190,19 @@ namespace EpicProseRedux
             console.Anykey();
         }
 
+        public static Game NewGame()
+        {
+            return new Game();
+        }
+
+        public static Game LoadGame()
+        {
+            return Game.Load();
+        }
+
         public static void Outro()
         {
-            console.Type("Thank you forplaying Epic Prose Redux");
+            console.Type("Thank you for playing Epic Prose Redux");
             console.Anykey();
         }
     }

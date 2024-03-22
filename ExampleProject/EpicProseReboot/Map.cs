@@ -1,26 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TextAdventureLibrary;
 
 namespace EpicProseRedux
 {
-    public class Maps
+    public class Map
     {
-        Cell desertCell = new Cell('░', Color.DarkYellow, Color.DarkRed);
-        Cell forestCell = new Cell('♣', Color.DarkYellow, Color.DarkRed);
         Cell waterCell = new Cell('~', Color.DarkYellow, Color.DarkRed);
+        Cell desertCell = new Cell('░', Color.DarkYellow, Color.DarkRed);
+        Cell desertShoreCell0 = new Cell('_', Color.DarkYellow, Color.DarkRed);
+        Cell desertShoreCell1 = new Cell('/', Color.DarkYellow, Color.DarkRed);
+        Cell desertShoreCell2 = new Cell('|', Color.DarkYellow, Color.DarkRed);
+        Cell desertShoreCell3 = new Cell('\\', Color.DarkYellow, Color.DarkRed);
+        Cell forestCell = new Cell('♣', Color.DarkYellow, Color.DarkRed);
+        Cell forestShoreCell0 = new Cell('_', Color.DarkYellow, Color.DarkRed);
+        Cell forestShoreCell1 = new Cell('/', Color.DarkYellow, Color.DarkRed);
+        Cell forestShoreCell2 = new Cell('|', Color.DarkYellow, Color.DarkRed);
+        Cell forestShoreCell3 = new Cell('\\', Color.DarkYellow, Color.DarkRed);
         Cell swampCell = new Cell('▒', Color.DarkYellow, Color.DarkRed);
+        Cell swampShoreCell0 = new Cell('_', Color.DarkYellow, Color.DarkRed);
+        Cell swampShoreCell1 = new Cell('/', Color.DarkYellow, Color.DarkRed);
+        Cell swampShoreCell2 = new Cell('|', Color.DarkYellow, Color.DarkRed);
+        Cell swampShoreCell3 = new Cell('\\', Color.DarkYellow, Color.DarkRed);
         Cell plainsCell = new Cell(' ', Color.DarkYellow, Color.DarkRed);
-        Cell mountainCell0 = new Cell('m', Color.DarkYellow, Color.DarkRed);
+        Cell plainsShoreCell0 = new Cell('_', Color.DarkYellow, Color.DarkRed);
+        Cell plainsShoreCell1 = new Cell('/', Color.DarkYellow, Color.DarkRed);
+        Cell plainsShoreCell2 = new Cell('|', Color.DarkYellow, Color.DarkRed);
+        Cell plainsShoreCell3 = new Cell('\\', Color.DarkYellow, Color.DarkRed);
+        Cell snowCell = new Cell(' ', Color.DarkYellow, Color.DarkRed);
+        Cell snowShoreCell0 = new Cell('_', Color.DarkYellow, Color.DarkRed);
+        Cell snowShoreCell1 = new Cell('/', Color.DarkYellow, Color.DarkRed);
+        Cell snowShoreCell2 = new Cell('|', Color.DarkYellow, Color.DarkRed);
+        Cell snowShoreCell3 = new Cell('\\', Color.DarkYellow, Color.DarkRed);
+        Cell mountainCell0 = new Cell(' ', Color.DarkYellow, Color.DarkRed);
         Cell mountainCell1 = new Cell('/', Color.DarkYellow, Color.DarkRed);
         Cell mountainCell2 = new Cell('\\', Color.DarkYellow, Color.DarkRed);
-        Cell shoreCell0 = new Cell('_', Color.DarkYellow, Color.DarkRed);
-        Cell shoreCell1 = new Cell('/', Color.DarkYellow, Color.DarkRed);
-        Cell shoreCell2 = new Cell('|', Color.DarkYellow, Color.DarkRed);
-        Cell shoreCell3 = new Cell('\\', Color.DarkYellow, Color.DarkRed);
         Cell iceMountain = new Cell('0', Color.DarkYellow, Color.DarkRed);
         Cell dwarfCave = new Cell('1', Color.DarkYellow, Color.DarkRed);
         Cell dragonLair = new Cell('2', Color.DarkYellow, Color.DarkRed);
@@ -44,7 +58,44 @@ namespace EpicProseRedux
         public void SetupMap()
         {
             worldMapKey.AddKey('~', waterCell);
-            worldMapKey.AddKey('_', shoreCell1);
+            worldMapKey.AddKey('a', desertCell);
+            worldMapKey.AddKey('b', desertShoreCell0);
+            worldMapKey.AddKey('c', desertShoreCell1);
+            worldMapKey.AddKey('d', desertShoreCell2);
+            worldMapKey.AddKey('e', desertShoreCell3);
+            worldMapKey.AddKey('f', forestCell);
+            worldMapKey.AddKey('g', forestShoreCell0);
+            worldMapKey.AddKey('h', forestShoreCell1);
+            worldMapKey.AddKey('i', forestShoreCell2);
+            worldMapKey.AddKey('j', forestShoreCell3);
+            worldMapKey.AddKey('k', swampCell);
+            worldMapKey.AddKey('l', swampShoreCell0);
+            worldMapKey.AddKey('m', swampShoreCell1);
+            worldMapKey.AddKey('n', swampShoreCell2);
+            worldMapKey.AddKey('o', swampShoreCell3);
+            worldMapKey.AddKey('p', plainsCell);
+            worldMapKey.AddKey('q', plainsShoreCell0);
+            worldMapKey.AddKey('r', plainsShoreCell1);
+            worldMapKey.AddKey('s', plainsShoreCell2);
+            worldMapKey.AddKey('t', plainsShoreCell3);
+            worldMapKey.AddKey('u', snowCell);
+            worldMapKey.AddKey('v', snowShoreCell0);
+            worldMapKey.AddKey('w', snowShoreCell1);
+            worldMapKey.AddKey('x', snowShoreCell2);
+            worldMapKey.AddKey('y', snowShoreCell3);
+            worldMapKey.AddKey('z', mountainCell0);
+            worldMapKey.AddKey(',', mountainCell1);
+            worldMapKey.AddKey('.', mountainCell2);
+            worldMapKey.AddKey('0', iceMountain);
+            worldMapKey.AddKey('1', dwarfCave);
+            worldMapKey.AddKey('2', dragonLair);
+            worldMapKey.AddKey('3', witchDoctorHut);
+            worldMapKey.AddKey('4', burnedVillage);
+            worldMapKey.AddKey('5', plainsville);
+            worldMapKey.AddKey('6', roguesDen);
+            worldMapKey.AddKey('7', townopolus);
+            worldMapKey.AddKey('8', sandland);
+            worldMapKey.AddKey('9', pyramid);
 
             worldMap.CreateMatrixFromString(
             worldMapKey,
