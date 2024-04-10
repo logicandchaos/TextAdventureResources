@@ -1,4 +1,4 @@
-﻿    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 /// <summary>
 /// This is the Inventory class for managing the inventory.

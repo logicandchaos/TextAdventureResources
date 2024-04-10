@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -33,7 +32,6 @@ namespace TextAdventureLibrary
             Everywhere = new HashSet<Place>();
             Everything = new HashSet<Thing>();
             History = new Dictionary<DateTime, string>();
-            //CurrentWorld = this;
         }
 
         public void AddTimeSpan(TimeSpan timeSpan)
@@ -84,6 +82,37 @@ namespace TextAdventureLibrary
         public void RemovePlace(Place place)
         {
             Everywhere.Remove(place);
+        }
+
+        public Place GetClosestPlace(Vector2Int location)
+        {
+            Place closestPlace = null;
+            double closestDistance = double.MaxValue;
+
+            foreach (var place in Everywhere)
+            {
+                double distance = location.DistanceTo(place.GetAttributeValue<Vector2Int>("location"));
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestPlace = place;
+                }
+            }
+
+            return closestPlace;
+        }
+
+        public Place[] OrderPlacesByDistance(Vector2Int location)
+        {
+            return Everywhere.OrderBy
+                (place => location.DistanceTo(place.GetAttributeValue<Vector2Int>("location"))).ToArray();
+        }
+
+        public bool IsWithinPlace(Vector2Int location)
+        {
+            Place closestPlace = GetClosestPlace(location);
+            return closestPlace.GetAttributeValue<Vector2Int>("location").DistanceTo(location)
+                < closestPlace.GetAttributeValue<float>("size");
         }
 
         public void AddHistoricalEvent(string historicalEvent)//should have title too? or use title as key??

@@ -6,6 +6,8 @@ namespace TextAdventureLibrary
 {
     public abstract class Noun
     {
+        public string Name { get; protected set; }
+        public string Description { get; protected set; }
         public Dictionary<string, object> Attributes { get; private set; } = new Dictionary<string, object>();
 
         public void AddOrSetAttribute(string name, object value)

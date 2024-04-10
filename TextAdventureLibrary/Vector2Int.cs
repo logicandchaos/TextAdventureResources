@@ -55,6 +55,13 @@ namespace TextAdventureLibrary
             return Math.Sqrt(dx * dx + dy * dy);
         }
 
+        public static double Distance(Vector2Int point1, Vector2Int point2)
+        {
+            int dx = point2.X - point1.X;
+            int dy = point2.Y - point1.Y;
+            return Math.Sqrt(dx * dx + dy * dy);
+        }
+
         public void MoveTowards(Vector2Int p_destination, int p_amount)
         {
             double distanceToDestination = DistanceTo(p_destination);

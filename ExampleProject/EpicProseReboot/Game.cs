@@ -13,6 +13,7 @@ namespace EpicProseRedux
 
         Person player;
 
+        World world;
         Map worldMap;
 
         bool DEBUG = true;
@@ -62,26 +63,45 @@ namespace EpicProseRedux
                             .WithAttributes(Species.human)
                             .WithAttribute("name", name)
                             .WithAttribute("gender", gender)
+                            .WithAttribute("strength", new Stat(3, 9))
+                            .WithAttribute("vitality", new Stat(3, 9))
+                            .WithAttribute("dexterity", new Stat(3, 9))
+                            .WithAttribute("speed", new Stat(3, 9))
+                            .WithAttribute("intelligence", new Stat(3, 9))
+                            .WithAttribute("charisma", new Stat(3, 9))
+                            .WithAttribute("bodyType", "Humanoid")
+                            .WithAttribute("health", new Utility(1, 1, 1))
+                            .WithAttribute("die", new Die(DateTime.Now.GetHashCode()))
                             .TryBuild();
 
                         if (player == null)
                         {
-                            Program.console.Print("Error character could not be created!");
-                            ChangeState(GameStates.QUIT);
+                            Program.console.Print("Error character could not be created!\n\n");
+                            ChangeState(GameStates.NEWGAME);
                             break;
                         }
 
                         Program.console.Print("\nRoll Stats");
                         do
                         {
+                            Program.console.ClearScreen();
                             ChacterCreator.RollStats(player);
                         }
                         while (Program.console.YesNo("Reroll?"));
 
                         Story1();
+                        player.AddOrSetAttribute("Location", new Vector2Int(1, 1));
                         ChangeState(GameStates.PLACE);
                         break;
                     case GameStates.PLACE:
+                        Menu placeMenu = new Menu
+                            (
+                            $"\nYou are at {player.GetAttributeValue<Vector2Int>("location")}",
+                            new MenuItem("male", () => gender = "male"),
+                            new MenuItem("female", () => gender = "female")
+                            );
+                        Program.console.Print(placeMenu);
+                        placeMenu.SelectOption(Program.console.GetDigit(placeMenu.Items.Length));
                         break;
                     case GameStates.ENCOUNTER:
                         List<Person> people = new List<Person>();
@@ -146,7 +166,7 @@ namespace EpicProseRedux
             this.gameState = gameState;
         }
 
-        public static void SetupNPCs()
+        public void SetupNPCs()
         {
             //King of thieves
             //the Ice Giant
@@ -162,7 +182,7 @@ namespace EpicProseRedux
             //Jack the Tavernkeeper
         }
 
-        public static void SetupItemTemplates()
+        public void SetupItemTemplates()
         {
             //SWORD
             /*Thing sword = thingBuilder
@@ -180,9 +200,38 @@ namespace EpicProseRedux
         Place sandland;
         Place pyramid;
 
-        public static void SetupPlaces()
+        public void SetupPlaces()
         {
-
+            iceMountain = new Place("Ice Mountain");
+            iceMountain.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            iceMountain.AddOrSetAttribute("Description", "");
+            dwarfCave = new Place();
+            dwarfCave.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            dwarfCave.AddOrSetAttribute("Description", "");
+            dragonLair = new Place();
+            dragonLair.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            dragonLair.AddOrSetAttribute("Description", "");
+            witchDoctorHut = new Place();
+            witchDoctorHut.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            witchDoctorHut.AddOrSetAttribute("Description", "");
+            burnedVillage = new Place();
+            burnedVillage.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            burnedVillage.AddOrSetAttribute("Description", "");
+            plainsville = new Place();
+            plainsville.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            plainsville.AddOrSetAttribute("Description", "");
+            roguesDen = new Place();
+            roguesDen.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            roguesDen.AddOrSetAttribute("Description", "");
+            townopolus = new Place();
+            townopolus.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            townopolus.AddOrSetAttribute("Description", "");
+            sandland = new Place();
+            sandland.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            sandland.AddOrSetAttribute("Description", "");
+            pyramid = new Place();
+            pyramid.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+            pyramid.AddOrSetAttribute("Description", "");
         }
 
         public void Story1()

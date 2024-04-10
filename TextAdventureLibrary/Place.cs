@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
-
-namespace TextAdventureLibrary
+﻿namespace TextAdventureLibrary
 {
     public class Place : Noun
     {
-        public Dictionary<string, Place> connected;
+        public Vector2Int Location { get; private set; }
+        public float Size { get; private set; }
 
-        public Place() { }
-
-        public List<string> GetConnected()
+        public Place(string name, Vector2Int location, float size)
         {
-            return new List<string>(connected.Keys);
+            Name = name;
+            Location = location;
+            Size = size;
         }
     }
 }

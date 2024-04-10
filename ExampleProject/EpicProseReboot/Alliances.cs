@@ -8,7 +8,7 @@ namespace EpicProseReboot
 {
     public static class Alliances
     {
-        public static Dictionary<(string, string), int> alliances = new Dictionary<(string, string), int>()
+        public static Dictionary<(string, string), int> speciesAlliances = new Dictionary<(string, string), int>()
         {
             { ("human","slime"),-1 },
             { ("human","wolf"),-1 },
@@ -180,5 +180,10 @@ namespace EpicProseReboot
 
             { ("iceGiant","dragon"),1 }
         };
+
+        public static Dictionary<(string, string), int> characterAlliances = new Dictionary<(string, string), int>()
+        {
+
+        }; 
     }
 }

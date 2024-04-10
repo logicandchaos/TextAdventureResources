@@ -2,6 +2,9 @@
 {
     public class Thing : Noun
     {
-        public Thing() { }
+        public Thing(string name)
+        {
+            Name = name;
+        }
     }
 }

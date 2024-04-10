@@ -17,9 +17,10 @@ namespace EpicProseRedux
             "health",
             "name",
             "gender",
-            "hostility",//aggression
-            "sociability",
-            "diet"
+            "die"
+            //"hostility",//aggression
+            //"sociability",
+            //"diet"
             );
 
         public static NameGenerator humanMaleNameGenerator = new NameGenerator
@@ -156,7 +157,7 @@ namespace EpicProseRedux
             foreach (var stat in stats)
             {
                 stat.Value.RollStat(die);
-                Program.console.Print($"{stat.Key}: {stat.Value}");
+                Program.console.Print($"{stat.Key}: {stat.Value.Value}\n");
             }
         }
     }
