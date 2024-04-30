@@ -15,7 +15,7 @@ namespace EpicProseRedux
 
         World world;
 
-        bool DEBUG = true;
+        const bool DEBUG = true;
 
         public Game()
         {
@@ -28,6 +28,7 @@ namespace EpicProseRedux
             Program.console.Print("Configuring Game\n");
             SetupWorld();
             SetupPlaces();
+            SetupNPCs();
             SetupItemTemplates();
             Program.console.Print("Game Configured\n");
         }
@@ -137,15 +138,13 @@ namespace EpicProseRedux
                         Program.console.Print(selectGender);
                         selectGender.SelectOption(Program.console.GetDigit(selectGender.Items.Length));
 
-                        string result;
-                        //string attributes;
                         player = ChacterCreator.personBuilder
                             .WithAttributes(Species.human)
                             .WithAttribute("gender", gender)
                             .WithAttribute("health", new Utility(1, 1, 1))
                             .WithAttribute("die", new Die(DateTime.Now.GetHashCode()))
                             //.GetCurrentAttributes(out attributes)
-                            .TryBuild(out result);
+                            .TryBuild(out string result);
                         //Program.console.Print(attributes);
                         if (player == null)
                         {
@@ -165,18 +164,25 @@ namespace EpicProseRedux
                         while (Program.console.YesNo("Reroll?"));
 
                         Story1();
-                        player.AddOrSetAttribute("Location", new Vector2Int(1, 1));
+                        player.AddOrSetAttribute("location", burnedVillage.Location);
                         ChangeState(GameStates.PLACE);
                         break;
                     case GameStates.PLACE:
-                        Menu placeMenu = new Menu
-                            (
-                            $"\nYou are at {player.GetAttributeValue<Vector2Int>("location")}",
-                            new MenuItem("male", () => gender = "male"),
-                            new MenuItem("female", () => gender = "female")
-                            );
+                        Place place = world.GetClosestPlace(player.GetAttributeValue<Vector2Int>("location"));
+                        Menu placeMenu;
+                        if (place.)
+                            placeMenu = new Menu
+                                (
+                                $"\nYou are at {place.Name}",
+                                new MenuItem("Look", () => Program.console.Print(place.Description)),
+                                new MenuItem("Search", Search),
+                                new MenuItem("Leave", () => ChangeState(GameStates.WORLDMAP))
+                                );
                         Program.console.Print(placeMenu);
                         placeMenu.SelectOption(Program.console.GetDigit(placeMenu.Items.Length));
+                        break;
+                    case GameStates.WORLDMAP:
+
                         break;
                     case GameStates.ENCOUNTER:
                         List<Person> people = new List<Person>();
@@ -221,7 +227,7 @@ namespace EpicProseRedux
                             turn = turn < orderedPeople.Length ? turn++ : 0;
                             break;
                         }
-                        ChangeState(GameStates.WORLDMAP);
+                        ChangeState(prevGameState);
                         break;
                     case GameStates.DUNGEON:
                         //Program.console.Print();
@@ -235,6 +241,36 @@ namespace EpicProseRedux
             }
         }
 
+        public void Search()
+        {
+            Program.console.Print("You find: ");// +player.GetCurrentLocation().GetDescription());
+            Program.console.Type("...", Program.textSpeed * 5);
+            Die die = player.GetAttributeValue<Die>("die");
+            int roll = die.Roll(0, 99);
+            if (roll < 10)
+            {
+                int gold = die.Roll(0, 4);
+                Program.console.Print(gold + " gold!");
+                //int playerGold = player.GetAttributeValue<int>("gold");
+                //player.AddGold(gold);
+            }
+            else if (roll < 20)
+            {
+                Program.console.Print("An Encounter!!!");
+                //randomly create enemy
+                ChangeState(GameStates.ENCOUNTER);
+            }
+            else if (roll < 40)
+            {
+                Program.console.Print("What is that!?");
+                Program.console.Type(" ...", Program.textSpeed * 5);
+                Program.console.Print("Wait never mind it's nothing.");
+            }
+            else
+                Program.console.Print("Nothing!");
+            Program.console.Anykey();
+        }
+
         public void ChangeState(GameStates gameState)
         {
             prevGameState = this.gameState;
@@ -244,17 +280,31 @@ namespace EpicProseRedux
         public void SetupNPCs()
         {
             //King of thieves
+            Person kingOfThieves = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out string result);
             //the Ice Giant
+
             //mummyLord
+
             //dragon
+
             //John the Blacksmith
+
             //Bob the Witchdoctor
+
             //Frank the Dwarf
+
             //David the Warrior
+
             //Steve the Knight
+
             //Carol the Merchant
+
             //Joline the Sorcerous
+
             //Jack the Tavernkeeper
+
         }
 
         public void SetupItemTemplates()
@@ -264,83 +314,72 @@ namespace EpicProseRedux
                 .TryBuild();*/
         }
 
-        Place iceMountain;
-        Place dwarfCave;
-        Place dragonLair;
-        Place witchDoctorHut;
-        Place burnedVillage;
-        Place plainsville;
-        Place roguesDen;
-        Place townopolus;
-        Place sandland;
-        Place pyramid;
-
         public void SetupPlaces()
         {
-            iceMountain = new Place();
+            Place iceMountain = new Place();
             iceMountain.SetName("Ice Mountain");
             iceMountain.SetDescription("You are at the ice mountains, you can't see the top.");
             iceMountain.SetLocation(new Vector2Int(1, 1));
             iceMountain.SetSize(1);
             world.Everywhere.Add(iceMountain);
 
-            dwarfCave = new Place();
+            Place dwarfCave = new Place();
             dwarfCave.SetName("Dwarf Cave");
             dwarfCave.SetDescription("You are at the Dwarf's cave home.");
             dwarfCave.SetLocation(new Vector2Int(1, 1));
             dwarfCave.SetSize(1);
             world.Everywhere.Add(dwarfCave);
 
-            dragonLair = new Place();
+            Place dragonLair = new Place();
             dragonLair.SetName("Dragon's Lair");
             dragonLair.SetDescription("You are in the lair of the dragon.");
             dragonLair.SetLocation(new Vector2Int(1, 1));
             dragonLair.SetSize(1);
             world.Everywhere.Add(dragonLair);
 
-            witchDoctorHut = new Place();
+            Place witchDoctorHut = new Place();
             witchDoctorHut.SetName("Witch Doctor's Hut");
             witchDoctorHut.SetDescription("You are at the ice mountains, you can't see the top.");
             witchDoctorHut.SetLocation(new Vector2Int(1, 1));
             witchDoctorHut.SetSize(1);
             world.Everywhere.Add(witchDoctorHut);
 
-            burnedVillage = new Place();
+            Place burnedVillage = new Place();
             burnedVillage.SetName("Village");
             burnedVillage.SetDescription("You are surrounded by the ashes of what was once your village.");
             burnedVillage.SetLocation(new Vector2Int(1, 1));
             burnedVillage.SetSize(1);
             world.Everywhere.Add(burnedVillage);
 
-            plainsville = new Place();
+            Place plainsville = new Place();
             plainsville.SetName("PlainsVille");
             plainsville.SetDescription("A rustic village! It's even got a rusty tick!");
             plainsville.SetLocation(new Vector2Int(1, 1));
             plainsville.SetSize(1);
             world.Everywhere.Add(plainsville);
 
-            roguesDen = new Place();
+            Place roguesDen = new Place();
             roguesDen.SetName("Thieve's Den");
             roguesDen.SetDescription("You are in the thieve's den.");
             roguesDen.SetLocation(new Vector2Int(1, 1));
             roguesDen.SetSize(1);
             world.Everywhere.Add(roguesDen);
 
-            townopolus = new Place();
+            Place townopolus = new Place();
             townopolus.SetName("Townopolus");
             townopolus.SetDescription("What a town! It's got buildings and everything!");
             townopolus.SetLocation(new Vector2Int(1, 1));
             townopolus.SetSize(1);
             world.Everywhere.Add(townopolus);
 
-            sandland = new Place();
+            Place sandland = new Place();
             sandland.SetName("Sandland");
             sandland.SetDescription("A shady place in the hot desert.");
             sandland.SetLocation(new Vector2Int(1, 1));
             sandland.SetSize(1);
             world.Everywhere.Add(sandland);
 
-            pyramid = new Place();
+            Place pyramid = new Place();
             pyramid.SetName("Pyramid");
             pyramid.SetDescription("You are in the pyramid.");
             pyramid.SetLocation(new Vector2Int(1, 1));

@@ -15,6 +15,12 @@ namespace TextAdventureLibrary
             this.requiredAttributes = requiredAttributes;
         }
 
+        public NounBuilder<T> New()
+        {
+            noun = new T();
+            return this;
+        }
+
         public NounBuilder<T> WithAttribute(string key, object value)
         {
             noun.AddOrSetAttribute(key, value);

@@ -4,21 +4,21 @@ namespace TextAdventureLibrary
 {
     public class Die
     {
-        public Random Random { get; private set; }
+        private Random random;
 
         public Die(int seed)
         {
-            Random = new Random(seed);
+            random = new Random(seed);
         }
 
         public Die(Random random)
         {
-            Random = random;
+            this.random = random;
         }
 
         public int Roll(int min, int max)
         {
-            return Random.Next(min, max + 1);
+            return random.Next(min, max + 1);
         }
     }
 }
