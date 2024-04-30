@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace TextAdventureLibrary
+﻿namespace TextAdventureLibrary
 {
     public class Stat
     {
         public int Min { get; }
         public int Max { get; }
-        public object Value { get; private set; }
+        public float Value { get; private set; }
 
         public Stat(int min, int max)
         {
@@ -41,8 +39,6 @@ namespace TextAdventureLibrary
             int roll = die.Roll(Min, Max + 1);
             if (roll > (int)Value)
                 return 0;
-            /*if (roll == (int)Value)//critical hit
-                return roll * 2;*/
             return roll;
         }
     }

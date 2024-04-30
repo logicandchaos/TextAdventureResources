@@ -30,18 +30,47 @@ namespace TextAdventureLibrary
             return this;
         }
 
+        public string GetMissingAttributes()
+        {
+            string missingAttributes = "";
+            foreach (string key in noun.Attributes.Keys)
+            {
+                if (!requiredAttributes.Contains(key))
+                {
+                    missingAttributes += key + "\n";
+                }
+            }
+            return missingAttributes;
+        }
+
+        public NounBuilder<T> GetCurrentAttributes(out string attributes)
+        {
+            attributes = "";
+            foreach (string key in noun.Attributes.Keys)
+            {
+                attributes += key + "\n";
+            }
+            return this;
+        }
+
         private bool CheckRequiredAttributes()
         {
             var presentAttributes = noun.Attributes.Keys;
             return requiredAttributes.All(attr => presentAttributes.Contains(attr));
         }
 
-        public T TryBuild()
+        public T TryBuild(out string message)
         {
             if (CheckRequiredAttributes())
+            {
+                message = "Build Successful";
                 return Build();
+            }
             else
+            {
+                message = "Missing attributes:\n" + GetMissingAttributes();
                 return null;
+            }
         }
 
         private T Build()

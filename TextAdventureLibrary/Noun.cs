@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace TextAdventureLibrary
@@ -9,6 +8,21 @@ namespace TextAdventureLibrary
         public string Name { get; protected set; }
         public string Description { get; protected set; }
         public Dictionary<string, object> Attributes { get; private set; } = new Dictionary<string, object>();
+
+        public void SetName(string name)
+        {
+            Name = name;
+        }
+
+        public void SetDescription(string text)
+        {
+            Description = text;
+        }
+
+        public void AddDescription(string text)
+        {
+            Description += text;
+        }
 
         public void AddOrSetAttribute(string name, object value)
         {

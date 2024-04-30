@@ -14,7 +14,6 @@ namespace EpicProseRedux
         Person player;
 
         World world;
-        Map worldMap;
 
         bool DEBUG = true;
 
@@ -27,11 +26,90 @@ namespace EpicProseRedux
         public void Setup()
         {
             Program.console.Print("Configuring Game\n");
-            SetupItemTemplates();
+            SetupWorld();
             SetupPlaces();
-            worldMap = new Map();
-            worldMap.SetupMap();
+            SetupItemTemplates();
             Program.console.Print("Game Configured\n");
+        }
+
+        public void SetupWorld()
+        {
+            world = new World("Epica",
+                "0: Ice Mountain, 1: Cave, 2: Lair, 3: Witch Doctor, 4: Burned Village,\n5: Plainsville 6: Rogue's Den, 7: Townopolus, 8: Sandland, 9: Pyramid",
+                WorldMapCells.worldMapKey
+                );
+
+            world.Map.CreateMatrixFromString(
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~_________~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~/         \~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~|          \~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~__/   /\/\     \_____~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~|     /mm\m\    /\/\  \____~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~|              /mm\m\      \____~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~/   /\ /\                /\/\    \~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~|  /mm\mm\   0          /mm\m\    |__~~~~~~~~~_____~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~|                                    \_______/     \_~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~_/           /\/\              /\/\     ▒▒▒▒▒▒▒ /\ /\  \~~~~~~~~~~~~~~~",
+                @"~~~~~~~~/     ♣  ♣   /mm\m\       1    /mm\m\  ▒▒▒▒▒▒▒▒ /  \  \  |~~~~~~~~~~~~~~",
+                @"~~~~~~~_|   ♣  ♣ ♣ ♣                          ▒▒▒▒▒▒▒▒▒▒   2    /~~~~~~~~~~~~~~~",
+                @"~~~~~~/    ♣ ♣  ♣   ♣      /\ /\       /\/\  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ |_~~~~~~~~~~~~~~~",
+                @"~~~~~/    ♣  ♣  ♣ ♣  ♣    /mm\mm\     /mm\m\ ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒\~~~~~~~~~~~~~~",
+                @"~~~~~|   ♣  ♣  ♣   ♣   ♣                     ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒|~~~~~~~~~~~~~",
+                @"~~~_/   ♣  ♣  ♣   ♣  ♣ ♣ ♣                    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒\~~~~~~~~~~~~~",
+                @"~~|      ♣ ♣▒▒▒▒▒   ♣  ♣  ♣                    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒|_~~~~~~~~~~~",
+                @"~~|   ♣ ♣  ▒▒▒▒▒▒▒ ♣  ♣ ♣  ♣                     ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒|~~~~~~~~~~",
+                @"~~|   ♣  ♣▒▒▒▒▒▒▒3▒ ♣ ♣  ♣ ♣                       ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒\~~~~~~~~~~",
+                @"~~~\    ♣  ▒▒▒▒▒▒▒  ♣  ♣   ♣                   4      ▒▒▒▒▒▒▒▒▒▒▒▒    |~~~~~~~~~",
+                @"~~~~|    ♣   ▒▒▒  ♣   ♣   ♣                             ♣   ♣   ♣ ♣ ♣ |~~~~~~~~~",
+                @"~~~~\_   ♣  ♣ ♣  ♣   ♣   ♣                            ♣   ♣    ♣   ♣ ♣\~~~~~~~~~",
+                @"~~~~~~\    ♣ ♣  ♣  ♣   ♣ ♣                          ♣   ♣  ♣  ♣  ♣  ♣ _|~~~~~~~~",
+                @"~~~~~~~\_   ♣  ♣  ♣  ♣  ♣                          ♣  ♣   ♣ ♣  ♣  ♣  ♣\~~~~~~~~~",
+                @"~~~~~~~~~\    ♣ ♣  ♣  ♣                             ♣   ♣  ♣  ♣  ♣    ♣|~~~~~~~~",
+                @"~~~~~~~~~~\__    ♣  ♣                             ♣   ♣   ♣  ♣   ♣  ♣  |~~~~~~~~",
+                @"~~~~~~~~~~~~~~|                   5                ♣   ♣   ♣  ♣  ♣  ♣  |~~~~~~~~",
+                @"~~~~~~~~~~~~~~\                                   ♣   ♣  ♣   ♣  ♣ 6   ♣|~~~~~~~~",
+                @"~~~~~~~~~~~~~~~\                                    ♣   ♣  ♣   ♣   ♣ ♣ |~~~~~~~~",
+                @"~~~~~~~~~~~~~~~|                                     ♣   ♣   ♣   ♣  ♣__|~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~\                                      ♣  ♣  ♣  ♣ ♣ |_~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~|                                        ♣ ♣   ♣  ♣  ♣|~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~\                                           ♣   ♣     \~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~\                                                    |~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~\                                                   |~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~\                                                   \~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~\                                                  |~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~|                                        7         |~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~|                                                  |~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~\              ░░░░░░░░░░░░░░░░                    /~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~|        ░░░░░░░░░░░░░░░░░░░░░░░░░░              |~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~\    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░           |~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~\░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░       /~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~|░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ _/~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~|░░░░░░░░8░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~\░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ /~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~\░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░__|~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~|░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ___|~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~|░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░_/~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~|░░░░░░░░░░░░░░░░░░░░░░░░░░░░ _/~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~\░░░░░░░░░░░░░░░░░░░░░░░░    /~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~|░░░░░░░░░░░░░░░░░░░░░░░░  |~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~\░░░░░░░░░░9░░░░░░░░░░░░░░_|~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~\░░░░░░░░░░░░░░░░░░░░░░░/~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\_░░░░░░░░░░░░░░░░  __/~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\░░░░░░░░░░░░░░__/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\_░░░░░░░░░░_/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\___░░░__/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\_/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            );
+            //key
+            /*@"0: Ice Mountain,     1: Dwarf Cave,     2: Dragon Lair     3: Witch Doctor,",
+            @"4: Burned Village,   5: Plainsville     6: Rogue's Den,",
+            @"7: Townopolus,       8: Sandland        9: Pyramid"*/
         }
 
         public void Play()
@@ -59,33 +137,30 @@ namespace EpicProseRedux
                         Program.console.Print(selectGender);
                         selectGender.SelectOption(Program.console.GetDigit(selectGender.Items.Length));
 
+                        string result;
+                        //string attributes;
                         player = ChacterCreator.personBuilder
                             .WithAttributes(Species.human)
-                            .WithAttribute("name", name)
                             .WithAttribute("gender", gender)
-                            .WithAttribute("strength", new Stat(3, 9))
-                            .WithAttribute("vitality", new Stat(3, 9))
-                            .WithAttribute("dexterity", new Stat(3, 9))
-                            .WithAttribute("speed", new Stat(3, 9))
-                            .WithAttribute("intelligence", new Stat(3, 9))
-                            .WithAttribute("charisma", new Stat(3, 9))
-                            .WithAttribute("bodyType", "Humanoid")
                             .WithAttribute("health", new Utility(1, 1, 1))
                             .WithAttribute("die", new Die(DateTime.Now.GetHashCode()))
-                            .TryBuild();
-
+                            //.GetCurrentAttributes(out attributes)
+                            .TryBuild(out result);
+                        //Program.console.Print(attributes);
                         if (player == null)
                         {
-                            Program.console.Print("Error character could not be created!\n\n");
-                            ChangeState(GameStates.NEWGAME);
-                            break;
+                            Program.console.Print("Error character could not be created!\n");
+                            Program.console.Print(result);
                         }
+
+                        player.SetName(name);
+                        player.SetDescription("");
 
                         Program.console.Print("\nRoll Stats");
                         do
                         {
                             Program.console.ClearScreen();
-                            ChacterCreator.RollStats(player);
+                            ChacterCreator.RollStats(player, true);
                         }
                         while (Program.console.YesNo("Reroll?"));
 
@@ -202,36 +277,75 @@ namespace EpicProseRedux
 
         public void SetupPlaces()
         {
-            iceMountain = new Place("Ice Mountain");
-            iceMountain.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            iceMountain.AddOrSetAttribute("Description", "");
+            iceMountain = new Place();
+            iceMountain.SetName("Ice Mountain");
+            iceMountain.SetDescription("You are at the ice mountains, you can't see the top.");
+            iceMountain.SetLocation(new Vector2Int(1, 1));
+            iceMountain.SetSize(1);
+            world.Everywhere.Add(iceMountain);
+
             dwarfCave = new Place();
-            dwarfCave.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            dwarfCave.AddOrSetAttribute("Description", "");
+            dwarfCave.SetName("Dwarf Cave");
+            dwarfCave.SetDescription("You are at the Dwarf's cave home.");
+            dwarfCave.SetLocation(new Vector2Int(1, 1));
+            dwarfCave.SetSize(1);
+            world.Everywhere.Add(dwarfCave);
+
             dragonLair = new Place();
-            dragonLair.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            dragonLair.AddOrSetAttribute("Description", "");
+            dragonLair.SetName("Dragon's Lair");
+            dragonLair.SetDescription("You are in the lair of the dragon.");
+            dragonLair.SetLocation(new Vector2Int(1, 1));
+            dragonLair.SetSize(1);
+            world.Everywhere.Add(dragonLair);
+
             witchDoctorHut = new Place();
-            witchDoctorHut.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            witchDoctorHut.AddOrSetAttribute("Description", "");
+            witchDoctorHut.SetName("Witch Doctor's Hut");
+            witchDoctorHut.SetDescription("You are at the ice mountains, you can't see the top.");
+            witchDoctorHut.SetLocation(new Vector2Int(1, 1));
+            witchDoctorHut.SetSize(1);
+            world.Everywhere.Add(witchDoctorHut);
+
             burnedVillage = new Place();
-            burnedVillage.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            burnedVillage.AddOrSetAttribute("Description", "");
+            burnedVillage.SetName("Village");
+            burnedVillage.SetDescription("You are surrounded by the ashes of what was once your village.");
+            burnedVillage.SetLocation(new Vector2Int(1, 1));
+            burnedVillage.SetSize(1);
+            world.Everywhere.Add(burnedVillage);
+
             plainsville = new Place();
-            plainsville.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            plainsville.AddOrSetAttribute("Description", "");
+            plainsville.SetName("PlainsVille");
+            plainsville.SetDescription("A rustic village! It's even got a rusty tick!");
+            plainsville.SetLocation(new Vector2Int(1, 1));
+            plainsville.SetSize(1);
+            world.Everywhere.Add(plainsville);
+
             roguesDen = new Place();
-            roguesDen.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            roguesDen.AddOrSetAttribute("Description", "");
+            roguesDen.SetName("Thieve's Den");
+            roguesDen.SetDescription("You are in the thieve's den.");
+            roguesDen.SetLocation(new Vector2Int(1, 1));
+            roguesDen.SetSize(1);
+            world.Everywhere.Add(roguesDen);
+
             townopolus = new Place();
-            townopolus.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            townopolus.AddOrSetAttribute("Description", "");
+            townopolus.SetName("Townopolus");
+            townopolus.SetDescription("What a town! It's got buildings and everything!");
+            townopolus.SetLocation(new Vector2Int(1, 1));
+            townopolus.SetSize(1);
+            world.Everywhere.Add(townopolus);
+
             sandland = new Place();
-            sandland.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            sandland.AddOrSetAttribute("Description", "");
+            sandland.SetName("Sandland");
+            sandland.SetDescription("A shady place in the hot desert.");
+            sandland.SetLocation(new Vector2Int(1, 1));
+            sandland.SetSize(1);
+            world.Everywhere.Add(sandland);
+
             pyramid = new Place();
-            pyramid.AddOrSetAttribute("Location", new Vector2Int(1, 1));
-            pyramid.AddOrSetAttribute("Description", "");
+            pyramid.SetName("Pyramid");
+            pyramid.SetDescription("You are in the pyramid.");
+            pyramid.SetLocation(new Vector2Int(1, 1));
+            pyramid.SetSize(1);
+            world.Everywhere.Add(pyramid);
         }
 
         public void Story1()

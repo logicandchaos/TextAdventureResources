@@ -15,12 +15,8 @@ namespace EpicProseRedux
             "charisma",
             "bodyType",
             "health",
-            "name",
             "gender",
             "die"
-            //"hostility",//aggression
-            //"sociability",
-            //"diet"
             );
 
         public static NameGenerator humanMaleNameGenerator = new NameGenerator
@@ -143,22 +139,27 @@ namespace EpicProseRedux
                 "Cartwright"
                 );
 
-        public static void RollStats(Person person)
+        public static void RollStats(Person person, bool display = false)
         {
+            if (display)
+                Program.console.Print($"{person.Name}'s stats\n");
+
             Die die = person.GetAttributeValue<Die>("die");
 
             Dictionary<string, Stat> stats = person.FilterAttributesByType<Stat>();
-            // Use LINQ to filter objects of the specified type
-            /*List<Stat> stats = person.Attributes
-                .Where(kv => kv.Value != null && kv.Value.GetType() == type)
-                .Select(kv => (Stat)kv.Value)
-                .ToList();*/
 
             foreach (var stat in stats)
             {
                 stat.Value.RollStat(die);
-                Program.console.Print($"{stat.Key}: {stat.Value.Value}\n");
+                if (display)
+                    Program.console.Print($"{stat.Key}: {stat.Value.Value}\n");
             }
+
+            Utility health = person.GetAttributeValue<Utility>("health");
+            health.SetMax(person.GetAttributeValue<Stat>("vitality").Value * 10);
+            health.SetValue(health.Max);
+            if (display)
+                Program.console.Print($"\nHealth: {health.Value}/{health.Max}\n");
         }
     }
 }

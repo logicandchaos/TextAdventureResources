@@ -14,7 +14,7 @@ namespace EpicProseRedux
             { "intelligence", new Stat(3,9) },
             { "charisma", new Stat(3,9) },
             { "bodyType", "humanoid" },
-            { "abilities", "" }//list of abilities
+            //{ "abilities", "" }//list of abilities
         };
         public static Dictionary<string, object> slime = new Dictionary<string, object>()
         {

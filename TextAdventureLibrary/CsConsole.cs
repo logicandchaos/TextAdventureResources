@@ -97,7 +97,7 @@ namespace TextAdventureLibrary
                 Console.Write($"{i}: {inventory.Things[i].GetAttributeValue<string>("name")}");
         }
 
-        public override void Print(Matrix matrix, bool clearScreen = false, bool title = true, bool info = true)
+        public override void Print(Map map, bool clearScreen = false, bool title = true, bool info = true)
         {
             if (clearScreen)
                 ClearScreen();
@@ -105,20 +105,20 @@ namespace TextAdventureLibrary
             if (title)
             {
                 SetColor(Color.White, Color.Black);
-                Print(matrix.Name + "\n");
+                Print(map.Name + "\n");
             }
 
             if (info)
             {
                 SetColor(Color.Gray, Color.Black);
-                Print(matrix.Info + "\n");
+                Print(map.Info + "\n");
             }
 
-            for (int y = 0; y < matrix.matrix.GetLength(1); y++)
+            for (int y = 0; y < map.Matrix.GetLength(1); y++)
             {
-                for (int x = 0; x < matrix.matrix.GetLength(0); x++)
+                for (int x = 0; x < map.Matrix.GetLength(0); x++)
                 {
-                    Print(matrix.matrix[x, y]);
+                    Print(map.Matrix[x, y]);
                 }
                 Print("\n");
             }

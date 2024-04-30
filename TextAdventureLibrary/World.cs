@@ -16,7 +16,7 @@ namespace TextAdventureLibrary
         //public static World CurrentWorld { get; private set; }
 
         public string Name { get; private set; }
-        public Matrix Map { get; private set; }
+        public Map Map { get; private set; }
         public Die Die { get; private set; }
         public DateTime CurrentDateTime { get; private set; }
         public HashSet<Person> Everyone { get; private set; }
@@ -24,7 +24,7 @@ namespace TextAdventureLibrary
         public HashSet<Thing> Everything { get; private set; }
         public Dictionary<DateTime, string> History { get; private set; }
 
-        public World(string name)
+        public World(string name, string info, MapKey key, Cell[,] matrix)
         {
             Name = name;
             Die = new Die(name.GetHashCode());
@@ -32,6 +32,30 @@ namespace TextAdventureLibrary
             Everywhere = new HashSet<Place>();
             Everything = new HashSet<Thing>();
             History = new Dictionary<DateTime, string>();
+            Map = new Map(name, info, key, matrix);
+        }
+
+        public World(string name, string info, MapKey key)
+        {
+            Name = name;
+            Die = new Die(name.GetHashCode());
+            Everyone = new HashSet<Person>();
+            Everywhere = new HashSet<Place>();
+            Everything = new HashSet<Thing>();
+            History = new Dictionary<DateTime, string>();
+            Map = new Map(name, info, key);
+        }
+
+        public World(string name, string info, MapKey key, string mapData)
+        {
+            Name = name;
+            Die = new Die(name.GetHashCode());
+            Everyone = new HashSet<Person>();
+            Everywhere = new HashSet<Place>();
+            Everything = new HashSet<Thing>();
+            History = new Dictionary<DateTime, string>();
+            Map = new Map(name, info, key);
+            Map.CreateMatrixFromString(mapData);
         }
 
         public void AddTimeSpan(TimeSpan timeSpan)
