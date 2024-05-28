@@ -62,9 +62,9 @@ namespace TextAdventureLibrary
                 AddPerson(p);
         }
 
-        public void RemovePerson(Person person)
+        public void RemovePerson(string person)
         {
-            Everyone.Remove(person.Name);
+            Everyone.Remove(person);
         }
 
         public void AddThing(Thing thing)
@@ -78,9 +78,9 @@ namespace TextAdventureLibrary
                 AddThing(t);
         }
 
-        public void RemoveThing(Thing thing)
+        public void RemoveThing(string thing)
         {
-            Everything.Remove(thing.Name);
+            Everything.Remove(thing);
         }
 
         public void AddPlace(Place place)
@@ -94,9 +94,9 @@ namespace TextAdventureLibrary
                 AddPlace(p);
         }
 
-        public void RemovePlace(Place place)
+        public void RemovePlace(string place)
         {
-            Everywhere.Remove(place.Name);
+            Everywhere.Remove(place);
         }
 
         public Place GetClosestPlace(Vector2Int location)
@@ -106,7 +106,7 @@ namespace TextAdventureLibrary
 
             foreach (var place in Everywhere.Values)
             {
-                double distance = location.DistanceTo(place.GetAttributeValue<Vector2Int>("location"));
+                double distance = location.DistanceTo(place.Location);
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
@@ -126,11 +126,12 @@ namespace TextAdventureLibrary
                 .ToArray();
         }
 
-        public bool IsWithinPlace(Vector2Int location)
+        public Place WithinBordersOf(Vector2Int location)
         {
             Place closestPlace = GetClosestPlace(location);
-            return closestPlace.GetAttributeValue<Vector2Int>("location").DistanceTo(location)
-                < closestPlace.GetAttributeValue<float>("size");
+            if (closestPlace.Location.DistanceTo(location) < closestPlace.Size)
+                return closestPlace;
+            return null;
         }
 
         public void AddHistoricalEvent(string historicalEvent)//should have title too? or use title as key??

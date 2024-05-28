@@ -15,6 +15,8 @@ namespace EpicProseRedux
 
         World world;
 
+        MenuBuilder menuBuilder = new MenuBuilder();
+
         const bool DEBUG = true;
 
         public Game()
@@ -115,6 +117,9 @@ namespace EpicProseRedux
 
         public void Play()
         {
+            Place closestPlace;
+            Vector2Int playerLocation;
+            List<MenuItem> menuItems;
             while (gameState != GameStates.QUIT)
             {
                 switch (gameState)
@@ -139,6 +144,7 @@ namespace EpicProseRedux
                         selectGender.SelectOption(Program.console.GetDigit(selectGender.Items.Length));
 
                         player = ChacterCreator.personBuilder
+                            .New()
                             .WithAttributes(Species.human)
                             .WithAttribute("gender", gender)
                             .WithAttribute("health", new Utility(1, 1, 1))
@@ -164,25 +170,43 @@ namespace EpicProseRedux
                         while (Program.console.YesNo("Reroll?"));
 
                         Story1();
-                        player.AddOrSetAttribute("location", burnedVillage.Location);
+                        player.AddOrSetAttribute("location", world.Everywhere["Village"].Location);
                         ChangeState(GameStates.PLACE);
                         break;
                     case GameStates.PLACE:
-                        Place place = world.GetClosestPlace(player.GetAttributeValue<Vector2Int>("location"));
-                        Menu placeMenu;
-                        if (place.)
-                            placeMenu = new Menu
-                                (
-                                $"\nYou are at {place.Name}",
-                                new MenuItem("Look", () => Program.console.Print(place.Description)),
-                                new MenuItem("Search", Search),
-                                new MenuItem("Leave", () => ChangeState(GameStates.WORLDMAP))
-                                );
+                        playerLocation = player.GetAttributeValue<Vector2Int>("location");
+                        closestPlace = world.GetClosestPlace(playerLocation);
+                        menuItems = new List<MenuItem>();
+                        menuItems.Add(new MenuItem("Look", () => Program.console.Print(closestPlace.Description)));
+                        menuItems.Add(new MenuItem("Search", Search));
+                        if (closestPlace.Population.Count > 0)
+                        {
+                            menuItems.Add(new MenuItem("Talk", Search));
+                            menuItems.Add(new MenuItem("Attack", Search));
+                            menuItems.Add(new MenuItem("Pick Pocket", Search));
+                        }
+                        menuItems.Add(new MenuItem("Leave", () => ChangeState(GameStates.WORLDMAP)));
+                        Menu placeMenu = new Menu($"\nYou are at {closestPlace.Name}", menuItems.ToArray());
                         Program.console.Print(placeMenu);
                         placeMenu.SelectOption(Program.console.GetDigit(placeMenu.Items.Length));
                         break;
                     case GameStates.WORLDMAP:
-
+                        playerLocation = player.GetAttributeValue<Vector2Int>("location");
+                        closestPlace = world.GetClosestPlace(playerLocation);
+                        menuItems = new List<MenuItem>();
+                        menuItems.Add(new MenuItem("Look", () => Program.console.Print(closestPlace.Description)));
+                        menuItems.Add(new MenuItem("Search", Search));
+                        menuItems.Add(new MenuItem("Travel", Search));
+                        menuItems.Add(new MenuItem("Camp", Search));//formerly character menu
+                        if (world.WithinBordersOf(playerLocation) != null)
+                        {
+                            menuItems.Add(new MenuItem("Enter " + closestPlace.Name, () => { gameState = GameStates.PLACE; }));
+                        }
+                        Menu worldMenu = new Menu($"Epica", menuItems.ToArray());
+                        Program.console.Print(worldMenu);
+                        worldMenu.SelectOption(Program.console.GetDigit(worldMenu.Items.Length));
+                        //character menu
+                        //ConsoleKey input = TextFunctions.TextMenu("(L)ook,(E)quipment,(S)tatus,(R)est,(B)ack");
                         break;
                     case GameStates.ENCOUNTER:
                         List<Person> people = new List<Person>();
@@ -283,6 +307,7 @@ namespace EpicProseRedux
             Person kingOfThieves = ChacterCreator.personBuilder
                 .New()
                 .TryBuild(out string result);
+
             //the Ice Giant
 
             //mummyLord
@@ -319,72 +344,72 @@ namespace EpicProseRedux
             Place iceMountain = new Place();
             iceMountain.SetName("Ice Mountain");
             iceMountain.SetDescription("You are at the ice mountains, you can't see the top.");
-            iceMountain.SetLocation(new Vector2Int(1, 1));
+            iceMountain.SetLocation(new Vector2Int(24, 9));
             iceMountain.SetSize(1);
-            world.Everywhere.Add(iceMountain);
+            world.AddPlace(iceMountain);
 
             Place dwarfCave = new Place();
             dwarfCave.SetName("Dwarf Cave");
             dwarfCave.SetDescription("You are at the Dwarf's cave home.");
-            dwarfCave.SetLocation(new Vector2Int(1, 1));
+            dwarfCave.SetLocation(new Vector2Int(36, 12));
             dwarfCave.SetSize(1);
-            world.Everywhere.Add(dwarfCave);
+            world.AddPlace(dwarfCave);
 
             Place dragonLair = new Place();
             dragonLair.SetName("Dragon's Lair");
             dragonLair.SetDescription("You are in the lair of the dragon.");
-            dragonLair.SetLocation(new Vector2Int(1, 1));
+            dragonLair.SetLocation(new Vector2Int(59, 13));
             dragonLair.SetSize(1);
-            world.Everywhere.Add(dragonLair);
+            world.AddPlace(dragonLair);
 
             Place witchDoctorHut = new Place();
             witchDoctorHut.SetName("Witch Doctor's Hut");
             witchDoctorHut.SetDescription("You are at the ice mountains, you can't see the top.");
-            witchDoctorHut.SetLocation(new Vector2Int(1, 1));
+            witchDoctorHut.SetLocation(new Vector2Int(17, 21));
             witchDoctorHut.SetSize(1);
-            world.Everywhere.Add(witchDoctorHut);
+            world.AddPlace(witchDoctorHut);
 
             Place burnedVillage = new Place();
             burnedVillage.SetName("Village");
             burnedVillage.SetDescription("You are surrounded by the ashes of what was once your village.");
-            burnedVillage.SetLocation(new Vector2Int(1, 1));
+            burnedVillage.SetLocation(new Vector2Int(47, 22));
             burnedVillage.SetSize(1);
-            world.Everywhere.Add(burnedVillage);
+            world.AddPlace(burnedVillage);
 
             Place plainsville = new Place();
             plainsville.SetName("PlainsVille");
             plainsville.SetDescription("A rustic village! It's even got a rusty tick!");
-            plainsville.SetLocation(new Vector2Int(1, 1));
+            plainsville.SetLocation(new Vector2Int(34, 29));
             plainsville.SetSize(1);
-            world.Everywhere.Add(plainsville);
+            world.AddPlace(plainsville);
 
             Place roguesDen = new Place();
             roguesDen.SetName("Thieve's Den");
             roguesDen.SetDescription("You are in the thieve's den.");
-            roguesDen.SetLocation(new Vector2Int(1, 1));
+            roguesDen.SetLocation(new Vector2Int(67, 30));
             roguesDen.SetSize(1);
-            world.Everywhere.Add(roguesDen);
+            world.AddPlace(roguesDen);
 
             Place townopolus = new Place();
             townopolus.SetName("Townopolus");
             townopolus.SetDescription("What a town! It's got buildings and everything!");
-            townopolus.SetLocation(new Vector2Int(1, 1));
+            townopolus.SetLocation(new Vector2Int(62, 41));
             townopolus.SetSize(1);
-            world.Everywhere.Add(townopolus);
+            world.AddPlace(townopolus);
 
             Place sandland = new Place();
             sandland.SetName("Sandland");
             sandland.SetDescription("A shady place in the hot desert.");
-            sandland.SetLocation(new Vector2Int(1, 1));
+            sandland.SetLocation(new Vector2Int(33, 48));
             sandland.SetSize(1);
-            world.Everywhere.Add(sandland);
+            world.AddPlace(sandland);
 
             Place pyramid = new Place();
             pyramid.SetName("Pyramid");
             pyramid.SetDescription("You are in the pyramid.");
-            pyramid.SetLocation(new Vector2Int(1, 1));
+            pyramid.SetLocation(new Vector2Int(39, 56));
             pyramid.SetSize(1);
-            world.Everywhere.Add(pyramid);
+            world.AddPlace(pyramid);
         }
 
         public void Story1()

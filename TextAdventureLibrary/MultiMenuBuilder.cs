@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 /// <summary>
-/// This class takes in actions and creates a Menu
+/// This class takes in actions and creates a List of Menues
 /// </summary>
 
 namespace TextAdventureLibrary
