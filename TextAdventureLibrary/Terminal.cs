@@ -45,7 +45,7 @@
 
         public abstract void ResetColor();
 
-        public abstract void SetColorToHealth(float healthPercent);
+        public abstract void SetColorToHealth(int healthPercent);
 
         public abstract void Anykey(string message = "<Press any key>");
 

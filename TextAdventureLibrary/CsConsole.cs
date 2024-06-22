@@ -57,13 +57,20 @@ namespace TextAdventureLibrary
             Console.ResetColor();
         }
 
-        public override void SetColorToHealth(float healthPercent)
+        public override void SetColorToHealth(int healthPercent)
         {
-            if ((int)healthPercent > 33)
-                Console.ForegroundColor = ConsoleColor.Gray;
+            if (healthPercent > 66)
+                Console.ForegroundColor = ConsoleColor.Green;
+            else if (healthPercent > 33)
+                Console.ForegroundColor = ConsoleColor.Yellow;
             else
                 Console.ForegroundColor = ConsoleColor.Red;
             Console.BackgroundColor = ConsoleColor.Black;
+        }
+
+        public bool IsKeyAvailable()
+        {
+            return Console.KeyAvailable;
         }
 
         public override void Print(string text)

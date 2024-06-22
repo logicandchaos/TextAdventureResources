@@ -46,6 +46,11 @@ namespace TextAdventureLibrary
             Map.CreateMatrixFromString(mapData);
         }
 
+        public void SetDateTime(DateTime dateTime)
+        {
+            CurrentDateTime = dateTime;
+        }
+
         public void AddTimeSpan(TimeSpan timeSpan)
         {
             CurrentDateTime += timeSpan;
