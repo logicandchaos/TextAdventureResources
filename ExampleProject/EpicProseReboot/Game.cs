@@ -32,8 +32,8 @@ namespace EpicProseRedux
         Place desertEasy = new Place("Desert", "hot and sandy", new Vector2Int(47, 57), 14);
         //list of all areas in game
         List<Place> worldAreas;
-
-
+        Dictionary<string, Dictionary<string, object>> itemTemplates;
+        NounBuilder<Thing> itemBuilder = new NounBuilder<Thing>();
 
         const bool DEBUG = true;
 
@@ -48,7 +48,6 @@ namespace EpicProseRedux
             Program.console.Print("Configuring Game\n");
             SetupWorld();
             SetupPlaces();
-            SetupItems();
             SetupNPCs();
             SetupItemTemplates();
             Program.console.Print("Game Configured\n");
@@ -177,7 +176,7 @@ namespace EpicProseRedux
 
                         player.SetName(name);
                         player.SetDescription("");
-                        player.SetLocation(world.Everywhere["Village"].Location);                        
+                        player.SetLocation(world.Everywhere["Village"].Location);
 
                         Program.console.Print("\nRoll Stats");
                         do
@@ -641,6 +640,7 @@ namespace EpicProseRedux
             Person kingOfThieves = ChacterCreator.personBuilder
                 .New()
                 .TryBuild(out string result);
+            world.Everyone.Add("kingOfThieves", kingOfThieves);
 
             //the Ice Giant
 
@@ -668,9 +668,35 @@ namespace EpicProseRedux
 
         public void SetupItemTemplates()
         {
-            //SWORD
-            /*Thing sword = thingBuilder
-                .TryBuild();*/
+            Dictionary<string, object> dagger = new Dictionary<string, object>();
+            Dictionary<string, object> shortsword = new Dictionary<string, object>();
+            Dictionary<string, object> longsword = new Dictionary<string, object>();
+            Dictionary<string, object> club = new Dictionary<string, object>();
+            Dictionary<string, object> mace = new Dictionary<string, object>();
+            Dictionary<string, object> flail = new Dictionary<string, object>();
+            Dictionary<string, object> dragonbane = new Dictionary<string, object>();
+            Dictionary<string, object> flamingFlail = new Dictionary<string, object>();
+
+            Dictionary<string, object> leather = new Dictionary<string, object>();
+            Dictionary<string, object> chainmail = new Dictionary<string, object>();
+            Dictionary<string, object> platemail = new Dictionary<string, object>();
+            Dictionary<string, object> icearmour = new Dictionary<string, object>();
+            //("dagger", "a pointy thing", 2, 20, 1, Weapon.weaponTypes.edged, false);
+            //Thing shortsword = new Thing("shortsword", "a small sword", 4, 100, 2, Weapon.weaponTypes.edged, false);
+            //Thing longsword = new Thing("longsword", "a good weapon", 6, 350, 3, Weapon.weaponTypes.edged, false);
+            //Thing club = new Weapon("club", "a big stick", 3, 20, 1, Weapon.weaponTypes.blunt, false);
+            //Thing mace = new Weapon("mace", "a chunk of iron on a stick", 6, 100, 2, Weapon.weaponTypes.blunt, false);
+            //Thing flail = new Weapon("flail", "a ball and chain", 3, 350, 9, Weapon.weaponTypes.blunt, false);
+            //Thing dragonbane = new Weapon("dragon's bane", "it shimmers with magic", 7, 1000, 4, Weapon.weaponTypes.edged, true);
+            //good against ice and undead
+            //Thing flamingFlail = new Weapon("flaming flail", "a magic burning sphere on a chain", 8, 1000, 5, Weapon.weaponTypes.blunt, true);
+
+            //Thing leather = new Armour("leather", "old leather armour", 20, 30, 1, 0, false);
+            //Thing chainmail = new Armour("chainmail", "this armour is ok", 40, 150, 2, 1, false);
+            //Thing platemail = new Armour("platemail", "good armour", 60, 400, 3, 2, false);
+            //Thing icearmour = new Armour("ice armour", "it looks like ice, cool to the touch", 50, 1000, 4, 2, true);
+
+            //Thing potion = new Potion();
         }
 
         public void SetupPlaces()
@@ -709,8 +735,10 @@ namespace EpicProseRedux
             burnedVillage.SetLocation(new Vector2Int(47, 22));
             burnedVillage.SetSize(1);
             burnedVillage.InitializeInventory(1000, 1000, 1000);
-            if(world.Die.Roll(0,1)==0)                
-                burnedVillage.Inventory.TryAddToInventory();
+            /*if(world.Die.Roll(0,1)==0)                
+                burnedVillage.Inventory.TryAddToInventory(shortSword);
+            else
+                burnedVillage.Inventory.TryAddToInventory(club);*/
             world.AddPlace(burnedVillage);
 
             Place plainsville = new Place();
