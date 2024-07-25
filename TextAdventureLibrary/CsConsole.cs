@@ -129,6 +129,7 @@ namespace TextAdventureLibrary
                 }
                 Print("\n");
             }
+            SetColor(Color.Gray, Color.Black);
         }
 
         public override void Print(Menu menu)

@@ -9,10 +9,16 @@ namespace TextAdventureLibrary
         public string Description { get; protected set; }
         public Vector2Int Location { get; private set; }
         public Dictionary<string, object> Attributes { get; private set; } = new Dictionary<string, object>();
+        public Inventory Inventory { get; protected set; }
 
         public void SetName(string name)
         {
             Name = name;
+        }
+
+        public void InitializeInventory(float maxWeight, float space, int maxItems)
+        {
+            Inventory = new Inventory(maxWeight, space, maxItems);
         }
 
         public void SetDescription(string text)

@@ -14,20 +14,24 @@ namespace TextAdventureLibrary
     {
         public float MaxWeight { get; private set; }
         public float MaxVolume { get; private set; }
+        public int MaxItems { get; private set; }
         public float CurrentWeight { get; private set; }
         public float VolumeUsed { get; private set; }
         public List<Thing> Things { get; private set; }
 
-        public Inventory(float maxWeight, float space)
+        public Inventory(float maxWeight, float space, int maxItems)
         {
             MaxWeight = maxWeight;
             MaxVolume = space;
+            MaxItems = maxItems;
             CurrentWeight = 0;
             VolumeUsed = 0;
         }
 
         public bool TryAddToInventory(Thing thing)
         {
+            if (Things.Count >= MaxItems)
+                return false;
             float weight = thing.GetAttributeValue<float>("weight");
             float volume = thing.GetAttributeValue<float>("volume");
             if (weight + CurrentWeight <= MaxWeight

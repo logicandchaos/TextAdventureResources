@@ -33,6 +33,8 @@ namespace EpicProseRedux
         //list of all areas in game
         List<Place> worldAreas;
 
+
+
         const bool DEBUG = true;
 
         public Game()
@@ -46,6 +48,7 @@ namespace EpicProseRedux
             Program.console.Print("Configuring Game\n");
             SetupWorld();
             SetupPlaces();
+            SetupItems();
             SetupNPCs();
             SetupItemTemplates();
             Program.console.Print("Game Configured\n");
@@ -126,11 +129,6 @@ namespace EpicProseRedux
                 @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
                 @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
                 @"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            //);
-            //key
-            @"0: Ice Mountain,     1: Dwarf Cave,     2: Dragon Lair     3: Witch Doctor,",
-            @"4: Burned Village,   5: Plainsville     6: Rogue's Den,",
-            @"7: Townopolus,       8: Sandland        9: Pyramid"//*/
             );
         }
 
@@ -179,6 +177,7 @@ namespace EpicProseRedux
 
                         player.SetName(name);
                         player.SetDescription("");
+                        player.SetLocation(world.Everywhere["Village"].Location);                        
 
                         Program.console.Print("\nRoll Stats");
                         do
@@ -189,7 +188,6 @@ namespace EpicProseRedux
                         while (Program.console.YesNo("Reroll?"));
 
                         Story1();
-                        player.AddOrSetAttribute("location", world.Everywhere["Village"].Location);
                         ChangeState(GameStates.PLACE);
                         break;
                     case GameStates.PLACE:
@@ -259,9 +257,13 @@ namespace EpicProseRedux
                         menuItems.Add(new MenuItem("Check Map", () =>
                         {
                             Program.console.Print(world.Map);
+                            //key
+                            Program.console.Print("0: Ice Mountain,     1: Dwarf Cave,     2: Dragon Lair     3: Witch Doctor,\n");
+                            Program.console.Print("4: Burned Village,   5: Plainsville     6: Rogue's Den,\n");
+                            Program.console.Print("7: Townopolus,       8: Sandland        9: Pyramid\n");
                             Program.console.Anykey();
                         }));
-                        menuItems.Add(new MenuItem("Camp", Search));//formerly character menu
+                        menuItems.Add(new MenuItem("Camp", () => ChangeState(GameStates.CAMP)));//formerly character menu
                         if (within != null)
                         {
                             menuItems.Add(new MenuItem("Enter " + within.Name, () => { gameState = GameStates.PLACE; }));
@@ -279,8 +281,8 @@ namespace EpicProseRedux
                         menuItems.Add(new MenuItem("Inventory", Inventory));
                         menuItems.Add(new MenuItem("Rest", Rest));
                         menuItems.Add(new MenuItem("Leave", () => ChangeState(GameStates.WORLDMAP)));
-                        menuItems.Add(new MenuItem("Save", () => { }));
-                        menuItems.Add(new MenuItem("Quit", () => { }));
+                        menuItems.Add(new MenuItem("Save", Save));
+                        menuItems.Add(new MenuItem("Quit", () => ChangeState(GameStates.QUIT)));
                         Menu campMenu = new Menu($"\nYou are at camp", menuItems.ToArray());
                         Program.console.Print(campMenu);
                         campMenu.SelectOption(Program.console.GetDigit(campMenu.Items.Length));
@@ -341,6 +343,13 @@ namespace EpicProseRedux
                         break;
                 }
             }
+        }
+
+        public void Save()
+        {
+            Program.console.Print("SAVING...");
+            Program.console.Print("SAVED");
+            Program.console.Anykey();
         }
 
         public void Search()
@@ -699,6 +708,9 @@ namespace EpicProseRedux
             burnedVillage.SetDescription("You are surrounded by the ashes of what was once your village.");
             burnedVillage.SetLocation(new Vector2Int(47, 22));
             burnedVillage.SetSize(1);
+            burnedVillage.InitializeInventory(1000, 1000, 1000);
+            if(world.Die.Roll(0,1)==0)                
+                burnedVillage.Inventory.TryAddToInventory();
             world.AddPlace(burnedVillage);
 
             Place plainsville = new Place();
