@@ -26,6 +26,7 @@ namespace TextAdventureLibrary
             MaxItems = maxItems;
             CurrentWeight = 0;
             VolumeUsed = 0;
+            Things = new List<Thing>();
         }
 
         public bool TryAddToInventory(Thing thing)

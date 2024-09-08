@@ -47,9 +47,9 @@ namespace EpicProseRedux
         {
             Program.console.Print("Configuring Game\n");
             SetupWorld();
-            SetupPlaces();
-            SetupNPCs();
             SetupItemTemplates();
+            SetupNPCs();
+            SetupPlaces();
             Program.console.Print("Game Configured\n");
         }
 
@@ -186,13 +186,15 @@ namespace EpicProseRedux
                         }
                         while (Program.console.YesNo("Reroll?"));
 
-                        Story1();
+                        //Story1();
                         ChangeState(GameStates.PLACE);
                         break;
                     case GameStates.PLACE:
                         within = world.WithinBordersOf(player.Location);
+                        Program.console.Print($"You are at {within.Name}");
                         Map dungeon = within.GetAttributeValue<Map>("dungeon");
-                        Inventory inv = within.GetAttributeValue<Inventory>("inventory");
+                        //Program.console.Print($"Burned Village inventory count: {within.Inventory.Things.Count}.\n");
+                        Program.console.Anykey();
                         menuItems = new List<MenuItem>();
                         menuItems.Add(new MenuItem("Look", () =>
                         {
@@ -206,10 +208,10 @@ namespace EpicProseRedux
                                     Program.console.Print($"{npc.Name}, ");
                                 }
                             }
-                            if (inv?.Things.Count > 0)
+                            if (within.Inventory.Things.Count > 0)
                             {
                                 Program.console.Print("\nYou see ");
-                                foreach (Thing t in inv.Things)
+                                foreach (Thing t in within.Inventory.Things)
                                 {
                                     Program.console.Print($"a {t.Name}, ");
                                 }
@@ -224,7 +226,7 @@ namespace EpicProseRedux
                             menuItems.Add(new MenuItem("Attack", () => { }));
                             menuItems.Add(new MenuItem("Pick Pocket", () => { }));
                         }
-                        if (inv?.Things.Count > 0)
+                        if (within.Inventory.Things.Count > 0)
                         {
                             menuItems.Add(new MenuItem("Take", () => { }));
                             menuItems.Add(new MenuItem("Examine", () => { }));
@@ -668,19 +670,33 @@ namespace EpicProseRedux
 
         public void SetupItemTemplates()
         {
+            itemTemplates = new Dictionary<string, Dictionary<string, object>>();
             Dictionary<string, object> dagger = new Dictionary<string, object>();
+            itemTemplates.Add("dagger", dagger);
             Dictionary<string, object> shortsword = new Dictionary<string, object>();
+            itemTemplates.Add("shortsword", shortsword);
             Dictionary<string, object> longsword = new Dictionary<string, object>();
+            itemTemplates.Add("longsword", longsword);
             Dictionary<string, object> club = new Dictionary<string, object>();
+            itemTemplates.Add("club", club);
             Dictionary<string, object> mace = new Dictionary<string, object>();
+            itemTemplates.Add("mace", mace);
             Dictionary<string, object> flail = new Dictionary<string, object>();
+            itemTemplates.Add("flail", flail);
             Dictionary<string, object> dragonbane = new Dictionary<string, object>();
+            itemTemplates.Add("dragonbane", dragonbane);
             Dictionary<string, object> flamingFlail = new Dictionary<string, object>();
+            itemTemplates.Add("flamingFlail", flamingFlail);
 
             Dictionary<string, object> leather = new Dictionary<string, object>();
+            itemTemplates.Add("leather", leather);
             Dictionary<string, object> chainmail = new Dictionary<string, object>();
+            itemTemplates.Add("chainmail", chainmail);
             Dictionary<string, object> platemail = new Dictionary<string, object>();
+            itemTemplates.Add("platemail", platemail);
             Dictionary<string, object> icearmour = new Dictionary<string, object>();
+            itemTemplates.Add("icearmour", icearmour);
+
             //("dagger", "a pointy thing", 2, 20, 1, Weapon.weaponTypes.edged, false);
             //Thing shortsword = new Thing("shortsword", "a small sword", 4, 100, 2, Weapon.weaponTypes.edged, false);
             //Thing longsword = new Thing("longsword", "a good weapon", 6, 350, 3, Weapon.weaponTypes.edged, false);
@@ -696,7 +712,7 @@ namespace EpicProseRedux
             //Thing platemail = new Armour("platemail", "good armour", 60, 400, 3, 2, false);
             //Thing icearmour = new Armour("ice armour", "it looks like ice, cool to the touch", 50, 1000, 4, 2, true);
 
-            //Thing potion = new Potion();
+            //Thing potion = new Potion();                       
         }
 
         public void SetupPlaces()
@@ -735,10 +751,17 @@ namespace EpicProseRedux
             burnedVillage.SetLocation(new Vector2Int(47, 22));
             burnedVillage.SetSize(1);
             burnedVillage.InitializeInventory(1000, 1000, 1000);
-            /*if(world.Die.Roll(0,1)==0)                
-                burnedVillage.Inventory.TryAddToInventory(shortSword);
+            Thing weapon = new Thing();
+            string errorMessage;
+            if (world.Die.Roll(0, 1) == 0)
+                weapon = itemBuilder.WithName("dagger").WithDescription("a pointy thing").WithAttributes(itemTemplates["dagger"]).TryBuild(out errorMessage);
             else
-                burnedVillage.Inventory.TryAddToInventory(club);*/
+                weapon = itemBuilder.WithName("club").WithDescription("a thick stick").WithAttributes(itemTemplates["club"]).TryBuild(out errorMessage);
+            if (errorMessage != null)
+                Program.console.Print(errorMessage + "\n");
+            burnedVillage.Inventory.TryAddToInventory(weapon);
+            Program.console.Print($"Burned Village inventory count: {burnedVillage.Inventory.Things.Count}.\n");
+            Program.console.Anykey();
             world.AddPlace(burnedVillage);
 
             Place plainsville = new Place();
