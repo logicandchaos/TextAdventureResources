@@ -134,7 +134,9 @@ namespace EpicProseRedux
         public void Play()
         {
             Place within;
-            List<MenuItem> menuItems;
+            List<MenuItem> menuItems = new List<MenuItem>();
+            List<MenuItem> subMenuItems = new List<MenuItem>();
+
             while (gameState != GameStates.QUIT)
             {
                 switch (gameState)
@@ -191,10 +193,10 @@ namespace EpicProseRedux
                         break;
                     case GameStates.PLACE:
                         within = world.WithinBordersOf(player.Location);
-                        Program.console.Print($"You are at {within.Name}");
+                        //Program.console.Print($"You are at {within.Name}");
                         Map dungeon = within.GetAttributeValue<Map>("dungeon");
                         //Program.console.Print($"Burned Village inventory count: {within.Inventory.Things.Count}.\n");
-                        Program.console.Anykey();
+                        //Program.console.Anykey();
                         menuItems = new List<MenuItem>();
                         menuItems.Add(new MenuItem("Look", () =>
                         {
@@ -221,15 +223,70 @@ namespace EpicProseRedux
                         menuItems.Add(new MenuItem("Search", Search));
                         if (within.Population.Count > 0)
                         {
-                            menuItems.Add(new MenuItem("Talk", () => { }));
-                            menuItems.Add(new MenuItem("Examine", () => { }));
-                            menuItems.Add(new MenuItem("Attack", () => { }));
-                            menuItems.Add(new MenuItem("Pick Pocket", () => { }));
+                            menuItems.Add(new MenuItem("Talk", () =>
+                            {
+                                ChangeState(GameStates.ENCOUNTER);
+                            }));
+
+                            menuItems.Add(new MenuItem("Examine Person", () =>
+                            {
+                                subMenuItems = new List<MenuItem>();
+                                foreach (Person person in within.Population)
+                                {
+                                    subMenuItems.Add(new MenuItem(person.Name, () => { Examine(person); }));
+                                }
+                                Menu subMenu = new Menu($"\nWho do you want to examine?", subMenuItems.ToArray());
+                                Program.console.Print(subMenu);
+                                subMenu.SelectOption(Program.console.GetDigit(subMenu.Items.Length));
+                                subMenu.Execute();
+                            }));
+
+                            menuItems.Add(new MenuItem("Attack", () =>
+                            {
+                                ChangeState(GameStates.ENCOUNTER);
+                            }));
+
+                            menuItems.Add(new MenuItem("Pick Pocket", () =>
+                            {
+                                subMenuItems = new List<MenuItem>();
+                                foreach (Person person in within.Population)
+                                {
+                                    subMenuItems.Add(new MenuItem(person.Name, () => { Examine(person); }));
+                                }
+                                Menu subMenu = new Menu($"\nWho do you want to examine?", subMenuItems.ToArray());
+                                Program.console.Print(subMenu);
+                                subMenu.SelectOption(Program.console.GetDigit(subMenu.Items.Length));
+                                subMenu.Execute();
+                                PickPocket();
+                            }));
                         }
                         if (within.Inventory.Things.Count > 0)
                         {
-                            menuItems.Add(new MenuItem("Take", () => { }));
-                            menuItems.Add(new MenuItem("Examine", () => { }));
+                            menuItems.Add(new MenuItem("Take", () =>
+                            {
+                                subMenuItems = new List<MenuItem>();
+                                foreach (Thing thing in within.Inventory.Things)
+                                {
+                                    subMenuItems.Add(new MenuItem(thing.Name, () => { TakeThing(thing, within.Inventory); }));
+                                }
+                                Menu subMenu = new Menu($"\nWhat do you want to take?", subMenuItems.ToArray());
+                                Program.console.Print(subMenu);
+                                subMenu.SelectOption(Program.console.GetDigit(subMenu.Items.Length));
+                                subMenu.Execute();
+                            }));
+
+                            menuItems.Add(new MenuItem("Examine item", () =>
+                            {
+                                subMenuItems = new List<MenuItem>();
+                                foreach (Thing thing in within.Inventory.Things)
+                                {
+                                    subMenuItems.Add(new MenuItem(thing.Name, () => { Examine(thing); }));
+                                }
+                                Menu subMenu = new Menu($"\nWhat do you want to examine?", subMenuItems.ToArray());
+                                Program.console.Print(subMenu);
+                                subMenu.SelectOption(Program.console.GetDigit(subMenu.Items.Length));
+                                subMenu.Execute();
+                            }));
                         }
                         if (dungeon != null)
                         {
@@ -381,6 +438,58 @@ namespace EpicProseRedux
             else
                 Program.console.Print("Nothing!");
             Program.console.Anykey();
+        }
+
+        public void TakeThing(Thing thing, Inventory inv)
+        {
+            if (player.Inventory.TryAddToInventory(thing))
+            {
+                Program.console.Print($"You take the {thing.Name}");
+                inv.TryRemoveFromInventory(thing);
+            }
+            else
+            {
+                Program.console.Print($"You can not take the {thing.Name}");
+            }
+            Program.console.Anykey();
+        }
+
+        public void Examine(Thing thing)
+        {
+            Program.console.Print($"You examine the {thing.Name}:\n");
+            Program.console.PrintDescription(thing);
+            Program.console.Anykey();
+        }
+
+        public void Examine(Person person)
+        {
+            Program.console.Print($"You examine {person.Name}:\n");
+            Program.console.PrintDescription(person);
+            Program.console.Anykey();
+        }
+
+        public void PickPocket(Person person)
+        {
+            int playerRoll = player.GetAttributeValue<Stat>("dexterity").StatCheck(player.GetAttributeValue<Die>("die"));
+            int personRoll = person.GetAttributeValue<Stat>("dexterity").StatCheck(person.GetAttributeValue<Die>("die"));
+            if (playerRoll <= 0)
+            {
+                Program.console.Print($"You get caught picking {person.Name}'s pocket!\n");
+                //encounter?
+                Program.console.Anykey();
+            }
+            else if (playerRoll > personRoll)
+            {
+                Die die = player.GetAttributeValue<Die>("die");
+                int roll = die.Roll(0, person.Inventory.Things.Count);
+                Thing thing = person.Inventory.Things[roll];
+                if (player.Inventory.TryAddToInventory(thing))
+                {
+                    person.Inventory.TryRemoveFromInventory(thing);
+                    Program.console.Print($"You successfully picked {person.Name}'s pocket!\n");
+                    Program.console.Print($"{thing.Name} has been added to your inventory.\n");
+                }
+            }
         }
 
         public void Rest()
@@ -638,34 +747,79 @@ namespace EpicProseRedux
 
         public void SetupNPCs()
         {
+            string result;
+
             //King of thieves
             Person kingOfThieves = ChacterCreator.personBuilder
                 .New()
-                .TryBuild(out string result);
+                .TryBuild(out result);
             world.Everyone.Add("kingOfThieves", kingOfThieves);
 
             //the Ice Giant
+            Person iceGiant = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("iceGiant", iceGiant);
 
             //mummyLord
+            Person mummyLord = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("mummyLord", mummyLord);
 
             //dragon
+            Person dragon = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("dragon", dragon);
 
             //John the Blacksmith
+            Person john = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("john", john);
 
             //Bob the Witchdoctor
+            Person bob = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("bob", bob);
 
             //Frank the Dwarf
+            Person frank = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("frank", frank);
 
             //David the Warrior
+            Person david = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("david", david);
 
             //Steve the Knight
+            Person knight = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("knight", knight);
 
             //Carol the Merchant
+            Person carol = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("carol", carol);
 
             //Joline the Sorcerous
+            Person joline = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("joline", joline);
 
             //Jack the Tavernkeeper
-
+            Person jack = ChacterCreator.personBuilder
+                .New()
+                .TryBuild(out result);
+            world.Everyone.Add("jack", jack);
         }
 
         public void SetupItemTemplates()
@@ -937,17 +1091,17 @@ namespace EpicProseRedux
             Program.console.ResetColor();
             //if (!DEBUG)
             //{
-            /*if (!player.IsAlive())
+            if (!player.GetAttributeValue<bool>("isAlive"))
             {
-                Console.WriteLine("\nYou were killed! Your village was not avenged!");
-                JingleBad();
+                Program.console.Print("\nYou were killed! Your village was not avenged!");
+                //JingleBad();
             }
-            else if (!dragon.IsAlive())
+            //else if (!dragon.GetAttributeValue<bool>("isAlive"))
             {
-                Console.WriteLine("\nYou killed The Dragon! Your village has been avenged!! You beat Epic Prose SE!!!");
-                JingleGood();
+                Program.console.Print("\nYou killed The Dragon! Your village has been avenged!! You beat Epic Prose SE!!!");
+                //JingleGood();
             }
-            Console.WriteLine("\nYou had " + player.GetGold() + " gold and killed " + player.GetKills() + " monsters.");*/
+            //Program.console.Print("\nYou had " + player.GetGold() + " gold and killed " + player.GetKills() + " monsters.");
             Program.console.Anykey();
         }
 
