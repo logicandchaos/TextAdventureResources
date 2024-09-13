@@ -251,13 +251,12 @@ namespace EpicProseRedux
                                 subMenuItems = new List<MenuItem>();
                                 foreach (Person person in within.Population)
                                 {
-                                    subMenuItems.Add(new MenuItem(person.Name, () => { Examine(person); }));
+                                    subMenuItems.Add(new MenuItem(person.Name, () => { PickPocket(person); }));
                                 }
-                                Menu subMenu = new Menu($"\nWho do you want to examine?", subMenuItems.ToArray());
+                                Menu subMenu = new Menu($"\nWhose pocket do you want to pick?", subMenuItems.ToArray());
                                 Program.console.Print(subMenu);
                                 subMenu.SelectOption(Program.console.GetDigit(subMenu.Items.Length));
                                 subMenu.Execute();
-                                PickPocket();
                             }));
                         }
                         if (within.Inventory.Things.Count > 0)
@@ -346,51 +345,6 @@ namespace EpicProseRedux
                         campMenu.SelectOption(Program.console.GetDigit(campMenu.Items.Length));
                         campMenu.Execute();
                         break;
-                    case GameStates.ENCOUNTER:
-                        List<Person> people = new List<Person>();
-
-                        //initiative
-                        int[] initiatives = new int[people.Count];
-                        //roll for each Person
-                        for (int i = 0; i < people.Count; i++)
-                        {
-                            initiatives[i] = people[i].GetAttributeValue<Stat>("speed").StatCheck(people[i].GetAttributeValue<Die>("die"));
-                        }
-                        // Use LINQ to order people array by the corresponding number in initiatives
-                        Person[] orderedPeople = people
-                            .Zip(initiatives, (person, initiative) => new { Person = person, Initiative = initiative })
-                            .OrderBy(item => item.Initiative)
-                            .Select(item => item.Person)
-                            .ToArray();
-
-                        int turn = 0;
-
-                        Menu encounterMenu = new Menu("Encounter");
-                        /*MenuItem attack=new MenuItem("Attack",);
-                        MenuItem useItem=new MenuItem("Use Item",);
-                        MenuItem talk=new MenuItem("Talk",);
-                        MenuItem leave=new MenuItem("Leave",);*/
-                        Menu attackMenu = new Menu("Select Attack");
-                        Menu talkMenu = new Menu("Encounter");
-                        Menu dealMenu = new Menu("Encounter");
-                        Menu itemMenu = new Menu("Encounter");
-                        Menu targetMenu = new Menu("Encounter");
-                        Menu currentMenu = encounterMenu;
-
-                        //turn based loop
-                        while (true)
-                        {
-                            //build encounter menu
-                            currentMenu = new Menu("What will you do?");
-                            Program.console.Print(currentMenu.Title);
-                            Program.console.Print(currentMenu);
-                            //orderedPeople[turn].GetAttributeValue<Brain>().MakeChoice(encounterMenu);
-
-                            turn = turn < orderedPeople.Length ? turn++ : 0;
-                            break;
-                        }
-                        ChangeState(prevGameState);
-                        break;
                     case GameStates.DUNGEON:
                         //Program.console.Print();
                         break;
@@ -475,8 +429,8 @@ namespace EpicProseRedux
             if (playerRoll <= 0)
             {
                 Program.console.Print($"You get caught picking {person.Name}'s pocket!\n");
-                //encounter?
                 Program.console.Anykey();
+                //encounter
             }
             else if (playerRoll > personRoll)
             {
@@ -492,13 +446,60 @@ namespace EpicProseRedux
             }
         }
 
+        public void Encounter(params Person[] people)
+        {
+            //initiative
+            int[] initiatives = new int[people.Length];
+            //roll for each Person
+            for (int i = 0; i < people.Length; i++)
+            {
+                initiatives[i] = people[i].GetAttributeValue<Stat>("speed").StatCheck(people[i].GetAttributeValue<Die>("die"));
+            }
+            // Use LINQ to order people array by the corresponding number in initiatives
+            Person[] orderedPeople = people
+                .Zip(initiatives, (person, initiative) => new { Person = person, Initiative = initiative })
+                .OrderBy(item => item.Initiative)
+                .Select(item => item.Person)
+                .ToArray();
+
+            int turn = 0;
+
+            Menu encounterMenu = new Menu("Encounter");
+            MenuItem attack = new MenuItem("Attack", () => { });
+            MenuItem useItem = new MenuItem("Use Item", () => { });
+            MenuItem talk = new MenuItem("Talk", () => { });
+            MenuItem leave = new MenuItem("Leave", () => { });
+            Menu attackMenu = new Menu("Select attack");
+            Menu talkMenu = new Menu("What do you want to say?");
+            Menu dealMenu = new Menu("Propose deal");
+            Menu itemMenu = new Menu("What do you want to use?");
+            Menu currentMenu = encounterMenu;
+
+            //turn based loop
+            while (true)
+            {
+                //build encounter menu
+                currentMenu = new Menu("What will you do?");
+                //Program.console.Print(currentMenu.Title);
+                Program.console.Print(currentMenu);
+                //orderedPeople[turn].GetAttributeValue<Brain>().MakeChoice(encounterMenu);
+                currentMenu.SelectOption(Program.console.GetDigit(currentMenu.Items.Length));
+                currentMenu.Execute();
+
+                turn = turn < orderedPeople.Length ? turn++ : 0;
+
+                break;
+            }
+        }
+
         public void Rest()
         {
             if (GetCurrentHealth(player) == GetMaxHealth(player))
             {
-                //if (player.IsWounded())
+                bool wounded = player.GetAttributeValue<bool>("isWounded");
+                if (wounded)
                 {
-                    //player.SetWounded(false);
+                    player.AddOrSetAttribute("isWounded", false);
                     world.AddTimeSpan(new TimeSpan(1, 0, 0));
                     Program.console.Print("You rest for one hour\n");
                     Program.console.Print("You heal your wounds!\n");
@@ -513,15 +514,23 @@ namespace EpicProseRedux
                     world.AddTimeSpan(new TimeSpan(1, 0, 0));
                     Program.console.Print("You rest for one hour\n");
                     Program.console.Type("...", Program.textSpeed * 5);
-                    //if (player.IsWounded())
+                    bool wounded = player.GetAttributeValue<bool>("isWounded");
+                    if (wounded)
                     {
-                        //player.SetWounded(false);
+                        player.AddOrSetAttribute("isWounded", false);
                         Program.console.Print("You heal your wounds!\n");
                     }
                     ModifyHealth(player, 10);
                     Program.console.SetColorToHealth(GetHealthPercent(player));
                     Program.console.Print("\n");
-                    //if (player.GetCurrentLocation() != town1 && player.GetCurrentLocation() != town2 && player.GetCurrentLocation() != town3)
+                    Place within = world.WithinBordersOf(player.Location);
+                    Place town1;
+                    world.Everywhere.TryGetValue("", out town1);
+                    Place town2;
+                    world.Everywhere.TryGetValue("", out town2);
+                    Place town3;
+                    world.Everywhere.TryGetValue("", out town3);
+                    if (within != town1 && within != town2 && within != town3)
                     {
                         int roll = world.Die.Roll(1, 100);
                         //if (showRolls)
