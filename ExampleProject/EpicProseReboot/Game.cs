@@ -39,6 +39,7 @@ namespace EpicProseRedux
 
         public Game()
         {
+            Program.console.SetDebugMode(DEBUG);
             Program.console.Print("Creating New Game\n");
             ChangeState(GameStates.SETUP);
         }
@@ -47,9 +48,15 @@ namespace EpicProseRedux
         {
             Program.console.Print("Configuring Game\n");
             SetupWorld();
+            Program.console.Print("World setup\n");
             SetupItemTemplates();
+            Program.console.Print("Items setup\n");
             SetupNPCs();
+            Program.console.Print("NPCs setup\n");
             SetupPlaces();
+            Program.console.Print("Places setup\n");
+            SetupAreas();
+            Program.console.Print("Areas setup\n");
             Program.console.Print("Game Configured\n");
         }
 
@@ -187,6 +194,10 @@ namespace EpicProseRedux
                             ChacterCreator.RollStats(player, true);
                         }
                         while (Program.console.YesNo("Reroll?"));
+
+                        int str = (int)player.GetAttributeValue<float>("strength");
+                        //initialize inc\ventory based on strength
+                        player.InitializeInventory(str * 2, 100, 100);
 
                         //Story1();
                         ChangeState(GameStates.PLACE);
@@ -595,20 +606,34 @@ namespace EpicProseRedux
 
         public void TravelMenu()
         {
-            List<Place> allPlaces = world.Everywhere.Values.ToList();
             //organize menu items by closest to player
+            Program.console.DebugMessage($"world.Everywhere.Count: {world.Everywhere.Count}\n");
+            if (DEBUG)
+                Program.console.Anykey();
 
             Menu travelMenu0 = new Menu("Where do you want to go?");
             Menu travelMenu1 = new Menu("Where do you want to go?");
             List<MenuItem> menuItems0 = new List<MenuItem>();
             List<MenuItem> menuItems1 = new List<MenuItem>();
-            for (int i = 0; i < allPlaces.Count; i++)
+            Place within = world.WithinBordersOf(player.Location);
+
+            foreach (Place place in world.Everywhere.Values.OrderBy(p => Vector2Int.Distance(p.Location, player.Location)))
             {
-                if (i < 6)
-                    menuItems0.Add(new MenuItem(allPlaces[i].Name, () => Travel(allPlaces[i])));
+                double dist = Vector2Int.Distance(place.Location, player.Location);
+                Program.console.DebugMessage($"{place.Name} distance: {dist}\n");
+                if (place == within)
+                {
+                    Program.console.DebugMessage($"within {place.Name}\n");
+                    continue;
+                }
+                if (menuItems0.Count < 6)
+                    menuItems0.Add(new MenuItem($"{place.Name} {dist:F1} miles", () => Travel(place)));
                 else
-                    menuItems1.Add(new MenuItem(allPlaces[i].Name, () => Travel(allPlaces[i])));
+                    menuItems1.Add(new MenuItem($"{place.Name} {dist:F1} miles", () => Travel(place)));
             }
+            if (DEBUG)
+                Program.console.Anykey();
+
             menuItems0.Add(new MenuItem("Next", () =>
             {
                 Program.console.Print(travelMenu1);
@@ -626,6 +651,10 @@ namespace EpicProseRedux
 
             travelMenu0.Items = menuItems0.ToArray();
             travelMenu1.Items = menuItems1.ToArray();
+            Program.console.DebugMessage($"menuItems0: {menuItems0.Count}, travelMenu0: {travelMenu0.Items.Length}\n");
+            Program.console.DebugMessage($"menuItems1: {menuItems1.Count}, travelMenu1: {travelMenu1.Items.Length}\n");
+            if (DEBUG)
+                Program.console.Anykey();
 
             Program.console.Print(travelMenu0);
             travelMenu0.SelectOption(Program.console.GetDigit(travelMenu0.Items.Length));
@@ -634,16 +663,20 @@ namespace EpicProseRedux
 
         public void Travel(Place place)
         {
+            //Place place;
+            //world.Everywhere.TryGetValue(name, out place);
+            Program.console.FlushInpuTQueue();
             do
             {
                 //if (!player.IsAlive())
                 //    return;
-                if (!Program.console.IsKeyAvailable())
+                if (Program.console.IsKeyAvailable())
                 {
+                    Place current = GetCurrentArea(player.Location);
                     Program.console.Print("You stop!");
-                    /*while (Console.KeyAvailable) // Flushes the input queue.
-                        Console.ReadKey();
-                    break;*/
+                    Program.console.Print($"You are somewhere in the { current.Name} region.\n");
+                    ChangeState(GameStates.WORLDMAP);
+                    break;
                 }
                 else
                 {
@@ -656,52 +689,10 @@ namespace EpicProseRedux
                     double dist = Vector2Int.Distance(place.Location, player.Location);
                     Program.console.Print($"You head towards {place.Name}in the { GetCurrentArea(place.Location)} region.\n");
                     Program.console.Type("...", Program.textSpeed);
-                    int speed = (int)player.GetAttributeValue<Stat>("speed").Value;
+                    int speed = (int)(player.GetAttributeValue<Stat>("speed").Value * .5f);
+                    Program.console.DebugMessage($"speed: {speed}");
 
-                    if (player.Location.X > place.Location.X)
-                    {
-                        if (player.Location.X - place.Location.X <= speed)
-                        {
-                            player.Location.X = place.Location.X;
-                        }
-                        else
-                        {
-                            player.Location.X = player.Location.X - speed;
-                        }
-                    }
-                    else if (player.Location.X < place.Location.X)
-                    {
-                        if (place.Location.X - player.Location.X <= speed)
-                        {
-                            player.Location.X = place.Location.X;
-                        }
-                        else
-                        {
-                            player.Location.X = player.Location.X + speed;
-                        }
-                    }
-                    if (player.Location.Y > place.Location.Y)
-                    {
-                        if (player.Location.Y - place.Location.Y <= speed)
-                        {
-                            player.Location.Y = place.Location.Y;
-                        }
-                        else
-                        {
-                            player.Location.Y = player.Location.Y - speed;
-                        }
-                    }
-                    else if (player.Location.Y < place.Location.Y)
-                    {
-                        if (place.Location.Y - player.Location.Y <= speed)
-                        {
-                            player.Location.Y = place.Location.Y;
-                        }
-                        else
-                        {
-                            player.Location.Y = player.Location.Y + speed;
-                        }
-                    }
+                    player.Location.MoveTowards(place.Location, speed);
 
                     foreach (Place p in worldAreas)
                     {
@@ -724,11 +715,16 @@ namespace EpicProseRedux
                     //    new Battle(player, player.GetCurrentArea().RandomEncounter());
                     //    break;
                     //}
+                    if (player.Location == place.Location)
+                    {
+                        Program.console.Print($"You arrived at {place.Name}.\n");
+                        ChangeState(GameStates.PLACE);
+                        break;
+                    }
                 }
 
             }
-            while (world.WithinBordersOf(player.Location) != place);
-            Program.console.Print($"You arrived at {place.Name}.\n");
+            while (true);
             Program.console.Anykey();
         }
 
@@ -923,7 +919,7 @@ namespace EpicProseRedux
             if (errorMessage != null)
                 Program.console.Print(errorMessage + "\n");
             burnedVillage.Inventory.TryAddToInventory(weapon);
-            Program.console.Print($"Burned Village inventory count: {burnedVillage.Inventory.Things.Count}.\n");
+            Program.console.DebugMessage($"Burned Village inventory count: {burnedVillage.Inventory.Things.Count}.\n");
             Program.console.Anykey();
             world.AddPlace(burnedVillage);
 
@@ -965,6 +961,7 @@ namespace EpicProseRedux
 
         public void SetupAreas()
         {
+            worldAreas = new List<Place>();
             //add areas to list
             rockyHard2.AddOrSetAttribute("enemyEncounterChance", 30);
             grasslandEasy.AddOrSetAttribute("enemyEncounterChance", 35);

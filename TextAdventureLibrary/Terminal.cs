@@ -61,12 +61,18 @@
 
         public abstract void ClearScreen();
 
+        public abstract void FlushInpuTQueue();
+
         public bool DEBUGMODE { get; private set; } = false;
 
         public void SetDebugMode(bool b)
         {
             DEBUGMODE = b;
         }
+
+        //public void SetDebugColor()
+        //{
+        //}
 
         public abstract void DebugMessage(string message);
     }

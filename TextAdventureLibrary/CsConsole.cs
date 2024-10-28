@@ -550,18 +550,22 @@ namespace TextAdventureLibrary
             ConsoleColor backTemp = Console.BackgroundColor;
 
             SetColor(Color.DarkRed, Color.Yellow);
-            Console.WriteLine("DebugLog: " + message);
+            Console.WriteLine("Debug: " + message);
 
             Console.ForegroundColor = foreTemp;
             Console.BackgroundColor = backTemp;
         }
 
-        //INPUT
-        public override void Anykey(string message = "<Press any key>")
+        public override void FlushInpuTQueue()
         {
             while (Console.KeyAvailable) // Flush input queue
                 Console.ReadKey();
+        }
 
+        //INPUT
+        public override void Anykey(string message = "<Press any key>")
+        {
+            FlushInpuTQueue();
             //sound
             //Console.Beep(500, 500);
             ConsoleColor temp = Console.ForegroundColor;

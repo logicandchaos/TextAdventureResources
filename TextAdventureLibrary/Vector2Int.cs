@@ -18,6 +18,11 @@ namespace TextAdventureLibrary
             return new Vector2Int(p1.X + p2.X, p1.Y + p2.Y);
         }
 
+        public static Vector2Int Sub(Vector2Int p1, Vector2Int p2)
+        {
+            return new Vector2Int(p1.X - p2.X, p1.Y - p2.Y);
+        }
+
         public static Vector2Int Multiply(Vector2Int p, int n)
         {
             return new Vector2Int(p.X * n, p.Y * n);
@@ -31,6 +36,11 @@ namespace TextAdventureLibrary
         public static Vector2Int operator +(Vector2Int p1, Vector2Int p2)
         {
             return Add(p1, p2);
+        }
+
+        public static Vector2Int operator -(Vector2Int p1, Vector2Int p2)
+        {
+            return Sub(p1, p2);
         }
 
         public static Vector2Int operator *(Vector2Int p, int n)
