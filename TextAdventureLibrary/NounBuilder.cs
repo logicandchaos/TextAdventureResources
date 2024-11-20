@@ -33,7 +33,7 @@ namespace TextAdventureLibrary
             return this;
         }
 
-        public NounBuilder<T> WithLocation(Vector2Int location)
+        public NounBuilder<T> WithLocation(Vector2Double location)
         {
             noun.SetLocation(location);
             return this;

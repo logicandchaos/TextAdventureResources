@@ -7,7 +7,7 @@ namespace TextAdventureLibrary
     {
         public string Name { get; protected set; }
         public string Description { get; protected set; }
-        public Vector2Int Location { get; private set; }
+        public Vector2Double Location { get; private set; }
         public Dictionary<string, object> Attributes { get; private set; } = new Dictionary<string, object>();
         public Inventory Inventory { get; protected set; }
 
@@ -31,7 +31,7 @@ namespace TextAdventureLibrary
             Description += text;
         }
 
-        public void SetLocation(Vector2Int location)
+        public void SetLocation(Vector2Double location)
         {
             Location = location;
         }

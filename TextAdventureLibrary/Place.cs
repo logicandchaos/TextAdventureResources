@@ -37,7 +37,7 @@ namespace TextAdventureLibrary
             }
         }
 
-        public Place(string name, string description, Vector2Int location, float size)
+        public Place(string name, string description, Vector2Double location, float size)
         {
             Name = name;
             Description = description;
@@ -45,7 +45,7 @@ namespace TextAdventureLibrary
             Size = size;
         }
 
-        public bool IsLocationWithin(Vector2Int location)
+        public bool IsLocationWithin(Vector2Double location)
         {
             return Location.DistanceTo(location) < Size;
         }

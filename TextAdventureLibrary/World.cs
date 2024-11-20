@@ -104,7 +104,7 @@ namespace TextAdventureLibrary
             Everywhere.Remove(place);
         }
 
-        public Place GetClosestPlace(Vector2Int location)
+        public Place GetClosestPlace(Vector2Double location)
         {
             Place closestPlace = null;
             double closestDistance = double.MaxValue;
@@ -122,7 +122,7 @@ namespace TextAdventureLibrary
             return closestPlace;
         }
 
-        public Place[] OrderPlacesByDistance(Vector2Int location)
+        public Place[] OrderPlacesByDistance(Vector2Double location)
         {
             return Everywhere
                 .Values
@@ -131,7 +131,7 @@ namespace TextAdventureLibrary
                 .ToArray();
         }
 
-        public Place WithinBordersOf(Vector2Int location)
+        public Place WithinBordersOf(Vector2Double location)
         {
             Place closestPlace = GetClosestPlace(location);
             if (closestPlace.Location.DistanceTo(location) < closestPlace.Size)

@@ -19,17 +19,17 @@ namespace EpicProseRedux
         World world;
         //Create Areas
         //the areas will be layered in the order they are added to the list
-        Place rockyHard2 = new Place("Dragon Mountains", "a spooky mountain range", new Vector2Int(59, 13), 1);
-        Place grasslandEasy = new Place("Plains of Epica", "easy plains area", new Vector2Int(40, 32), 16);
-        Place grasslandHard = new Place("Rough Lands", "monsters about", new Vector2Int(64, 41), 6);
-        Place swampEasy = new Place("Manageable Marsh", "it's swampy but not too bad", new Vector2Int(15, 21), 3);
-        Place forestEasy = new Place("Friendly Forest", "nice place for a picnic", new Vector2Int(16, 21), 8);
-        Place desertHard = new Place("Dangerous Desert", "hot sandy place", new Vector2Int(41, 59), 5);
-        Place rockyHard = new Place("Northern Mountain Range", "cold winds blow in this region", new Vector2Int(22, 8), 4);
-        Place swampHard = new Place("Black Bog", "a darky swampy area full of foul beasts", new Vector2Int(42, 14), 8);
-        Place rockyEasy = new Place("Dwarven Mountains", "nice mountain area", new Vector2Int(37, 12), 9);
-        Place forestHard = new Place("Wicked Woods", "some dangerous woods", new Vector2Int(64, 29), 8);
-        Place desertEasy = new Place("Desert", "hot and sandy", new Vector2Int(47, 57), 14);
+        Place rockyHard2 = new Place("Dragon Mountains", "a spooky mountain range", new Vector2Double(59, 13), 1);
+        Place grasslandEasy = new Place("Plains of Epica", "easy plains area", new Vector2Double(40, 32), 16);
+        Place grasslandHard = new Place("Rough Lands", "monsters about", new Vector2Double(64, 41), 6);
+        Place swampEasy = new Place("Manageable Marsh", "it's swampy but not too bad", new Vector2Double(15, 21), 3);
+        Place forestEasy = new Place("Friendly Forest", "nice place for a picnic", new Vector2Double(16, 21), 8);
+        Place desertHard = new Place("Dangerous Desert", "hot sandy place", new Vector2Double(41, 59), 5);
+        Place rockyHard = new Place("Northern Mountain Range", "cold winds blow in this region", new Vector2Double(22, 8), 4);
+        Place swampHard = new Place("Black Bog", "a darky swampy area full of foul beasts", new Vector2Double(42, 14), 8);
+        Place rockyEasy = new Place("Dwarven Mountains", "nice mountain area", new Vector2Double(37, 12), 9);
+        Place forestHard = new Place("Wicked Woods", "some dangerous woods", new Vector2Double(64, 29), 8);
+        Place desertEasy = new Place("Desert", "hot and sandy", new Vector2Double(47, 57), 14);
         //list of all areas in game
         List<Place> worldAreas;
         Dictionary<string, Dictionary<string, object>> itemTemplates;
@@ -204,10 +204,11 @@ namespace EpicProseRedux
                         break;
                     case GameStates.PLACE:
                         within = world.WithinBordersOf(player.Location);
-                        //Program.console.Print($"You are at {within.Name}");
+                        Place close = world.GetClosestPlace(player.Location);
+                        Program.console.Print($"Closest Place {within.Name}");
+                        Program.console.Print($"You are at {within.Name}");
+                        Program.console.Anykey();
                         Map dungeon = within.GetAttributeValue<Map>("dungeon");
-                        //Program.console.Print($"Burned Village inventory count: {within.Inventory.Things.Count}.\n");
-                        //Program.console.Anykey();
                         menuItems = new List<MenuItem>();
                         menuItems.Add(new MenuItem("Look", () =>
                         {
@@ -588,6 +589,7 @@ namespace EpicProseRedux
             //print status
             Program.console.Print("STATUS\n");
             Program.console.Print("Healthy\n\n");
+            Program.console.Anykey();
         }
 
         public void Inventory()
@@ -602,6 +604,7 @@ namespace EpicProseRedux
                 Program.console.Print($"{count}: {item.Key}\n");
             }
             Program.console.Print("\n");
+            Program.console.Anykey();
         }
 
         public void TravelMenu()
@@ -617,9 +620,9 @@ namespace EpicProseRedux
             List<MenuItem> menuItems1 = new List<MenuItem>();
             Place within = world.WithinBordersOf(player.Location);
 
-            foreach (Place place in world.Everywhere.Values.OrderBy(p => Vector2Int.Distance(p.Location, player.Location)))
+            foreach (Place place in world.Everywhere.Values.OrderBy(p => Vector2Double.Distance(p.Location, player.Location)))
             {
-                double dist = Vector2Int.Distance(place.Location, player.Location);
+                double dist = Vector2Double.Distance(place.Location, player.Location);
                 Program.console.DebugMessage($"{place.Name} distance: {dist}\n");
                 if (place == within)
                 {
@@ -686,18 +689,21 @@ namespace EpicProseRedux
                     //    e = 0;
                     //else
                     //    e = equipedArmour.GetEncumberence();
-                    double dist = Vector2Int.Distance(place.Location, player.Location);
+                    double dist = Vector2Double.Distance(place.Location, player.Location);
                     Program.console.Print($"You head towards {place.Name}in the { GetCurrentArea(place.Location)} region.\n");
                     Program.console.Type("...", Program.textSpeed);
                     int speed = (int)(player.GetAttributeValue<Stat>("speed").Value * .5f);
                     Program.console.DebugMessage($"speed: {speed}");
 
+                    Program.console.DebugMessage($"Player Location: {player.Location}");
                     player.Location.MoveTowards(place.Location, speed);
+                    Program.console.DebugMessage($"Player Location: {player.Location}");
+                    Program.console.DebugMessage($"Place Location: {place.Location}");
 
                     foreach (Place p in worldAreas)
                     {
                         Place current = GetCurrentArea(player.Location);
-                        if (current != tempArea)
+                        if (current != null && current != tempArea)
                         {
                             Program.console.Print($"You enter the { current.Name} region.\n");
                         }
@@ -715,9 +721,15 @@ namespace EpicProseRedux
                     //    new Battle(player, player.GetCurrentArea().RandomEncounter());
                     //    break;
                     //}
-                    if (player.Location == place.Location)
+                    if (Vector2Double.Distance(player.Location, place.Location) < .01)
+                    //if (player.Location == place.Location)
                     {
                         Program.console.Print($"You arrived at {place.Name}.\n");
+                        Place within = world.WithinBordersOf(player.Location);
+                        Place close = world.GetClosestPlace(player.Location);
+                        Program.console.Print($"Closest Place {within.Name}");
+                        Program.console.Print($"You are at {within.Name}");
+                        Program.console.Anykey();
                         ChangeState(GameStates.PLACE);
                         break;
                     }
@@ -739,7 +751,7 @@ namespace EpicProseRedux
             gameState = prevGameState;
         }
 
-        public Place GetCurrentArea(Vector2Int location)
+        public Place GetCurrentArea(Vector2Double location)
         {
             //greedy algorythm, areas must be sorted in right order to work right
             foreach (Place p in worldAreas)
@@ -879,35 +891,35 @@ namespace EpicProseRedux
             Place iceMountain = new Place();
             iceMountain.SetName("Ice Mountain");
             iceMountain.SetDescription("You are at the ice mountains, you can't see the top.");
-            iceMountain.SetLocation(new Vector2Int(24, 9));
+            iceMountain.SetLocation(new Vector2Double(24, 9));
             iceMountain.SetSize(1);
             world.AddPlace(iceMountain);
 
             Place dwarfCave = new Place();
             dwarfCave.SetName("Dwarf Cave");
             dwarfCave.SetDescription("You are at the Dwarf's cave home.");
-            dwarfCave.SetLocation(new Vector2Int(36, 12));
+            dwarfCave.SetLocation(new Vector2Double(36, 12));
             dwarfCave.SetSize(1);
             world.AddPlace(dwarfCave);
 
             Place dragonLair = new Place();
             dragonLair.SetName("Dragon's Lair");
             dragonLair.SetDescription("You are in the lair of the dragon.");
-            dragonLair.SetLocation(new Vector2Int(59, 13));
+            dragonLair.SetLocation(new Vector2Double(59, 13));
             dragonLair.SetSize(1);
             world.AddPlace(dragonLair);
 
             Place witchDoctorHut = new Place();
             witchDoctorHut.SetName("Witch Doctor's Hut");
             witchDoctorHut.SetDescription("You are at the ice mountains, you can't see the top.");
-            witchDoctorHut.SetLocation(new Vector2Int(17, 21));
+            witchDoctorHut.SetLocation(new Vector2Double(17, 21));
             witchDoctorHut.SetSize(1);
             world.AddPlace(witchDoctorHut);
 
             Place burnedVillage = new Place();
             burnedVillage.SetName("Village");
             burnedVillage.SetDescription("You are surrounded by the ashes of what was once your village.");
-            burnedVillage.SetLocation(new Vector2Int(47, 22));
+            burnedVillage.SetLocation(new Vector2Double(47, 22));
             burnedVillage.SetSize(1);
             burnedVillage.InitializeInventory(1000, 1000, 1000);
             Thing weapon = new Thing();
@@ -926,35 +938,35 @@ namespace EpicProseRedux
             Place plainsville = new Place();
             plainsville.SetName("PlainsVille");
             plainsville.SetDescription("A rustic village! It's even got a rusty tick!");
-            plainsville.SetLocation(new Vector2Int(34, 29));
+            plainsville.SetLocation(new Vector2Double(34, 29));
             plainsville.SetSize(1);
             world.AddPlace(plainsville);
 
             Place roguesDen = new Place();
             roguesDen.SetName("Thieve's Den");
             roguesDen.SetDescription("You are in the thieve's den.");
-            roguesDen.SetLocation(new Vector2Int(67, 30));
+            roguesDen.SetLocation(new Vector2Double(67, 30));
             roguesDen.SetSize(1);
             world.AddPlace(roguesDen);
 
             Place townopolus = new Place();
             townopolus.SetName("Townopolus");
             townopolus.SetDescription("What a town! It's got buildings and everything!");
-            townopolus.SetLocation(new Vector2Int(62, 41));
+            townopolus.SetLocation(new Vector2Double(62, 41));
             townopolus.SetSize(1);
             world.AddPlace(townopolus);
 
             Place sandland = new Place();
             sandland.SetName("Sandland");
             sandland.SetDescription("A shady place in the hot desert.");
-            sandland.SetLocation(new Vector2Int(33, 48));
+            sandland.SetLocation(new Vector2Double(33, 48));
             sandland.SetSize(1);
             world.AddPlace(sandland);
 
             Place pyramid = new Place();
             pyramid.SetName("Pyramid");
             pyramid.SetDescription("You are in the pyramid.");
-            pyramid.SetLocation(new Vector2Int(39, 56));
+            pyramid.SetLocation(new Vector2Double(39, 56));
             pyramid.SetSize(1);
             world.AddPlace(pyramid);
         }

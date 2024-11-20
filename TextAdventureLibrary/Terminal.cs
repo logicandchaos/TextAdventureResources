@@ -41,7 +41,7 @@
 
         public abstract void PrintDescription(Noun noun);
 
-        public abstract void MoveCurser(Vector2Int point);
+        public abstract void MoveCurser(Vector2Double point);
 
         public abstract void ResetColor();
 

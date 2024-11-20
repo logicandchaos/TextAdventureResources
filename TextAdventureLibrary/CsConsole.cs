@@ -163,9 +163,9 @@ namespace TextAdventureLibrary
             Console.Write(noun.GetAttributeValue<string>("description"));
         }
 
-        public override void MoveCurser(Vector2Int point)
+        public override void MoveCurser(Vector2Double point)
         {
-            Console.SetCursorPosition(point.X, point.Y);
+            Console.SetCursorPosition((int)point.X, (int)point.Y);
         }
 
         public override bool GraphicText(string input, Color col, bool clearScreen = true)
