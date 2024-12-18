@@ -205,7 +205,7 @@ namespace EpicProseRedux
                     case GameStates.PLACE:
                         within = world.WithinBordersOf(player.Location);
                         Place close = world.GetClosestPlace(player.Location);
-                        Program.console.Print($"Closest Place {within.Name}");
+                        Program.console.Print($"Closest Place {close.Name}");
                         Program.console.Print($"You are at {within.Name}");
                         Program.console.Anykey();
                         Map dungeon = within.GetAttributeValue<Map>("dungeon");
@@ -699,6 +699,10 @@ namespace EpicProseRedux
                     player.Location.MoveTowards(place.Location, speed);
                     Program.console.DebugMessage($"Player Location: {player.Location}");
                     Program.console.DebugMessage($"Place Location: {place.Location}");
+                    Place inPlace = world.WithinBordersOf(player.Location);
+                    Place close = world.GetClosestPlace(player.Location);
+                    Program.console.Print($"Closest Place {close.Name}");
+                    Program.console.Print($"You are at {inPlace.Name}");
 
                     foreach (Place p in worldAreas)
                     {
