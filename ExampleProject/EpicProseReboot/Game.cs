@@ -730,7 +730,7 @@ namespace EpicProseRedux
                     {
                         Program.console.Print($"You arrived at {place.Name}.\n");
                         Place within = world.WithinBordersOf(player.Location);
-                        Place close = world.GetClosestPlace(player.Location);
+                        close = world.GetClosestPlace(player.Location);
                         Program.console.Print($"Closest Place {within.Name}");
                         Program.console.Print($"You are at {within.Name}");
                         Program.console.Anykey();

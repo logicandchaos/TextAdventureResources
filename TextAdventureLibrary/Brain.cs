@@ -166,20 +166,21 @@ namespace TextAdventureLibrary
 
         public void UpdateCurrentEmotionalState()
         {
-            List<Emotion> emotions = new List<Emotion>();
-            if (EmotionHistory.Count > 0)
-                emotions.Add(EmotionHistory[EmotionHistory.Count]);
-            if (EmotionHistory.Count > 1)
-                emotions.Add(EmotionHistory[EmotionHistory.Count - 1]);
-            if (EmotionHistory.Count > 2)
-                emotions.Add(EmotionHistory[EmotionHistory.Count - 2]);
-
             if (Mood == null)
                 GenerateMood();
 
-            emotions.Add(Mood);
+            // Take last 3 emotions plus mood for averaging
+            var recent = EmotionHistory.Skip(Math.Max(0, EmotionHistory.Count - 3)).ToList();
+            recent.Add(Mood);
 
-            //CurrentEmotionalState = emotions.Average(e => e.Type == Emotion.EmotionType.Positive ? e.Intensity : -e.Intensity);
+            float sum = 0f;
+            foreach (var e in recent)
+            {
+                sum += e.Type == Emotion.EmotionType.Positive ? e.Intensity : -e.Intensity;
+            }
+
+            float average = recent.Count > 0 ? sum / recent.Count : 0f;
+            CurrentEmotionalState = new Emotion(average, Emotion.EmotionTimeFrame.Present);
         }
     }
 }
