@@ -11,15 +11,31 @@ namespace TextAdventureLibrary
         {
             EmotionHistory = new List<Emotion>();
             relationships = new Dictionary<Person, Relationship>();
+            utilityWeights = new Dictionary<UtilityCategory, float>();
+
+            // Default human-like values
+            SetCoreValues(0, 0, 0, 0, 0);
         }
-        /// VALUES
-        //Value Spectums based on Schwartz’s Theory of Basic Human Values
+
+        /// VALUES - Schwartz's Theory of Basic Human Values
         // -100 = left/extreme of spectrum, +100 = right/extreme
         public int IndependenceVsConformity { get; private set; }
         public int NoveltyVsStability { get; private set; }
         public int PleasureVsRestraint { get; private set; }
         public int AmbitionVsCompassion { get; private set; }
         public int DominanceVsEquality { get; private set; }
+
+        /// EMOTION        
+        public Emotion CurrentEmotionalState { get; private set; }
+        public Emotion Mood { get; private set; }
+        public List<Emotion> EmotionHistory { get; private set; }
+        public Emotion GetLastEmotion() => EmotionHistory.Count > 0 ? EmotionHistory[EmotionHistory.Count - 1] : null;
+
+        /// RELATIONSHIPS
+        private Dictionary<Person, Relationship> relationships;
+
+        /// UTILITY WEIGHTS
+        private Dictionary<UtilityCategory, float> utilityWeights;
 
         // Trait Helpers
         public bool IsCourageous => IndependenceVsConformity > 30 && NoveltyVsStability > 30;
@@ -31,87 +47,15 @@ namespace TextAdventureLibrary
         public bool IsDominant => DominanceVsEquality > 40 && AmbitionVsCompassion > 0;
         public bool IsFair => DominanceVsEquality < -20 && AmbitionVsCompassion < 0;
 
-        // Archetype Methods
-        public void SetRebel()
+        public void AddRelationship(Person person, Relationship relationship)
         {
-            IndependenceVsConformity = 80;
-            NoveltyVsStability = 70;
-            PleasureVsRestraint = 0;
-            AmbitionVsCompassion = 20;
-            DominanceVsEquality = 0;
+            relationships[person] = relationship;
         }
 
-        public void SetTyrant()
+        public Relationship GetRelationship(Person person)
         {
-            IndependenceVsConformity = 20;
-            NoveltyVsStability = 0;
-            PleasureVsRestraint = 20;
-            AmbitionVsCompassion = 80;
-            DominanceVsEquality = 90;
+            return relationships.TryGetValue(person, out var relationship) ? relationship : null;
         }
-
-        public void SetCaregiver()
-        {
-            IndependenceVsConformity = -20;
-            NoveltyVsStability = 10;
-            PleasureVsRestraint = -10;
-            AmbitionVsCompassion = -80;
-            DominanceVsEquality = -70;
-        }
-
-        public void SetTraditionalist()
-        {
-            IndependenceVsConformity = -80;
-            NoveltyVsStability = -70;
-            PleasureVsRestraint = -10;
-            AmbitionVsCompassion = 10;
-            DominanceVsEquality = -30;
-        }
-
-        public void SetHedonist()
-        {
-            IndependenceVsConformity = 10;
-            NoveltyVsStability = 20;
-            PleasureVsRestraint = 80;
-            AmbitionVsCompassion = 40;
-            DominanceVsEquality = 10;
-        }
-
-        public void SetVisionary()
-        {
-            IndependenceVsConformity = 80;
-            NoveltyVsStability = 40;
-            PleasureVsRestraint = 0;
-            AmbitionVsCompassion = -60;
-            DominanceVsEquality = -20;
-        }
-
-        public void SetSurvivor()
-        {
-            IndependenceVsConformity = -10;
-            NoveltyVsStability = -80;
-            PleasureVsRestraint = -60;
-            AmbitionVsCompassion = 10;
-            DominanceVsEquality = -10;
-        }
-
-        public void SetCoreValues(int IvC, int NvS, int PvR, int AvC, int DvE)
-        {
-            IndependenceVsConformity = IvC;
-            NoveltyVsStability = NvS;
-            PleasureVsRestraint = PvR;
-            AmbitionVsCompassion = AvC;
-            DominanceVsEquality = DvE;
-        }
-
-        /// EMOTION        
-        public Emotion CurrentEmotionalState { get; private set; }
-        public Emotion Mood { get; private set; }
-        public List<Emotion> EmotionHistory { get; private set; }
-        public Emotion GetLastEmotion() => EmotionHistory.Count > 0 ? EmotionHistory[EmotionHistory.Count] : null;
-
-        /// RELATIONSHIPS
-        private Dictionary<Person, Relationship> relationships;
 
         // Generate emotion from utility change
         public Emotion ProcessUtilityChange(Utility utility)
@@ -127,10 +71,10 @@ namespace TextAdventureLibrary
         }
 
         // Anticipate future emotion from expected change
-        public Emotion AnticipateChange(float expectedChange, Dictionary<string, Utility> utilities)
+        public Emotion AnticipateChange(float expectedUtilityChange)
         {
-            var emotion = new Emotion(expectedChange, Emotion.EmotionTimeFrame.Future);
-            EmotionHistory.Add(emotion);
+            var emotion = new Emotion(expectedUtilityChange, Emotion.EmotionTimeFrame.Future);
+            // Don't add to history - this is just a prediction
             return emotion;
         }
 
@@ -142,45 +86,293 @@ namespace TextAdventureLibrary
             return emotion;
         }
 
-        // Choose best decision from options
-        public void MakeChoice(Menu menu)
-        {
-            //make decision based on estimated change in utility, but also emotion, values and relationship
-            menu.SelectOption(1);
-            menu.Execute();
-        }
-
         public void React(Person person, List<Utility> utilitiesChanged)
         {
             foreach (Utility u in utilitiesChanged)
             {
-                //EmotionHistory.Add();
-                //relationships[person].AddEmotion();
+                var emotion = ProcessUtilityChange(u);
+                if (emotion != null && relationships.ContainsKey(person))
+                {
+                    relationships[person].AddEmotion(emotion);
+                }
             }
         }
 
         public void GenerateMood()
         {
-            //moods are random
+            Random rand = new Random();
+            float intensity = (float)rand.NextDouble();
+            bool isPositive = rand.NextDouble() > 0.5;
+            float valence = isPositive ? intensity : -intensity;
+            Mood = new Emotion(valence, Emotion.EmotionTimeFrame.Present);
         }
 
-        public void UpdateCurrentEmotionalState()
+        public void UpdateCurrentEmotionalState(float currentUtility, float previousUtility)
         {
+            // Per the utility theory paper: emotions are derived from changes in utility
+            float utilityChange = currentUtility - previousUtility;
+
+            // Apply mood as a background offset that colors emotional responses
             if (Mood == null)
                 GenerateMood();
 
-            // Take last 3 emotions plus mood for averaging
-            var recent = EmotionHistory.Skip(Math.Max(0, EmotionHistory.Count - 3)).ToList();
-            recent.Add(Mood);
+            float moodOffset = Mood != null ?
+                (Mood.Type == Emotion.EmotionType.Positive ? Mood.Intensity : -Mood.Intensity) * 0.3f :
+                0f;
 
-            float sum = 0f;
-            foreach (var e in recent)
+            // Current emotional state = utility change + mood influence
+            float emotionalValue = utilityChange + moodOffset;
+            CurrentEmotionalState = new Emotion(emotionalValue, Emotion.EmotionTimeFrame.Present);
+        }
+
+        private void InitializeUtilityWeights()
+        {
+            // Base weights from the paper: BasicNeeds > SocialDesires > Entertainment
+            utilityWeights[UtilityCategory.BasicNeeds] = 1.0f;
+            utilityWeights[UtilityCategory.SocialDesires] = 0.7f;
+            utilityWeights[UtilityCategory.Entertainment] = 0.4f;
+
+            // Modify based on personality values
+
+            // PleasureVsRestraint affects Entertainment weighting
+            utilityWeights[UtilityCategory.Entertainment] += PleasureVsRestraint * 0.003f;
+
+            // AmbitionVsCompassion affects SocialDesires weighting
+            utilityWeights[UtilityCategory.SocialDesires] += Math.Abs(AmbitionVsCompassion) * 0.002f;
+
+            // NoveltyVsStability affects BasicNeeds (safety component)
+            utilityWeights[UtilityCategory.BasicNeeds] += (NoveltyVsStability < 0 ? Math.Abs(NoveltyVsStability) * 0.002f : 0f);
+
+            // Ensure weights don't go negative
+            foreach (var key in utilityWeights.Keys.ToList())
             {
-                sum += e.Type == Emotion.EmotionType.Positive ? e.Intensity : -e.Intensity;
+                utilityWeights[key] = Math.Max(0.1f, utilityWeights[key]);
+            }
+        }
+
+        public float GetUtilityWeight(UtilityCategory category)
+        {
+            return utilityWeights.ContainsKey(category) ? utilityWeights[category] : 1.0f;
+        }
+
+        // Archetype configuration methods
+        public void SetRebel()
+        {
+            SetCoreValues(80, 70, 0, 20, 0);
+        }
+
+        public void SetTyrant()
+        {
+            SetCoreValues(20, 0, 20, 80, 90);
+        }
+
+        public void SetCaregiver()
+        {
+            SetCoreValues(-20, 10, -10, -80, -70);
+        }
+
+        public void SetTraditionalist()
+        {
+            SetCoreValues(-80, -70, -10, 10, -30);
+        }
+
+        public void SetHedonist()
+        {
+            SetCoreValues(10, 20, 80, 40, 10);
+        }
+
+        public void SetVisionary()
+        {
+            SetCoreValues(80, 40, 0, -60, -20);
+        }
+
+        public void SetSurvivor()
+        {
+            SetCoreValues(-10, -80, -60, 10, -10);
+        }
+
+        public void SetAnimal()
+        {
+            // Animals have no personality considerations
+            SetCoreValues(0, 0, 0, 0, 0);
+
+            // Override weights to heavily favor survival
+            utilityWeights[UtilityCategory.BasicNeeds] = 2.0f;
+            utilityWeights[UtilityCategory.SocialDesires] = 0.1f;
+            utilityWeights[UtilityCategory.Entertainment] = 0.0f;
+        }
+
+        public void SetCoreValues(int IvC, int NvS, int PvR, int AvC, int DvE)
+        {
+            IndependenceVsConformity = (int)MathFunctions.Clamp(IvC, -100, 100);
+            NoveltyVsStability = (int)MathFunctions.Clamp(NvS, -100, 100);
+            PleasureVsRestraint = (int)MathFunctions.Clamp(PvR, -100, 100);
+            AmbitionVsCompassion = (int)MathFunctions.Clamp(AvC, -100, 100);
+            DominanceVsEquality = (int)MathFunctions.Clamp(DvE, -100, 100);
+
+            InitializeUtilityWeights();
+        }
+
+        public void SetUtilityWeights(float basicNeeds, float socialDesires, float entertainment)
+        {
+            utilityWeights[UtilityCategory.BasicNeeds] = Math.Max(0f, basicNeeds);
+            utilityWeights[UtilityCategory.SocialDesires] = Math.Max(0f, socialDesires);
+            utilityWeights[UtilityCategory.Entertainment] = Math.Max(0f, entertainment);
+        }
+
+        // Main decision-making method based on utility prediction
+        public void MakeChoice(Menu menu, Person owner)
+        {
+            if (menu.Items.Length == 0) return;
+
+            int bestChoice = 0;
+            float bestEmotionalOutcome = float.MinValue;
+
+            for (int i = 0; i < menu.Items.Length; i++)
+            {
+                float predictedEmotionalOutcome = EvaluateOption(menu.Items[i], owner);
+                if (predictedEmotionalOutcome > bestEmotionalOutcome)
+                {
+                    bestEmotionalOutcome = predictedEmotionalOutcome;
+                    bestChoice = i;
+                }
             }
 
-            float average = recent.Count > 0 ? sum / recent.Count : 0f;
-            CurrentEmotionalState = new Emotion(average, Emotion.EmotionTimeFrame.Present);
+            menu.SelectOption(bestChoice);
+            menu.Execute();
+        }
+
+        private float EvaluateOption(MenuItem item, Person owner)
+        {
+            // Calculate predicted weighted utility change
+            float predictedUtilityChange = CalculatePredictedUtilityChange(item, owner);
+
+            // Use AnticipateChange to get the emotional response
+            var anticipatedEmotion = AnticipateChange(predictedUtilityChange);
+
+            // Convert emotion to decision score
+            float emotionalScore = anticipatedEmotion.Type == Emotion.EmotionType.Positive ?
+                anticipatedEmotion.Intensity :
+                -anticipatedEmotion.Intensity;
+
+            // Apply current emotional state as a modifier
+            emotionalScore *= GetEmotionalModifier();
+
+            return emotionalScore;
+        }
+
+        private float CalculatePredictedUtilityChange(MenuItem item, Person owner)
+        {
+            float totalUtilityChange = 0f;
+
+            // Process owner utility effects
+            if (item.OwnerUtilityEffects != null)
+            {
+                foreach (var effect in item.OwnerUtilityEffects)
+                {
+                    string utilityName = effect.Key;
+                    float baseChange = effect.Value;
+
+                    // Get the utility from the person
+                    var utility = owner.GetAttributeValue<Utility>(utilityName);
+                    if (utility != null)
+                    {
+                        // Apply category weight based on personality
+                        float categoryWeight = GetUtilityWeight(utility.Category);
+                        float weightedChange = baseChange * utility.Weight * categoryWeight;
+                        totalUtilityChange += weightedChange;
+                    }
+                }
+            }
+
+            // Apply relationship modifiers if target person specified
+            if (item.TargetPerson != null)
+            {
+                totalUtilityChange += EvaluateRelationshipModifiers(item, item.TargetPerson);
+            }
+
+            return totalUtilityChange;
+        }
+
+        private float EvaluateRelationshipModifiers(MenuItem item, Person target)
+        {
+            var relationship = GetRelationship(target);
+            if (relationship == null) return 0f;
+
+            float modifier = 0f;
+
+            // Determine action type by analyzing target utility effects
+            bool isHostileAction = false;
+            bool isHelpfulAction = false;
+
+            if (item.TargetUtilityEffects != null && item.TargetUtilityEffects.Count > 0)
+            {
+                // Analyze the net effect on target
+                float netTargetEffect = 0f;
+                foreach (var effect in item.TargetUtilityEffects.Values)
+                {
+                    netTargetEffect += effect;
+                }
+
+                // Negative effect on target = hostile action
+                // Positive effect on target = helpful action
+                isHostileAction = netTargetEffect < -1f;
+                isHelpfulAction = netTargetEffect > 1f;
+            }
+
+            if (isHostileAction)
+            {
+                // Allegiance heavily affects attack decisions
+                if (relationship.Allegiance > 50)
+                    modifier -= 100f; // Massive penalty for attacking allies
+                else if (relationship.Allegiance < -50)
+                    modifier += 20f; // Bonus for attacking enemies
+
+                // Affection and Trust reduce willingness to attack
+                modifier -= relationship.Affection * 0.5f;
+                modifier -= relationship.Trust * 0.3f;
+
+                // Gratitude/Resentment
+                if (relationship.Grateful)
+                    modifier -= 30f; // Don't attack those who helped you
+                else if (relationship.Resentful)
+                    modifier += 15f; // More willing to attack those who wronged you
+
+                // Respect affects willingness to challenge them
+                modifier -= relationship.Respect * 0.2f;
+            }
+            else if (isHelpfulAction)
+            {
+                // High affection/trust increases willingness to help
+                modifier += relationship.Affection * 0.3f;
+                modifier += relationship.Trust * 0.2f;
+
+                // Allegiance matters
+                if (relationship.Allegiance > 30)
+                    modifier += 20f;
+                else if (relationship.Allegiance < -30)
+                    modifier -= 20f; // Less likely to help enemies
+
+                // EmotionalDebt - if they owe us, we're less likely to help more
+                modifier -= relationship.EmotionalDebt * 0.1f;
+
+                // Kinship increases willingness to help
+                modifier += relationship.Kinship * 0.2f;
+            }
+
+            return modifier;
+        }
+
+        private float GetEmotionalModifier()
+        {
+            if (CurrentEmotionalState == null) return 1.0f;
+
+            // Positive emotions make us more optimistic/risk-taking
+            // Negative emotions make us more cautious
+            if (CurrentEmotionalState.Type == Emotion.EmotionType.Positive)
+                return 1.0f + (CurrentEmotionalState.Intensity * 0.2f);
+            else
+                return 1.0f - (CurrentEmotionalState.Intensity * 0.3f);
         }
     }
 }
