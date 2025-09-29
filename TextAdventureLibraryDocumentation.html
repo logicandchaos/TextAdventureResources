@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextAdventureLibrary Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+        pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        pre code {
+            background-color: transparent;
+            color: #ecf0f1;
+            padding: 0;
+        }
+        .toc, .index {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .toc ul, .index ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li, .index li {
+            margin: 8px 0;
+        }
+        .toc a, .index a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .toc a:hover, .index a:hover {
+            text-decoration: underline;
+        }
+        .index {
+            margin-top: 40px;
+        }
+        .index h2 {
+            margin-top: 0;
+        }
+        .index-category {
+            margin-top: 20px;
+        }
+        .index-category h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TextAdventureLibrary Documentation</h1>
+        
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#overview">1. Overview</a></li>
+                <li><a href="#core-architecture">2. Core Architecture</a></li>
+                <li><a href="#entity-system">3. Entity System</a></li>
+                <li><a href="#ai-decision-making">4. AI & Decision Making</a></li>
+                <li><a href="#utility-system">5. Utility System</a></li>
+                <li><a href="#relationship-system">6. Relationship System</a></li>
+                <li><a href="#menu-system">7. Menu System</a></li>
+                <li><a href="#world-management">8. World Management</a></li>
+                <li><a href="#helper-classes">9. Helper Classes</a></li>
+                <li><a href="#terminal-io">10. Terminal/IO</a></li>
+                <li><a href="#procedural-generation">11. Procedural Generation</a></li>
+                <li><a href="#examples">12. Examples</a></li>
+                <li><a href="#best-practices">13. Best Practices</a></li>
+                <li><a href="#class-index">Class Index</a></li>
+            </ul>
+        </div>
+
+        <h2 id="overview">Overview</h2>
+        <p>TextAdventureLibrary is a C# framework for building text-based RPG games with sophisticated AI-driven NPCs. The library uses <strong>linguistic terminology</strong> as its foundation (Noun, Person, Place, Thing) and implements a <strong>utility-based decision-making system</strong> grounded in psychological research.</p>
+        
+        <h3>Key Features</h3>
+        <ul>
+            <li><strong>Entity Component System (ECS)</strong> using flexible attribute dictionaries</li>
+            <li><strong>Utility theory-based AI</strong> where emotions drive decision-making</li>
+            <li><strong>Schwartz's values theory</strong> for personality modeling</li>
+            <li><strong>Multi-dimensional relationship system</strong> with 9 relationship dimensions</li>
+            <li><strong>Builder pattern</strong> for complex entity creation</li>
+            <li><strong>Flexible menu system</strong> for player and NPC interactions</li>
+        </ul>
+
+        <h2 id="core-architecture">Core Architecture</h2>
+        
+        <h3>Design Philosophy</h3>
+        <p>The library is built on <strong>English linguistic concepts</strong> rather than traditional game terminology:</p>
+        <pre><code>Noun (base class)
+├── Person (characters, NPCs)
+├── Place (locations, regions)
+└── Thing (items, objects)</code></pre>
+
+        <h3>Entity Component System</h3>
+        <p>All entities inherit from <code>Noun</code> and use a dictionary-based attribute system for maximum flexibility:</p>
+        <pre><code>// Add any attribute to any entity
+person.AddOrSetAttribute("brain", new Brain());
+person.AddOrSetAttribute("health", new Utility(100, 100, 1.0f));
+person.AddOrSetAttribute("currentWeapon", sword);
+
+// Retrieve typed attributes
+var brain = person.GetAttributeValue&lt;Brain&gt;("brain");
+var health = person.GetAttributeValue&lt;Utility&gt;("health");</code></pre>
+
+        <h2 id="entity-system">Entity System</h2>
+        
+        <h3>Noun (Base Class)</h3>
+        <p>All interactive objects inherit from <code>Noun</code>.</p>
+        
+        <h4>Properties:</h4>
+        <ul>
+            <li><code>string Name</code> - Entity identifier</li>
+            <li><code>string Description</code> - Text description</li>
+            <li><code>Vector2Double Location</code> - 2D world position</li>
+            <li><code>Dictionary&lt;string, object&gt; Attributes</code> - Flexible attribute storage</li>
+            <li><code>Inventory Inventory</code> - Container for Thing objects</li>
+        </ul>
+
+        <h4>Key Methods:</h4>
+        <pre><code>void SetName(string name)
+void SetDescription(string text)
+void SetLocation(Vector2Double location)
+void AddOrSetAttribute(string name, object value)
+T GetAttributeValue&lt;T&gt;(string key)
+Dictionary&lt;string, T&gt; FilterAttributesByType&lt;T&gt;()
+void InitializeInventory(float maxWeight, float space, int maxItems)</code></pre>
+
+        <h3>Person</h3>
+        <p>Represents characters and NPCs. Inherits all Noun functionality.</p>
+        <pre><code>var npc = new Person();
+npc.SetName("Merchant");
+npc.SetDescription("A weathered trader with keen eyes.");
+npc.AddOrSetAttribute("brain", new Brain());
+npc.AddOrSetAttribute("health", new Utility(80, 100, 1.0f));</code></pre>
+
+        <h3>Place</h3>
+        <p>Represents locations with spatial properties.</p>
+        <h4>Additional Properties:</h4>
+        <ul>
+            <li><code>float Size</code> - Radius of the location</li>
+            <li><code>List&lt;Person&gt; Population</code> - People currently at this location</li>
+        </ul>
+
+        <h3>Thing</h3>
+        <p>Represents items and objects. Inherits all Noun functionality.</p>
+
+        <h3>NounBuilder&lt;T&gt;</h3>
+        <p>Generic builder for creating entities with validation.</p>
+        <pre><code>var builder = new NounBuilder&lt;Person&gt;("brain", "health");
+
+var npc = builder
+    .WithName("Guard")
+    .WithDescription("A stern city guard.")
+    .WithLocation(new Vector2Double(50, 50))
+    .WithAttribute("brain", new Brain())
+    .WithAttribute("health", new Utility(100, 100, 1.0f))
+    .TryBuild(out string message);</code></pre>
+
+        <h2 id="ai-decision-making">AI & Decision Making</h2>
+        
+        <h3>Brain Class</h3>
+        <p>The Brain is the core AI component that handles decision-making, emotions, relationships, and personality.</p>
+        
+        <h4>Core Systems:</h4>
+        <ol>
+            <li><strong>Schwartz Values</strong> - Personality traits</li>
+            <li><strong>Utility Weights</strong> - What matters to this character</li>
+            <li><strong>Emotional State</strong> - Current and historical emotions</li>
+            <li><strong>Relationships</strong> - Social connections and dynamics</li>
+        </ol>
+
+        <h3>Schwartz's Value Theory</h3>
+        <p>NPCs are defined by 5 value spectrums (-100 to +100):</p>
+        <pre><code>brain.SetCoreValues(
+    independenceVsConformity: 60,  // Independent thinker
+    noveltyVsStability: -40,        // Prefers stability
+    pleasureVsRestraint: 20,        // Moderate pleasure-seeking
+    ambitionVsCompassion: -70,      // Very compassionate
+    dominanceVsEquality: -30        // Prefers equality
+);</code></pre>
+
+        <h4>Pre-built Archetypes:</h4>
+        <pre><code>brain.SetRebel();          // Independent, novel, defiant
+brain.SetTyrant();         // Ambitious, dominant, conformist
+brain.SetCaregiver();      // Compassionate, equal, giving
+brain.SetTraditionalist(); // Conformist, stable, traditional
+brain.SetHedonist();       // Pleasure-seeking, indulgent
+brain.SetVisionary();      // Independent, compassionate, novel
+brain.SetSurvivor();       // Stable, restrained, cautious
+brain.SetAnimal();         // No personality, survival-focused</code></pre>
+
+        <h3>Decision Making Process</h3>
+        <p>The Brain makes decisions by <strong>predicting emotional outcomes</strong> from utility changes:</p>
+        
+        <div class="note">
+            <strong>The Flow:</strong>
+            <ol>
+                <li>MenuItem specifies <code>OwnerUtilityEffects</code> and <code>TargetUtilityEffects</code></li>
+                <li>Brain calculates weighted utility change based on personality</li>
+                <li>Relationship with target modifies the score</li>
+                <li>Brain anticipates how that utility change will make them feel</li>
+                <li>Current emotional state affects risk tolerance</li>
+                <li>Brain chooses action that maximizes predicted positive emotion</li>
+            </ol>
+        </div>
+
+        <h3>Emotions</h3>
+        <p>Based on <strong>utility theory of emotion</strong> - emotions emerge from utility changes.</p>
+        <pre><code>public enum EmotionType { Positive, Negative }
+public enum EmotionTimeFrame { Present, Past, Future }
+
+// Emotions have type, intensity (0-1), and timeframe
+var emotion = new Emotion(utilityChange, EmotionTimeFrame.Present);</code></pre>
+
+        <h4>Key Methods:</h4>
+        <pre><code>// Process actual utility change → create emotion
+Emotion ProcessUtilityChange(Utility utility)
+
+// Predict emotion from expected change (used in decisions)
+Emotion AnticipateChange(float expectedUtilityChange)
+
+// Reflect on past events
+Emotion ReflectOnChange(float pastChange)
+
+// Update current state based on utility changes
+void UpdateCurrentEmotionalState(float currentUtility, float previousUtility)
+
+// Generate random mood (called periodically)
+void GenerateMood()</code></pre>
+
+        <h2 id="utility-system">Utility System</h2>
+        
+        <h3>Utility Class</h3>
+        <p>Represents a need or desire that changes over time and affects emotions.</p>
+        
+        <h4>Properties:</h4>
+        <table>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>float Value</code></td>
+                <td>Current value</td>
+            </tr>
+            <tr>
+                <td><code>float Max</code></td>
+                <td>Maximum value</td>
+            </tr>
+            <tr>
+                <td><code>float Percentage</code></td>
+                <td>Value / Max</td>
+            </tr>
+            <tr>
+                <td><code>float Weight</code></td>
+                <td>Importance multiplier</td>
+            </tr>
+            <tr>
+                <td><code>UtilityCategory Category</code></td>
+                <td>BasicNeeds, SocialDesires, or Entertainment</td>
+            </tr>
+        </table>
+
+        <h4>Usage Example:</h4>
+        <pre><code>// Create utilities for a person
+var hunger = new Utility(100, 100, 1.0f, UtilityCategory.BasicNeeds);
+var social = new Utility(50, 100, 0.8f, UtilityCategory.SocialDesires);
+
+person.AddOrSetAttribute("hunger", hunger);
+person.AddOrSetAttribute("social", social);
+
+// Modify utilities
+hunger.ModifyValue(-20);  // Got hungry
+if (hunger.HasChanged)
+{
+    var emotion = brain.ProcessUtilityChange(hunger);
+    // Emotion will be negative since utility decreased
+}</code></pre>
+
+        <h2 id="relationship-system">Relationship System</h2>
+        
+        <h3>Relationship Class</h3>
+        <p>Multi-dimensional relationship tracking with 9 spectrums.</p>
+        
+        <h4>Relationship Dimensions (-100 to +100):</h4>
+        <table>
+            <tr>
+                <th>Dimension</th>
+                <th>Range</th>
+            </tr>
+            <tr>
+                <td><code>float Kinship</code></td>
+                <td>-100: Unrelated → +100: Close family</td>
+            </tr>
+            <tr>
+                <td><code>float Attraction</code></td>
+                <td>-100: Platonic → +100: Romantic/Sexual</td>
+            </tr>
+            <tr>
+                <td><code>float Affection</code></td>
+                <td>-100: Hatred → +100: Love</td>
+            </tr>
+            <tr>
+                <td><code>float Hierarchy</code></td>
+                <td>-100: Subordinate → +100: Superior</td>
+            </tr>
+            <tr>
+                <td><code>float Familiarity</code></td>
+                <td>-100: Stranger → +100: Intimate</td>
+            </tr>
+            <tr>
+                <td><code>float Trust</code></td>
+                <td>-100: Distrust → +100: Full trust</td>
+            </tr>
+            <tr>
+                <td><code>float Respect</code></td>
+                <td>-100: Contempt → +100: Admiration</td>
+            </tr>
+            <tr>
+                <td><code>float EmotionalDebt</code></td>
+                <td>-100: Resentment → +100: Gratitude</td>
+            </tr>
+            <tr>
+                <td><code>float Allegiance</code></td>
+                <td>-100: Enemy → +100: Ally</td>
+            </tr>
+        </table>
+
+        <h4>Usage Example:</h4>
+        <pre><code>var relationship = new Relationship(
+    kinship: 0,        // Not related
+    attraction: 20,    // Slight attraction
+    affection: 60,     // Strong liking
+    hierarchy: -20,    // They're slightly superior
+    familiarity: 40,   // Well acquainted
+    trust: 70,         // High trust
+    respect: 50,       // Moderate respect
+    emotionalDebt: 30, // They owe you
+    allegiance: 80     // Strong allies
+);
+
+brain.AddRelationship(otherPerson, relationship);</code></pre>
+
+        <h2 id="menu-system">Menu System</h2>
+        
+        <h3>Menu Class</h3>
+        <p>Presents choices to players or NPCs.</p>
+        <pre><code>public class Menu
+{
+    public string Title { get; set; }
+    public MenuItem[] Items { get; set; }
+    
+    public Menu(string title, params MenuItem[] items)
+    public void SelectOption(int option)
+    public void Execute()
+}</code></pre>
+
+        <h3>MenuItem Class</h3>
+        <p>Individual menu options with utility predictions.</p>
+        
+        <h4>Properties:</h4>
+        <ul>
+            <li><code>string Text</code> - Display text</li>
+            <li><code>Action OnSelected</code> - Callback when chosen</li>
+            <li><code>Dictionary&lt;string, float&gt; OwnerUtilityEffects</code> - How this affects the chooser</li>
+            <li><code>Dictionary&lt;string, float&gt; TargetUtilityEffects</code> - How this affects the target</li>
+            <li><code>Person TargetPerson</code> - Who is affected</li>
+        </ul>
+
+        <h2 id="world-management">World Management</h2>
+        
+        <h3>World Class</h3>
+        <p>Container for all game entities and state.</p>
+        
+        <h4>Key Properties:</h4>
+        <ul>
+            <li><code>string Name</code></li>
+            <li><code>Map Map</code></li>
+            <li><code>Die Die</code> - Seeded random for reproducibility</li>
+            <li><code>DateTime CurrentDateTime</code></li>
+            <li><code>Dictionary&lt;string, Person&gt; Everyone</code></li>
+            <li><code>Dictionary&lt;string, Place&gt; Everywhere</code></li>
+            <li><code>Dictionary&lt;string, Thing&gt; Everything</code></li>
+            <li><code>Dictionary&lt;DateTime, string&gt; History</code></li>
+        </ul>
+
+        <h2 id="helper-classes">Helper Classes</h2>
+        
+        <h3>Vector2Double</h3>
+        <p>2D coordinate system with utility methods.</p>
+        <pre><code>Vector2Double pos = new Vector2Double(100, 50);
+double distance = pos.DistanceTo(otherPos);
+pos.MoveTowards(destination, speed);</code></pre>
+
+        <h3>Die</h3>
+        <p>Seeded random number generator for reproducible gameplay.</p>
+        <pre><code>Die die = new Die(12345);  // Seed for reproducibility
+int roll = die.Roll(1, 20); // d20 roll</code></pre>
+
+        <h3>Stat</h3>
+        <p>Attribute with min/max bounds and dice rolling.</p>
+        <pre><code>Stat strength = new Stat(1, 20);
+strength.RollStat(die);
+int result = strength.StatCheck(die); // Roll-under check</code></pre>
+
+        <h3>Inventory</h3>
+        <p>Weight and volume-based container system.</p>
+        <pre><code>Inventory backpack = new Inventory(
+    maxWeight: 50f,    // pounds
+    maxVolume: 1000f,  // cubic inches
+    maxItems: 20
+);
+
+if (backpack.TryAddToInventory(sword))
+{
+    Console.WriteLine("Sword added!");
+}</code></pre>
+
+        <h3 id="cell-struct">Cell</h3>
+        <p>Struct representing a display cell with symbol and colors for map rendering.</p>
+        <h4>Properties:</h4>
+        <ul>
+            <li><code>char symbol</code> - Character to display</li>
+            <li><code>Color fore</code> - Foreground color</li>
+            <li><code>Color back</code> - Background color</li>
+        </ul>
+        <pre><code>Cell grassCell = new Cell('.', Color.Green, Color.DarkGreen);
+Cell wallCell = new Cell('#', Color.Gray, Color.Black);</code></pre>
+
+        <h3 id="mathfunctions">MathFunctions</h3>
+        <p>Static utility class for mathematical operations.</p>
+        <pre><code>float clamped = MathFunctions.Clamp(value, -100f, 100f);</code></pre>
+
+        <h2 id="terminal-io">Terminal/IO</h2>
+        
+        <h3 id="terminal-abstract">Terminal (Abstract Base Class)</h3>
+        <p>Abstract base class for IO implementations. Provides interface for text output, input, and display formatting.</p>
+        
+        <h4>Key Abstract Methods:</h4>
+        <ul>
+            <li><code>void Print(string text)</code></li>
+            <li><code>void Type(string text, int delay)</code> - Typewriter effect</li>
+            <li><code>void Print(Menu menu)</code></li>
+            <li><code>void Print(Map map, bool clearScreen, bool title, bool info)</code></li>
+            <li><code>void SetColor(Color foreground, Color background)</code></li>
+            <li><code>bool YesNo(string question)</code></li>
+            <li><code>int GetDigit(int max)</code></li>
+            <li><code>string GetString(string message)</code></li>
+            <li><code>void ClearScreen()</code></li>
+        </ul>
+
+        <h3 id="csconsole">CsConsole</h3>
+        <p>Console implementation of Terminal for standard C# console applications.</p>
+        <pre><code>Terminal console = new CsConsole();
+console.Print("Welcome to the game!");
+console.SetColor(Color.Red, Color.Black);
+console.Type("Dramatic text...", delay: 50);
+
+// Display menu
+console.Print(menu);
+int choice = console.GetDigit(menu.Items.Length);
+
+// ASCII art display
+console.GraphicText("GAME OVER", Color.Red);</code></pre>
+
+        <h3 id="color-enum">Color (Enum)</h3>
+        <p>Color enumeration for terminal display.</p>
+        
+        <h4>Available Colors:</h4>
+        <table>
+            <tr>
+                <th>Color</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>Black</code></td>
+                <td>Black (#000000)</td>
+            </tr>
+            <tr>
+                <td><code>DarkRed</code></td>
+                <td>Dark red</td>
+            </tr>
+            <tr>
+                <td><code>DarkGreen</code></td>
+                <td>Dark green</td>
+            </tr>
+            <tr>
+                <td><code>DarkYellow</code></td>
+                <td>Dark yellow/brown</td>
+            </tr>
+            <tr>
+                <td><code>DarkBlue</code></td>
+                <td>Dark blue</td>
+            </tr>
+            <tr>
+                <td><code>DarkMagenta</code></td>
+                <td>Dark magenta/purple</td>
+            </tr>
+            <tr>
+                <td><code>DarkCyan</code></td>
+                <td>Dark cyan</td>
+            </tr>
+            <tr>
+                <td><code>Gray</code></td>
+                <td>Gray</td>
+            </tr>
+            <tr>
+                <td><code>DarkGray</code></td>
+                <td>Dark gray</td>
+            </tr>
+            <tr>
+                <td><code>Red</code></td>
+                <td>Bright red</td>
+            </tr>
+            <tr>
+                <td><code>Green</code></td>
+                <td>Bright green</td>
+            </tr>
+            <tr>
+                <td><code>Yellow</code></td>
+                <td>Bright yellow</td>
+            </tr>
+            <tr>
+                <td><code>Blue</code></td>
+                <td>Bright blue</td>
+            </tr>
+            <tr>
+                <td><code>Magenta</code></td>
+                <td>Bright magenta</td>
+            </tr>
+            <tr>
+                <td><code>Cyan</code></td>
+                <td>Bright cyan</td>
+            </tr>
+            <tr>
+                <td><code>White</code></td>
+                <td>White (#FFFFFF)</td>
+            </tr>
+            <tr>
+                <td><code>Transparent</code></td>
+                <td>No color (transparent)</td>
+            </tr>
+        </table>
+        
+        <h4>Usage:</h4>
+        <pre><code>console.SetColor(Color.Red, Color.Black);
+console.Print("Warning!");
+console.ResetColor();
+
+// For map cells
+Cell waterCell = new Cell('~', Color.Blue, Color.DarkBlue);
+Cell fireCell = new Cell('*', Color.Yellow, Color.Red);</code></pre>
+
+        <h2 id="procedural-generation">Procedural Generation</h2>
+        
+        <h3 id="tracery">Tracery</h3>
+        <p>Implementation of Kate Compton's Tracery story grammar system for procedural text generation.</p>
+        <pre><code>Tracery grammar = new Tracery();
+grammar.AddRule("name", "Thorin");
+grammar.AddRule("name", "Gandalf");
+grammar.AddRule("action", "swings his sword");
+grammar.AddRule("action", "casts a spell");
+grammar.AddRule("sentence", "#name# #action#!");
+
+string output = grammar.Expand("#sentence#");
+// Outputs: "Thorin swings his sword!" or "Gandalf casts a spell!" etc.</code></pre>
+
+        <h3 id="description-generator">DescriptionGenerator&lt;T&gt;</h3>
+        <p>Generic description generator using Tracery rules for dynamic entity descriptions.</p>
+        <pre><code>var generator = new DescriptionGenerator&lt;Person&gt;();
+
+// Add rules for different attributes
+var happyRule = new Tracery();
+happyRule.AddRule("mood", "cheerful");
+happyRule.AddRule("mood", "joyful");
+generator.AddAttributeRule("mood", happyRule);
+
+string description = generator.GenerateDescription(person);
+// Generates description based on person's attributes</code></pre>
+
+        <h3 id="name-generator">NameGenerator</h3>
+        <p>Markov chain-based name generator that learns from example names.</p>
+        <pre><code>// Train with example names
+NameGenerator gen = new NameGenerator(
+    "Aragorn", "Legolas", "Gimli", "Gandalf", 
+    "Thorin", "Bilbo", "Frodo"
+);
+
+// Generate new names in similar style
+Random random = new Random();
+string newName1 = gen.GenerateName(random); // "Arando"
+string newName2 = gen.GenerateName(random); // "Legorn"
+string newName3 = gen.GenerateName(random); // "Gindo"</code></pre>
+
+        <h2 id="examples">Examples</h2>
+        
+        <h3>Example 1: Creating an NPC with AI</h3>
+        <pre><code>var builder = new NounBuilder&lt;Person&gt;("brain", "health", "hunger");
+
+var merchant = builder
+    .WithName("Grumpy Merchant")
+    .WithDescription("A surly trader who values profit above all.")
+    .WithLocation(new Vector2Double(50, 50))
+    .WithAttribute("brain", new Brain())
+    .WithAttribute("health", new Utility(100, 100, 1.0f, UtilityCategory.BasicNeeds))
+    .WithAttribute("hunger", new Utility(80, 100, 0.8f, UtilityCategory.BasicNeeds))
+    .WithAttribute("gold", new Utility(500, 1000, 1.2f, UtilityCategory.SocialDesires))
+    .TryBuild(out string message);
+
+// Configure personality - greedy and ambitious
+var brain = merchant.GetAttributeValue&lt;Brain&gt;("brain");
+brain.SetCoreValues(
+    independenceVsConformity: 40,
+    noveltyVsStability: -20,
+    pleasureVsRestraint: 60,    // Pleasure-seeking
+    ambitionVsCompassion: 80,    // Very ambitious/greedy
+    dominanceVsEquality: 30
+);</code></pre>
+
+        <h3>Example 2: Combat with Relationships</h3>
+        <pre><code>// Player vs bandit - enemies
+var playerBanditRelation = new Relationship(
+    kinship: 0,
+    attraction: 0,
+    affection: -60,   // Dislike
+    hierarchy: 0,
+    familiarity: 10,
+    trust: -80,       // Distrust
+    respect: 0,
+    emotionalDebt: -40, // Bandit wronged player
+    allegiance: -90    // Enemies
+);
+playerBrain.AddRelationship(bandit, playerBanditRelation);
+
+// Create combat menu
+var combatMenu = new Menu("Choose action:",
+    new MenuItem("Attack Bandit", () => Attack(bandit))
+    {
+        OwnerUtilityEffects = new Dictionary&lt;string, float&gt;
+        {
+            { "safety", 5 },      // Removing threat
+            { "reputation", 10 }  // Hero
+        },
+        TargetUtilityEffects = new Dictionary&lt;string, float&gt;
+        {
+            { "health", -25 }
+        },
+        TargetPerson = bandit
+    }
+);
+
+playerBrain.MakeChoice(combatMenu, player);</code></pre>
+
+        <h2 id="best-practices">Best Practices</h2>
+        
+        <h3>1. Initialize Brains After Values</h3>
+        <pre><code>brain.SetCoreValues(10, 20, 30, 40, 50);
+// Utility weights are automatically initialized from values</code></pre>
+
+        <h3>2. Use Builders for Complex Entities</h3>
+        <pre><code>var builder = new NounBuilder&lt;Person&gt;("brain", "health");
+// Validates required attributes exist</code></pre>
+
+        <h3>3. Name Utilities Consistently</h3>
+        <pre><code>// Use consistent names across all entities
+"health", "hunger", "social", "gold", "reputation"</code></pre>
+
+        <h3>4. Update Emotional State After Utility Changes</h3>
+        <pre><code>hunger.ModifyValue(-20);
+if (hunger.HasChanged)
+{
+    brain.ProcessUtilityChange(hunger);
+    float total = CalculateTotalUtility();
+    brain.UpdateCurrentEmotionalState(total, previousTotal);
+}</code></pre>
+
+        <h3>5. Regenerate Mood Periodically</h3>
+        <pre><code>// Every 6-24 game hours
+brain.GenerateMood();</code></pre>
+
+        <div class="index">
+            <h2 id="class-index">Class Index</h2>
+            
+            <div class="index-category">
+                <h3>Core Entity System</h3>
+                <ul>
+                    <li><a href="#entity-system">Noun</a> (abstract base class)</li>
+                    <li><a href="#entity-system">Person</a></li>
+                    <li><a href="#entity-system">Place</a></li>
+                    <li><a href="#entity-system">Thing</a></li>
+                    <li><a href="#entity-system">NounBuilder&lt;T&gt;</a></li>
+                </ul>
+            </div>
+
+            <div class="index-category">
+                <h3>AI & Decision Making</h3>
+                <ul>
+                    <li><a href="#ai-decision-making">Brain</a></li>
+                    <li><a href="#ai-decision-making">Emotion</a></li>
+                    <li><a href="#utility-system">Utility</a></li>
+                    <li><a href="#relationship-system">Relationship</a></li>
+                </ul>
+            </div>
+
+            <div class="index-category">
+                <h3>Menu System</h3>
+                <ul>
+                    <li><a href="#menu-system">Menu</a></li>
+                    <li><a href="#menu-system">MenuItem</a></li>
+                </ul>
+            </div>
+
+            <div class="index-category">
+                <h3>World Management</h3>
+                <ul>
+                    <li><a href="#world-management">World</a></li>
+                    <li><a href="#world-management">Map</a></li>
+                    <li><a href="#world-management">MapKey</a></li>
+                </ul>
+            </div>
+
+            <div class="index-category">
+                <h3>Helper/Utility Classes</h3>
+                <ul>
+                    <li><a href="#helper-classes">Vector2Double</a></li>
+                    <li><a href="#helper-classes">Die</a></li>
+                    <li><a href="#helper-classes">Stat</a></li>
+                    <li><a href="#helper-classes">Inventory</a></li>
+                    <li><a href="#cell-struct">Cell</a> (struct)</li>
+                    <li><a href="#mathfunctions">MathFunctions</a></li>
+                </ul>
+            </div>
+
+            <div class="index-category">
+                <h3>Terminal/IO</h3>
+                <ul>
+                    <li><a href="#terminal-abstract">Terminal</a> (abstract base class)</li>
+                    <li><a href="#csconsole">CsConsole</a> (Terminal implementation)</li>
+                    <li><a href="#color-enum">Color</a> (enum)</li>
+                </ul>
+            </div>
+
+            <div class="index-category">
+                <h3>Procedural Generation</h3>
+                <ul>
+                    <li><a href="#tracery">Tracery</a></li>
+                    <li><a href="#description-generator">DescriptionGenerator&lt;T&gt;</a></li>
+                    <li><a href="#name-generator">NameGenerator</a></li>
+                </ul>
+            </div>
+
+            <div class="index-category">
+                <h3>Enums</h3>
+                <ul>
+                    <li><a href="#utility-system">UtilityCategory</a></li>
+                    <li><a href="#ai-decision-making">Emotion.EmotionType</a></li>
+                    <li><a href="#ai-decision-making">Emotion.EmotionTimeFrame</a></li>
+                    <li><a href="#color-enum">Color</a> (enum)</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        
+        <h2>License & Credits</h2>
+        <p><strong>Utility Theory of Emotion</strong> based on research from economicsfaq.com<br>
+        <strong>Schwartz's Theory of Basic Values</strong> - Cross-cultural value dimensions<br>
+        <strong>Tracery</strong> - Story grammar by Kate Compton</p>
+        
+        <p>This library synthesizes psychological research into a practical game AI system where NPCs make believable decisions based on their personalities, needs, emotions, and relationships.</p>
+    </div>
+</body>
+</html>
