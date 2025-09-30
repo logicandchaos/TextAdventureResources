@@ -20,7 +20,7 @@
         public void SetValue(float value)
         {
             value = (value < Min) ? Min : value;
-            value = (value < Max) ? Max : value;
+            value = (value > Max) ? Max : value;
 
             Value = value;
         }

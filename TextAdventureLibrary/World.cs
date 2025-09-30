@@ -139,7 +139,7 @@ namespace TextAdventureLibrary
             return null;
         }
 
-        public void AddHistoricalEvent(string historicalEvent)//should have title too? or use title as key??
+        /*public void AddHistoricalEvent(string historicalEvent)//should have title too? or use title as key??
         {
             if (History.ContainsKey(CurrentDateTime))
             {
@@ -157,6 +157,29 @@ namespace TextAdventureLibrary
             }
             else
                 History.Add(dateTime, historicalEvent);
+        }*/
+        public void AddHistoricalEvent(string historicalEvent)
+        {
+            if (History.TryGetValue(CurrentDateTime, out string existingValue))
+            {
+                History[CurrentDateTime] = existingValue + "\n" + historicalEvent;
+            }
+            else
+            {
+                History[CurrentDateTime] = historicalEvent;
+            }
+        }
+
+        public void AddHistoricalEvent(DateTime dateTime, string historicalEvent)
+        {
+            if (History.TryGetValue(dateTime, out string existingValue))
+            {
+                History[dateTime] = existingValue + "\n" + historicalEvent;
+            }
+            else
+            {
+                History[dateTime] = historicalEvent;
+            }
         }
 
         public List<string> GetEventsAbout(string subject)

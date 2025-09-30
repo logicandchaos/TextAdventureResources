@@ -57,11 +57,18 @@ namespace TextAdventureLibrary
         public string GetMissingAttributes()
         {
             string missingAttributes = "";
-            foreach (string key in noun.Attributes.Keys)
+            /*foreach (string key in noun.Attributes.Keys)
             {
                 if (!requiredAttributes.Contains(key))
                 {
                     missingAttributes += key + "\n";
+                }
+            }*/
+            foreach (string requiredKey in requiredAttributes)
+            {
+                if (!noun.Attributes.ContainsKey(requiredKey))
+                {
+                    missingAttributes += requiredKey + "\n";
                 }
             }
             return missingAttributes;

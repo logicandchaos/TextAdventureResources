@@ -191,15 +191,25 @@ namespace TextAdventureLibrary
             SetCoreValues(-10, -80, -60, 10, -10);
         }
 
-        public void SetAnimal()
+        public void SetHostileAnimal()
         {
-            // Animals have no personality considerations
-            SetCoreValues(0, 0, 0, 0, 0);
+            // Aggressive predator - wolf, bear
+            SetCoreValues(50, -50, 20, 80, 60); // Independent, stable, some pleasure, ambitious, dominant
+            SetUtilityWeights(2.0f, 0.1f, 0.0f); // Survival only
+        }
 
-            // Override weights to heavily favor survival
-            utilityWeights[UtilityCategory.BasicNeeds] = 2.0f;
-            utilityWeights[UtilityCategory.SocialDesires] = 0.1f;
-            utilityWeights[UtilityCategory.Entertainment] = 0.0f;
+        public void SetTimidAnimal()
+        {
+            // Prey animal - deer, rabbit
+            SetCoreValues(-30, -70, -50, -20, -40); // Conforming, very stable, restrained, balanced, submissive
+            SetUtilityWeights(2.5f, 0.05f, 0.0f); // Hyper-focused on survival
+        }
+
+        public void SetTerritorialAnimal()
+        {
+            // Defends territory but not inherently aggressive
+            SetCoreValues(30, -60, 0, 40, 40); // Moderately independent, stable, balanced, somewhat ambitious/dominant
+            SetUtilityWeights(2.0f, 0.15f, 0.0f); // Survival primary, slight social (pack behavior)
         }
 
         public void SetCoreValues(int IvC, int NvS, int PvR, int AvC, int DvE)

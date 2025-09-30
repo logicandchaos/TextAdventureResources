@@ -7,6 +7,8 @@ namespace TextAdventureLibrary
         public double X { get; set; }
         public double Y { get; set; }
 
+        public Vector2Double() { }
+        
         public Vector2Double(double x, double y)
         {
             X = x;

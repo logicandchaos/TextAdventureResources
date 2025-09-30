@@ -74,6 +74,18 @@ namespace TextAdventureLibrary
                 }
 
                 // Find the last syllable in the name
+                /*var lastSyllable = "";
+                for (int i = name.Length - 1; i >= 0; i--)
+                {
+                    var c = name[i];
+                    if (_vowels.Contains(c.ToString()))
+                    {
+                        lastSyllable = name.Substring(i);
+                        break;
+                    }
+                }
+
+                currentKey = lastSyllable;*/
                 var lastSyllable = "";
                 for (int i = name.Length - 1; i >= 0; i--)
                 {
@@ -84,6 +96,10 @@ namespace TextAdventureLibrary
                         break;
                     }
                 }
+
+                // Stop if we can't continue the chain
+                if (string.IsNullOrEmpty(lastSyllable) || !_chain.ContainsKey(lastSyllable))
+                    break;
 
                 currentKey = lastSyllable;
             }
