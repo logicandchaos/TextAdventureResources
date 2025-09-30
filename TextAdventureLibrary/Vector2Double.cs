@@ -60,6 +60,11 @@ namespace TextAdventureLibrary
             return $"{X}/{Y}";
         }
 
+        public bool IsEqual(Vector2Double other)
+        {
+            return Math.Abs(X - other.X) < 0.0001 && Math.Abs(Y - other.Y) < 0.0001;
+        }
+
         public double DistanceTo(Vector2Double other)
         {
             double dx = X - other.X;
@@ -74,7 +79,7 @@ namespace TextAdventureLibrary
             return Math.Sqrt(dx * dx + dy * dy);
         }
 
-        public void MoveTowards(Vector2Double p_destination, int p_amount)
+        /*public void MoveTowards(Vector2Double p_destination, int p_amount)
         {
             double distanceToDestination = DistanceTo(p_destination);
             if (distanceToDestination <= p_amount)
@@ -98,6 +103,22 @@ namespace TextAdventureLibrary
                 X = newX;
                 Y = newY;
             }
+        }*/
+        public void MoveTowards(Vector2Double destination, double amount)
+        {
+            double dx = destination.X - X;
+            double dy = destination.Y - Y;
+            double distance = Math.Sqrt(dx * dx + dy * dy);
+
+            if (distance <= amount || distance == 0)
+            {
+                X = destination.X;
+                Y = destination.Y;
+                return;
+            }
+
+            X += dx / distance * amount;
+            Y += dy / distance * amount;
         }
 
         public static Vector2Double GetRandomPointAtDistanceAndAngle(Vector2Double center, double distance, double angleInDegrees)
