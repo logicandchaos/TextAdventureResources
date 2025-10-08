@@ -607,7 +607,7 @@ namespace EpicProseRedux
             Program.console.Anykey();
         }
 
-        /*public void TravelMenu()
+        public void TravelMenu()
         {
             //organize menu items by closest to player
             Program.console.DebugMessage($"world.Everywhere.Count: {world.Everywhere.Count}\n");
@@ -664,7 +664,7 @@ namespace EpicProseRedux
             travelMenu0.Execute();
         }
 
-        public void Travel(Place place)
+        /*public void Travel(Place place)
         {
             //Place place;
             //world.Everywhere.TryGetValue(name, out place);
@@ -743,85 +743,57 @@ namespace EpicProseRedux
             while (true);
             Program.console.Anykey();
         }*/
-        public void TravelMenu()
-        {
-            Place currentArea = world.WithinBordersOf(player.Location);
-            List<Place> places = world.Everywhere.Values
-                .Where(p => p != currentArea)
-                .OrderBy(p => Vector2Double.Distance(p.Location, player.Location))
-                .ToList();
-
-            Menu menu0 = new Menu("Where do you want to go?");
-            Menu menu1 = new Menu("Where do you want to go?");
-            List<MenuItem> items0 = new List<MenuItem>();
-            List<MenuItem> items1 = new List<MenuItem>();
-
-            for (int i = 0; i < places.Count; i++)
-            {
-                var place = places[i];
-                double dist = Vector2Double.Distance(player.Location, place.Location);
-                var menuItem = new MenuItem($"{place.Name} {dist:F1} miles", () => Travel(place));
-                if (i < 6)
-                    items0.Add(menuItem);
-                else
-                    items1.Add(menuItem);
-            }
-
-            if (items1.Count > 0)
-            {
-                items0.Add(new MenuItem("Next", () =>
-                {
-                    menu1.Items = items1.Concat(new MenuItem[] { new MenuItem("Prev", () => TravelMenu()), new MenuItem("Cancel", () => { }) }).ToArray();
-                    Program.console.Print(menu1);
-                    menu1.SelectOption(Program.console.GetDigit(menu1.Items.Length));
-                    menu1.Execute();
-                }));
-            }
-            items0.Add(new MenuItem("Cancel", () => { }));
-
-            menu0.Items = items0.ToArray();
-            Program.console.Print(menu0);
-            menu0.SelectOption(Program.console.GetDigit(menu0.Items.Length));
-            menu0.Execute();
-        }
-
         public void Travel(Place destination)
         {
             Program.console.FlushInpuTQueue();
-            while (!Vector2Double.AreEqual(player.Location, destination.Location))
+            Place previousArea = GetCurrentArea(player.Location);
+
+            while (!player.Location.IsEqual(destination.Location))
             {
+                // Stop if a key is pressed
                 if (Program.console.IsKeyAvailable())
                 {
-                    Program.console.Print($"You stop at {world.WithinBordersOf(player.Location)?.Name ?? "the wild"}.\n");
-                    Program.console.Anykey();
+                    Program.console.Print("You stop!\n");
+                    Program.console.Print($"You are somewhere in the {previousArea.Name} region.\n");
                     ChangeState(GameStates.WORLDMAP);
-                    return;
+                    break;
                 }
 
-                // Move player towards destination
-                player.MoveTowards(destination.Location, (int)(player.GetAttributeValue<Stat>("speed").Value * 0.5));
-
-                // Check for encounters
-                int roll = world.Die.Roll(1, 100);
-                Place currentArea = world.WithinBordersOf(player.Location);
-                if (roll <= currentArea.GetAttributeValue<int>("enemyEncounterChance"))
+                Place currentArea = GetCurrentArea(player.Location);
+                if (currentArea != null && currentArea != previousArea)
                 {
-                    Program.console.Print("An encounter occurs!\n");
-                    // Battle logic here
-                    return;
+                    Program.console.Print($"You enter the {currentArea.Name} region.\n");
+                    previousArea = currentArea;
                 }
+
+                double distance = Vector2Double.Distance(player.Location, destination.Location);
+                Program.console.Print($"Heading towards {destination.Name} in {currentArea?.Name ?? "unknown"} region. Distance: {distance:F1} miles.\n");
+                Program.console.Type("...", Program.textSpeed);
+
+                int speed = (int)(player.GetAttributeValue<Stat>("speed").Value * 0.5f);
+                player.Location.MoveTowards(destination.Location, speed);
 
                 world.AddTimeSpan(new TimeSpan(1, 0, 0));
-                Program.console.Print($"You travel for 1 hour towards {destination.Name}...\n");
+                Program.console.Print("You travel for one hour.\n");
+
+                // Encounter check
+                int roll = world.Die.Roll(0, 99);
+                if (roll < currentArea.GetAttributeValue<int>("enemyEncounterChance"))
+                {
+                    Program.console.Print("A wild encounter appears!\n");
+                    // new Battle(player, currentArea.RandomEncounter());
+                    break;
+                }
             }
 
-            // Arrived
-            player.SetLocation(destination.Location); // ensures exact destination
-            Program.console.Print($"You arrived at {destination.Name} in the {world.WithinBordersOf(player.Location).Name} region.\n");
-            Program.console.Anykey();
-            ChangeState(GameStates.PLACE);
-        }
+            if (player.Location.IsEqual(destination.Location))
+            {
+                Program.console.Print($"You arrived at {destination.Name}.\n");
+                ChangeState(GameStates.PLACE);
+            }
 
+            Program.console.Anykey();
+        }
 
         public void ChangeState(GameStates gameState)
         {

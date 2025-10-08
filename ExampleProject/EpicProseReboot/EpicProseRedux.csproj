@@ -51,6 +51,7 @@
     <Compile Include="Alliances.cs" />
     <Compile Include="ChacterCreator.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="QuestTemplates.cs" />
     <Compile Include="WorldMapCells.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
