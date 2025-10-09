@@ -15,6 +15,7 @@ namespace EpicProseRedux
         public GameStates prevGameState;
 
         Person player;
+        QuestLog questLog;
 
         World world;
         //Create Areas
@@ -34,6 +35,27 @@ namespace EpicProseRedux
         List<Place> worldAreas;
         Dictionary<string, Dictionary<string, object>> itemTemplates;
         NounBuilder<Thing> itemBuilder = new NounBuilder<Thing>();
+
+        public static QuestTemplate SlayMonster = new QuestTemplate(
+        "Slay {monster} for {giver}",
+        "{giver} is worried about the {monster} terrorizing the {location}.",
+        "{giver} is relieved you defeated the {monster}!",
+        new List<string> { "Defeat the {monster}" }
+    ).WithUtilityReward("courage", 5);
+
+        public static QuestTemplate RescuePerson = new QuestTemplate(
+            "Rescue {person} from {location}",
+            "{giver} fears for {person} who is trapped in {location}.",
+            "You successfully rescued {person} from {location}!",
+            new List<string> { "Rescue {person}" }
+        ).WithUtilityReward("heroism", 10);
+
+        public static QuestTemplate FetchItem = new QuestTemplate(
+            "Retrieve {item} for {giver}",
+            "{giver} needs the {item} from {location}.",
+            "You delivered {item} to {giver}.",
+            new List<string> { "Collect the {item}" }
+        ).WithUtilityReward("favor", 3);
 
         const bool DEBUG = true;
 
@@ -198,6 +220,7 @@ namespace EpicProseRedux
                         int str = (int)player.GetAttributeValue<float>("strength");
                         //initialize inc\ventory based on strength
                         player.InitializeInventory(str * 2, 100, 100);
+                        questLog = new QuestLog(player);
 
                         //Story1();
                         ChangeState(GameStates.PLACE);
@@ -332,6 +355,7 @@ namespace EpicProseRedux
                             Program.console.Print("7: Townopolus,       8: Sandland        9: Pyramid\n");
                             Program.console.Anykey();
                         }));
+                        menuItems.Add(new MenuItem("Quests", Quests));
                         menuItems.Add(new MenuItem("Camp", () => ChangeState(GameStates.CAMP)));//formerly character menu
                         if (within != null)
                         {
@@ -348,6 +372,7 @@ namespace EpicProseRedux
                         menuItems = new List<MenuItem>();
                         menuItems.Add(new MenuItem("Character", CharacterMenu));
                         menuItems.Add(new MenuItem("Inventory", Inventory));
+                        menuItems.Add(new MenuItem("Quests", Quests));
                         menuItems.Add(new MenuItem("Rest", Rest));
                         menuItems.Add(new MenuItem("Leave", () => ChangeState(GameStates.WORLDMAP)));
                         menuItems.Add(new MenuItem("Save", Save));
@@ -456,6 +481,32 @@ namespace EpicProseRedux
                     Program.console.Print($"{thing.Name} has been added to your inventory.\n");
                 }
             }
+        }
+
+        public void Quests()
+        {
+            Program.console.Print("Active Quests:" + "\n");
+            foreach (Quest q in questLog.ActiveQuests)
+            {
+                Program.console.Print(" - " + q.Description + "\n");
+            }
+            Program.console.Print("\n");
+
+            Program.console.Print("Completed Quests:" + "\n");
+            foreach (Quest q in questLog.CompletedQuests)
+            {
+                Program.console.Print(" - " + q.Description + "\n");
+            }
+            Program.console.Print("\n");
+
+            Program.console.Print("Failed Quests:" + "\n");
+            foreach (Quest q in questLog.FailedQuests)
+            {
+                Program.console.Print(" - " + q.Description + "\n");
+            }
+            Program.console.Print("\n");
+
+            Program.console.Anykey();
         }
 
         public void Encounter(params Person[] people)

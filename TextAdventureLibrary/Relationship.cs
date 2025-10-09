@@ -104,6 +104,13 @@ namespace TextAdventureLibrary
             return total / EmotionalHistory.Count;
         }
 
+        public float OverAll()
+        {
+            //should add modifyers based on personality type
+            return (Kinship + Attraction + Affection + Hierarchy + Familiarity
+                + Trust + Respect + EmotionalDebt + Allegiance) / 9;
+        }
+
         public void GenerateDescription()
         {
             StringBuilder sb = new StringBuilder();

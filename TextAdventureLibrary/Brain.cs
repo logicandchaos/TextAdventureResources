@@ -52,11 +52,6 @@ namespace TextAdventureLibrary
             relationships[person] = relationship;
         }
 
-        public Relationship GetRelationship(Person person)
-        {
-            return relationships.TryGetValue(person, out var relationship) ? relationship : null;
-        }
-
         // Generate emotion from utility change
         public Emotion ProcessUtilityChange(Utility utility)
         {
@@ -231,7 +226,7 @@ namespace TextAdventureLibrary
         }
 
         // Main decision-making method based on utility prediction
-        public void MakeChoice(Menu menu, Person owner)
+        public void MakeChoice(Menu menu, Transaction[] transactions)
         {
             if (menu.Items.Length == 0) return;
 
@@ -240,137 +235,46 @@ namespace TextAdventureLibrary
 
             for (int i = 0; i < menu.Items.Length; i++)
             {
-                float predictedEmotionalOutcome = EvaluateOption(menu.Items[i], owner);
-                if (predictedEmotionalOutcome > bestEmotionalOutcome)
+                float predictedEmotionalOutcome1 = transactions[i].NetValueChangeP1();
+                float predictedEmotionalOutcome2 = transactions[i].NetValueChangeP2();
+
+                var relationship = GetRelationship(transactions[i].Person2);
+                float relationshipMod = relationship.OverAll();
+
+                if (predictedEmotionalOutcome2 < -1f) //hostile
                 {
-                    bestEmotionalOutcome = predictedEmotionalOutcome;
+                    if (relationshipMod < -1f)//enemy
+                    {
+                        predictedEmotionalOutcome1 += 10;//should be based on personalty
+                    }
+                    else if (relationshipMod > 1f)//ally
+                    {
+                        predictedEmotionalOutcome1 -= 10;//should be based on personalty
+                    }
+                }
+                else if (predictedEmotionalOutcome2 > 1f) //helpful
+                {
+                    if (relationshipMod < -1f)//enemy
+                    {
+                        predictedEmotionalOutcome1 -= 10;//should be based on personalty
+                    }
+                    else if (relationshipMod > 1f)//ally
+                    {
+                        predictedEmotionalOutcome1 += 10;//should be based on personalty
+                    }
+                }
+
+                predictedEmotionalOutcome1 += GetEmotionalModifier();
+
+                if (predictedEmotionalOutcome1 > bestEmotionalOutcome)
+                {
+                    bestEmotionalOutcome = predictedEmotionalOutcome1;
                     bestChoice = i;
                 }
             }
 
             menu.SelectOption(bestChoice);
             menu.Execute();
-        }
-
-        private float EvaluateOption(MenuItem item, Person owner)
-        {
-            // Calculate predicted weighted utility change
-            float predictedUtilityChange = CalculatePredictedUtilityChange(item, owner);
-
-            // Use AnticipateChange to get the emotional response
-            var anticipatedEmotion = AnticipateChange(predictedUtilityChange);
-
-            // Convert emotion to decision score
-            float emotionalScore = anticipatedEmotion.Type == Emotion.EmotionType.Positive ?
-                anticipatedEmotion.Intensity :
-                -anticipatedEmotion.Intensity;
-
-            // Apply current emotional state as a modifier
-            emotionalScore *= GetEmotionalModifier();
-
-            return emotionalScore;
-        }
-
-        private float CalculatePredictedUtilityChange(MenuItem item, Person owner)
-        {
-            float totalUtilityChange = 0f;
-
-            // Process owner utility effects
-            if (item.OwnerUtilityEffects != null)
-            {
-                foreach (var effect in item.OwnerUtilityEffects)
-                {
-                    string utilityName = effect.Key;
-                    float baseChange = effect.Value;
-
-                    // Get the utility from the person
-                    var utility = owner.GetAttributeValue<Utility>(utilityName);
-                    if (utility != null)
-                    {
-                        // Apply category weight based on personality
-                        float categoryWeight = GetUtilityWeight(utility.Category);
-                        float weightedChange = baseChange * utility.Weight * categoryWeight;
-                        totalUtilityChange += weightedChange;
-                    }
-                }
-            }
-
-            // Apply relationship modifiers if target person specified
-            if (item.TargetPerson != null)
-            {
-                totalUtilityChange += EvaluateRelationshipModifiers(item, item.TargetPerson);
-            }
-
-            return totalUtilityChange;
-        }
-
-        private float EvaluateRelationshipModifiers(MenuItem item, Person target)
-        {
-            var relationship = GetRelationship(target);
-            if (relationship == null) return 0f;
-
-            float modifier = 0f;
-
-            // Determine action type by analyzing target utility effects
-            bool isHostileAction = false;
-            bool isHelpfulAction = false;
-
-            if (item.TargetUtilityEffects != null && item.TargetUtilityEffects.Count > 0)
-            {
-                // Analyze the net effect on target
-                float netTargetEffect = 0f;
-                foreach (var effect in item.TargetUtilityEffects.Values)
-                {
-                    netTargetEffect += effect;
-                }
-
-                // Negative effect on target = hostile action
-                // Positive effect on target = helpful action
-                isHostileAction = netTargetEffect < -1f;
-                isHelpfulAction = netTargetEffect > 1f;
-            }
-
-            if (isHostileAction)
-            {
-                // Allegiance heavily affects attack decisions
-                if (relationship.Allegiance > 50)
-                    modifier -= 100f; // Massive penalty for attacking allies
-                else if (relationship.Allegiance < -50)
-                    modifier += 20f; // Bonus for attacking enemies
-
-                // Affection and Trust reduce willingness to attack
-                modifier -= relationship.Affection * 0.5f;
-                modifier -= relationship.Trust * 0.3f;
-
-                // Gratitude/Resentment
-                if (relationship.Grateful)
-                    modifier -= 30f; // Don't attack those who helped you
-                else if (relationship.Resentful)
-                    modifier += 15f; // More willing to attack those who wronged you
-
-                // Respect affects willingness to challenge them
-                modifier -= relationship.Respect * 0.2f;
-            }
-            else if (isHelpfulAction)
-            {
-                // High affection/trust increases willingness to help
-                modifier += relationship.Affection * 0.3f;
-                modifier += relationship.Trust * 0.2f;
-
-                // Allegiance matters
-                if (relationship.Allegiance > 30)
-                    modifier += 20f;
-                else if (relationship.Allegiance < -30)
-                    modifier -= 20f; // Less likely to help enemies
-
-                // EmotionalDebt - if they owe us, we're less likely to help more
-                modifier -= relationship.EmotionalDebt * 0.1f;
-
-                // Kinship increases willingness to help
-                modifier += relationship.Kinship * 0.2f;
-            }
-
-            return modifier;
         }
 
         private float GetEmotionalModifier()
@@ -383,6 +287,11 @@ namespace TextAdventureLibrary
                 return 1.0f + (CurrentEmotionalState.Intensity * 0.2f);
             else
                 return 1.0f - (CurrentEmotionalState.Intensity * 0.3f);
+        }
+
+        public Relationship GetRelationship(Person person)
+        {
+            return relationships.TryGetValue(person, out var relationship) ? relationship : null;
         }
     }
 }
