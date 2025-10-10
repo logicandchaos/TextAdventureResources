@@ -545,9 +545,17 @@ namespace EpicProseRedux
                 currentMenu = new Menu("What will you do?");
                 //Program.console.Print(currentMenu.Title);
                 Program.console.Print(currentMenu);
-                //orderedPeople[turn].GetAttributeValue<Brain>().MakeChoice(encounterMenu);
-                currentMenu.SelectOption(Program.console.GetDigit(currentMenu.Items.Length));
-                currentMenu.Execute();
+                Brain brain = orderedPeople[turn].GetAttributeValue<Brain>("Brain");
+                if (brain == null)
+                {
+                    currentMenu.SelectOption(Program.console.GetDigit(currentMenu.Items.Length));
+                    currentMenu.Execute();
+                }
+                else
+                {
+                    Transaction[] transactions = new Transaction[] { };
+                    brain.MakeChoice(currentMenu, transactions);
+                }
 
                 turn = turn < orderedPeople.Length ? turn++ : 0;
 

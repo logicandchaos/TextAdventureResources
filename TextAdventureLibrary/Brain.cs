@@ -52,45 +52,9 @@ namespace TextAdventureLibrary
             relationships[person] = relationship;
         }
 
-        // Generate emotion from utility change
-        public Emotion ProcessUtilityChange(Utility utility)
+        public Relationship GetRelationship(Person person)
         {
-            if (utility.HasChanged)
-            {
-                float normalizedChange = utility.GetNormalizedChange() * utility.Weight;
-                var emotion = new Emotion(normalizedChange, Emotion.EmotionTimeFrame.Present);
-                EmotionHistory.Add(emotion);
-                return emotion;
-            }
-            return null;
-        }
-
-        // Anticipate future emotion from expected change
-        public Emotion AnticipateChange(float expectedUtilityChange)
-        {
-            var emotion = new Emotion(expectedUtilityChange, Emotion.EmotionTimeFrame.Future);
-            // Don't add to history - this is just a prediction
-            return emotion;
-        }
-
-        // Reflect on past change
-        public Emotion ReflectOnChange(float pastChange)
-        {
-            var emotion = new Emotion(pastChange, Emotion.EmotionTimeFrame.Past);
-            EmotionHistory.Add(emotion);
-            return emotion;
-        }
-
-        public void React(Person person, List<Utility> utilitiesChanged)
-        {
-            foreach (Utility u in utilitiesChanged)
-            {
-                var emotion = ProcessUtilityChange(u);
-                if (emotion != null && relationships.ContainsKey(person))
-                {
-                    relationships[person].AddEmotion(emotion);
-                }
-            }
+            return relationships.TryGetValue(person, out var relationship) ? relationship : null;
         }
 
         public void GenerateMood()
@@ -102,11 +66,17 @@ namespace TextAdventureLibrary
             Mood = new Emotion(valence, Emotion.EmotionTimeFrame.Present);
         }
 
-        public void UpdateCurrentEmotionalState(float currentUtility, float previousUtility)
+        // Generate emotion from utility change
+        public Emotion ProcessUtilityChange(Utility utility, float change)
         {
-            // Per the utility theory paper: emotions are derived from changes in utility
-            float utilityChange = currentUtility - previousUtility;
+            float percentChanged = change / utility.Max;
+            float changeImportance = percentChanged * utilityWeights[utility.Category];
+            var emotion = new Emotion(changeImportance, Emotion.EmotionTimeFrame.Present);
+            return emotion;
+        }
 
+        public void UpdateCurrentEmotionalState(Emotion[] emotion)
+        {
             // Apply mood as a background offset that colors emotional responses
             if (Mood == null)
                 GenerateMood();
@@ -115,8 +85,13 @@ namespace TextAdventureLibrary
                 (Mood.Type == Emotion.EmotionType.Positive ? Mood.Intensity : -Mood.Intensity) * 0.3f :
                 0f;
 
-            // Current emotional state = utility change + mood influence
-            float emotionalValue = utilityChange + moodOffset;
+            float emotionSum = 0;
+            foreach(Emotion e in emotion)
+            {
+                emotionSum += e.SignedValue();
+            }
+
+            float emotionalValue = emotionSum + moodOffset;
             CurrentEmotionalState = new Emotion(emotionalValue, Emotion.EmotionTimeFrame.Present);
         }
 
@@ -287,11 +262,6 @@ namespace TextAdventureLibrary
                 return 1.0f + (CurrentEmotionalState.Intensity * 0.2f);
             else
                 return 1.0f - (CurrentEmotionalState.Intensity * 0.3f);
-        }
-
-        public Relationship GetRelationship(Person person)
-        {
-            return relationships.TryGetValue(person, out var relationship) ? relationship : null;
         }
     }
 }

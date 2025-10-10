@@ -21,6 +21,15 @@ namespace TextAdventureLibrary
             Description = GenerateDescription();
         }
 
+        public float SignedValue()
+        {
+            if (Type == EmotionType.Positive)
+                return Intensity;
+            if (Type == EmotionType.Negative)
+                return -Intensity;
+            return 0;
+        }
+
         private string GenerateDescription()
         {
             string intensityLevel;
